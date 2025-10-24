@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
           <p><strong>Kaynak:</strong> SahaDijital Coming Soon Sayfası</p>
           <hr style="margin: 20px 0;">
           <p style="color: #666; font-size: 14px;">
-            Bu e-posta SahaDijital Coming Soon sayfasından otomatik olarak gönderilmiştir.
+            Bu e-posta SahaDijital tarafından otomatik olarak gönderilmiştir.
           </p>
         </div>
       `,
