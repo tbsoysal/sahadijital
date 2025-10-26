@@ -9,7 +9,7 @@ const Label = ({ children, className = "" }: { children: React.ReactNode, classN
         width={20}
         height={20}
       />
-      <span>{children}</span>
+      <span className="text-black font-medium">{children}</span>
     </div>
   )
 }
