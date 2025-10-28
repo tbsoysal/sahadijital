@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const HeroSection = () => {
   return (
-    <div className="bg-gradient-to-b from-[#93CFEC] to-[#F6FFE8] max-h-[920px] w-full py-6">
+    <div className="bg-gradient-to-b from-[#93CFEC] to-[#F6FFE8] max-h-[920px] w-full pt-6">
       <NavBar />
       <div className="sm:mx-auto mx-5 my-[64px] max-w-[900px] text-center">
         <Label className="mx-auto mb-8">Modern rezervasyon sistemi</Label>
