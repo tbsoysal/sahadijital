@@ -4,7 +4,11 @@ import Image from "next/image";
 export default function Header() {
   return (
     <header className="pt-4 px-5 bg-linear-to-b from-[#93CFEC] to-[#F6FFE8] tablet:pt-5 tablet:px-12 desktop:pt-6">
+
+      {/* Navigation Bar */}
       <Navbar />
+
+      {/* Hero Section Main Content */}
       <main className="my-10">
         {/* Badge */}
         <div className="max-w-max flex items-center gap-2.5 bg-white px-4 py-2.5 rounded-full mx-auto border border-primary-color mb-5">
@@ -23,9 +27,11 @@ export default function Header() {
         {/* Paragraph */}
         <p className="font-medium text-lg text-center mb-5">Online rezervasyonlar alın, takviminizi yönetin ve gelir istatistiklerinizi anında görün. Hepsi tek platformda, modern bir arayüzle.</p>
 
+        {/* CTA Button */}
         <button className="btn-primary btn-border-effect mx-auto px-5 py-3">Hemen Demo Kullan</button>
       </main>
 
+      {/* Hero Image */}
       <div className="relative w-full rounded-2xl h-[400px] overflow-hidden drop-shadow-xl mb-4">
         <Image
           src="/images/heroimage.png"
