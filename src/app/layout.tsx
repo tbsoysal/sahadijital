@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <body
-        className={`font-satoshi antialiased`}
+        className="antialiased"
       >
         {children}
       </body>

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@font-face {
+font-face {
   font-family: "Satoshi";
   src: url("/fonts/satoshi/Satoshi-Regular.woff") format("woff");
   font-weight: 400;
@@ -18,4 +18,40 @@
 
 @theme {
   --font-satoshi: 'Satoshi', sans-serif;
+
+  --breakpoint-tablet: 920px;
+  --breakpoint-desktop: 1440px;
+
+  --color-primary: #12B76A;
+  --color-primary-color: #181D27;
+  --color-secondary-color: #414651;
+
+}
+
+@layer base {
+  * {
+    @apply font-satoshi text-primary-color
+  }
+}
+
+@layer components {
+  .btn-border-effect {
+    @apply relative before:absolute before:inset-0 before:border-primary-color before:border-t before:border-l before:rounded-lg after:absolute after:inset-0 after:border-primary-color after:border-b-3 after:border-r-3 after:rounded-lg;
+  }
+
+  .border-effect {
+    @apply relative before:absolute before:inset-0 before:border-primary-color before:border-t before:border-l before:rounded-full after:absolute after:inset-0 after:border-primary-color after:border-b-4 after:border-r-4 after:rounded-full;
+  }
+
+  .nav-link {
+    @apply font-medium text-xl px-2 py-1 text-primary-color hover:text-secondary-color;
+  }
+
+  .btn-primary {
+    @apply block bg-primary text-white text-base rounded-lg cursor-pointer px-4 py-2.5 hover:after:border-b-1 hover:after:border-r-1 active:bg-[#027A48];
+  }
+
+  .btn-secondary {
+    @apply block bg-white text-black text-base rounded-lg cursor-pointer px-4 py-2.5 hover:after:border-b-1 hover:after:border-r-1;
+  }
 }
