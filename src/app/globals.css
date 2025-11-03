@@ -55,3 +55,16 @@ font-face {
     @apply block bg-white text-black text-base rounded-lg cursor-pointer px-4 py-2.5 hover:after:border-b-1 hover:after:border-r-1;
   }
 }
+
+@layer utilities {
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+}

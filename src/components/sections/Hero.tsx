@@ -2,7 +2,7 @@ import Navbar from "@/components/ui/Navbar";
 import Badge from "../ui/Badge";
 import Image from "next/image";
 
-export default function Header() {
+export default function Hero() {
   return (
     <header className="pt-4 px-5 bg-linear-to-b from-[#93CFEC] to-[#F6FFE8] tablet:pt-5 tablet:px-12 desktop:pt-6">
 
