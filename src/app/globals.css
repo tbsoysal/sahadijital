@@ -40,7 +40,7 @@ font-face {
   }
 
   .border-effect {
-    @apply relative before:absolute before:inset-0 before:border-primary-color before:border-t before:border-l before:rounded-full after:absolute after:inset-0 after:border-primary-color after:border-b-4 after:border-r-4 after:rounded-full;
+    @apply relative before:absolute before:inset-0 before:border-primary-color before:border-t before:border-l before:rounded-full before:pointer-events-none before:select-none after:absolute after:inset-0 after:border-primary-color after:border-b-4 after:border-r-4 after:rounded-full after:pointer-events-none after:select-none;
   }
 
   .nav-link {
@@ -53,6 +53,18 @@ font-face {
 
   .btn-secondary {
     @apply block bg-white text-black text-base rounded-lg cursor-pointer px-4 py-2.5 hover:after:border-b-1 hover:after:border-r-1;
+  }
+
+  .benefitContainer {
+    @apply max-w-[1264px] mx-auto bg-white rounded-[20px] after:rounded-[20px] before:rounded-[20px] tablet:flex tablet:h-[586px];
+  }
+
+  .benefitTextContainer {
+    @apply flex flex-col w-full p-8 mx-auto tablet:justify-center tablet:max-w-[404px] desktop:max-w-[508px];
+  }
+
+  .benefitImageContainer {
+    @apply w-full flex justify-start rounded-[20px] rounded-t-none items-center overflow-hidden p-8 tablet:rounded-l-none tablet:rounded-t-[20px] tablet:border-l-1;
   }
 }
 
