@@ -1,4 +1,5 @@
 import Navbar from "@/components/ui/Navbar";
+import Badge from "../ui/Badge";
 import Image from "next/image";
 
 export default function Header() {
@@ -11,15 +12,7 @@ export default function Header() {
       {/* Hero Section Main Content */}
       <main className="max-w-[832px] mx-auto my-10 tablet:my-12">
         {/* Badge */}
-        <div className="max-w-max flex items-center gap-2.5 bg-white px-4 py-2.5 rounded-full mx-auto border border-primary-color mb-5">
-          <Image
-            src="/images/labelstar-icon.svg"
-            alt="star icon"
-            width={20}
-            height={20}
-          />
-          <span className="font-medium text-base">Modern rezervasyon sistemi</span>
-        </div>
+        <Badge />
 
         {/* Heading */}
         <h1 className="font-bold text-5xl text-center mb-6">Halı Saha 3 Adımda Rezervasyon</h1>
@@ -32,7 +25,7 @@ export default function Header() {
       </main>
 
       {/* Hero Image */}
-      <div className="relative w-full rounded-2xl h-[400px] overflow-hidden drop-shadow-xl mb-4 mx-auto tablet:mb-0 tablet:rounded-b-none tablet:max-w-[928px] desktop:max-w-[1048px]">
+      <div className="relative w-full rounded-2xl h-[400px] overflow-hidden drop-shadow-xl mb-4 mx-auto tablet:mb-0 tablet:rounded-b-none tablet:drop-shadow-none tablet:max-w-[928px] desktop:max-w-[1048px]">
         <Image
           src="/images/heroimage.png"
           alt="reservation calendar screen"

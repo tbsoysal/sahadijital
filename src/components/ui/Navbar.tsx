@@ -23,6 +23,7 @@ export default function Navbar() {
           alt="Nav menu button"
           width={18}
           height={12}
+          className="w-auto h-auto"
         />
       </button>
 

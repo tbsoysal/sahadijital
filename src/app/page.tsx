@@ -1,3 +1,4 @@
+import Features from "@/components/sections/Features";
 import Header from "@/components/sections/Header";
 
 const LandingPage = () => {
@@ -5,6 +6,7 @@ const LandingPage = () => {
   return (
     <>
       <Header />
+      <Features />
     </>
   )
 }
