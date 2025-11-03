@@ -14,8 +14,8 @@ const tabs = [
 ]
 
 const tabComponents = [
-  <BenefitBox1 />,
-  <BenefitBox2 />
+  <BenefitBox1 key={0} />,
+  <BenefitBox2 key={1} />
 ]
 
 export default function Benefits() {
