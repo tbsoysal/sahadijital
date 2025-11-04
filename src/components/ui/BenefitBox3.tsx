@@ -2,7 +2,7 @@ export default function BenefitBox3() {
     return (
         <div className="benefitContainer border-effect">
             {/* Text Content */}
-            <div className="benefitTextContainer bg-[#FEEE95]">
+            <div className="benefitTextContainer bg-[#FEEE95] rounded-t-[20px] tablet:rounded-tr-none">
                 <h3 className="font-bold text-3xl leading-[44px] mb-8">Tesisinizi Dijitalleştirin</h3>
                 <p className="font-medium text-xl text-secondary-color leading-[28px]">Rakipleriniz hala defter kullanırken siz dijital yönetime geçin. Müşteri memnuniyetini arttırın, işletmenizi büyütün.</p>
             </div>
