@@ -25,7 +25,7 @@ export default function Hero() {
       </main>
 
       {/* Hero Image */}
-      <div className="relative w-full rounded-2xl h-[400px] overflow-hidden drop-shadow-xl mb-4 mx-auto tablet:mb-0 tablet:rounded-b-none tablet:drop-shadow-none tablet:max-w-[928px] desktop:max-w-[1048px]">
+      <div className="relative w-full rounded-2xl h-[400px] overflow-hidden drop-shadow-xl pb-4 mx-auto tablet:mb-0 tablet:rounded-b-none tablet:drop-shadow-none tablet:max-w-[928px] desktop:max-w-[1048px]">
         <Image
           src="/images/heroimage.png"
           alt="reservation calendar screen"
