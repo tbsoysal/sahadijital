@@ -36,7 +36,7 @@ font-face {
 
 @layer components {
   .btn-border-effect {
-    @apply relative before:absolute before:inset-0 before:border-primary-color before:border-t before:border-l before:rounded-lg after:absolute after:inset-0 after:border-primary-color after:border-b-3 after:border-r-3 after:rounded-lg;
+    @apply relative before:absolute before:inset-0 before:border-primary-color before:border-t before:border-l before:rounded-lg after:absolute after:inset-0 after:border-primary-color after:border-b-3 after:border-r-3 after:rounded-lg before:pointer-events-none before:select-none after:pointer-events-none after:select-none;
   }
 
   .border-effect {

@@ -3,6 +3,7 @@ import Hero from "@/components/sections/Hero";
 import Benefits from "@/components/sections/Benefits";
 import Pricing from "@/components/sections/Pricing";
 import Testimonials from "@/components/sections/Testimonials";
+import Footer from "@/components/sections/Footer";
 
 const LandingPage = () => {
 
@@ -13,6 +14,7 @@ const LandingPage = () => {
       <Benefits />
       <Pricing />
       <Testimonials />
+      <Footer />
     </>
   )
 }
