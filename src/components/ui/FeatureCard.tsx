@@ -17,7 +17,7 @@ export default function FeatureCard({ image = "/images/featuresimage-1.png", hea
           src={image}
           alt="Feature image"
           fill
-          className="object-contain max-h-[80%] top-1/2! -translate-y-1/2"
+          className="object-contain size-auto max-h-[80%] top-1/2! -translate-y-1/2"
         />
       </div>
       <h3 className="font-bold text-2xl mb-3">{heading}</h3>

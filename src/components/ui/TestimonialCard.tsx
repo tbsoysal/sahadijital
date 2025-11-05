@@ -3,11 +3,10 @@ import Image from "next/image"
 interface Props {
     author: string;
     comment: string;
-    star: number;
     date: string;
 }
 
-export default function TestimonialCard({ author, comment, star, date }: Props) {
+export default function TestimonialCard({ author, comment, date }: Props) {
     return (
         <div className="bg-[#FEF7C3] mx-auto border-effect rounded-[20px] before:rounded-[20px] after:rounded-[20px] p-10">
             <div className="flex items-center gap-3 mb-4">

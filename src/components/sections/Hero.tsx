@@ -30,7 +30,13 @@ export default function Hero() {
           src="/images/heroimage.png"
           alt="reservation calendar screen"
           fill
-          className="absolute object-cover object-top-left"
+          className="absolute hidden tablet:block object-cover object-top-left"
+        />
+        <Image
+          src="/images/mobileHero.png"
+          alt="reservation calendar screen"
+          fill
+          className="absolute block object-cover tablet:hidden object-top-left"
         />
       </div>
 
