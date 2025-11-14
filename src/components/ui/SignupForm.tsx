@@ -2,213 +2,157 @@
 
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Input from "./Input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signupSchema, SignupFormData } from "@/lib/schemas/signup";
+import { useForm } from "react-hook-form";
 
 const SignupForm = () => {
-    const router = useRouter();
-    const [showPassword, setShowPassword] = useState(false);
-    const [accepted, setAccepted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [accepted, setAccepted] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+  });
 
-    const [formData, setFormData] = useState({
-        name: "",
-        surname: "",
-        email: "",
-        fieldName: "",
-        phone: "",
-        password: "",
-    });
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+  const onSubmit = async (data: SignupFormData) => {
+    console.log(data);
+  };
 
-    const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="mx-auto flex max-w-[350px] flex-col gap-3 text-white"
+    >
+      {/* Name fields */}
+      <div className="flex gap-3">
+        <Input
+          {...register("name")}
+          errors={errors.name}
+          label="Ad"
+          type="text"
+          placeholder="Ahmet"
+          className="w-1/2"
+        />
+        <Input
+          {...register("surname")}
+          errors={errors.surname}
+          label="Soyad"
+          type="text"
+          placeholder="Demir"
+          className="w-1/2"
+        />
+      </div>
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+      {/* Mail */}
+      <Input
+        {...register("email")}
+        errors={errors.email}
+        label="Mail Adresi"
+        type="email"
+        placeholder="ahmetdemir@gmail.com"
+      />
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+      {/* Saha Adı */}
+      <Input
+        {...register("fieldName")}
+        errors={errors.fieldName}
+        label="Saha Adı"
+        type="text"
+        placeholder="Küçükçekmece saha"
+      />
 
-        // ✅ Basit form doğrulama
-        const { name, surname, email, fieldName, phone, password } = formData;
-        if (!name || !surname || !email || !fieldName || !phone || !password) {
-            alert("Lütfen tüm alanları doldurun.");
-            return;
-        }
+      {/* Telefon */}
+      <div>
+        <label className="text-secondary-color mb-1.5 block text-base font-medium">
+          Telefon Numarası
+        </label>
+        <div className="border-effect flex w-full rounded-lg before:rounded-lg after:rounded-lg after:border-r-2 after:border-b-2">
+          <span className="text-secondary-color block rounded-l-lg bg-white px-2 py-2 focus:outline-none">
+            +90
+          </span>
+          <input
+            {...register("phone")}
+            name="phone"
+            type="tel"
+            placeholder="5*********"
+            className="flex-1 rounded-r-lg border-l bg-white px-3 py-2 focus:outline-none"
+          />
+        </div>
+        {errors.phone && (
+          <span className="mt-1.5 text-sm text-red-500">
+            {errors.phone.message}
+          </span>
+        )}
+      </div>
 
-        // Telefon doğrulama: 5 ile başlasın, sadece rakam ve 10 hane
-        const phoneRegex = /^5\d{9}$/;
-        if (!phoneRegex.test(phone)) {
-            alert("Telefon numarası 5 ile başlamalı, 10 haneli ve sadece rakamlardan oluşmalıdır.");
-            return;
-        }
-
-        // Şifre uzunluğu kontrolü
-        if (password.length < 7) {
-            alert("Şifre en az 7 karakter olmalıdır.");
-            return;
-        }
-
-        if (!accepted) {
-            alert("Lütfen aydınlatma metnini onaylayın.");
-            return;
-        }
-
-        // ✅ Tüm kontroller geçtiyse yönlendir
-        alert("Kayıt başarılı! Giriş ekranına yönlendiriliyorsunuz...");
-        router.push("/login");
-    };
-
-    return (
-        <form
-            onSubmit={handleSubmit}
-            className="mx-auto max-w-[350px] flex flex-col gap-3 text-white"
+      {/* Şifre */}
+      <div>
+        <label
+          htmlFor="password"
+          className="text-secondary-color mb-1.5 block text-base font-medium"
         >
-            {/* Name fields */}
-            <div className="flex gap-3">
-                <div className="w-1/2">
-                    <label className="block font-medium text-base text-secondary-color mb-1.5">
-                        Ad
-                    </label>
-                    <div className="border-effect rounded-lg after:border-r-2 after:border-b-2 before:rounded-lg after:rounded-lg">
-                        <input
-                            name="name"
-                            type="text"
-                            placeholder="Ahmet"
-                            value={formData.name}
-                            onChange={handleChange}
-                            className="w-full px-3 py-2 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                        />
-                    </div>
-                </div>
-                <div className="w-1/2">
-                    <label className="block font-medium text-base text-secondary-color mb-1.5">
-                        Soyad
-                    </label>
-                    <div className="border-effect rounded-lg after:border-r-2 after:border-b-2 before:rounded-lg after:rounded-lg">
-                        <input
-                            name="surname"
-                            type="text"
-                            placeholder="Demir"
-                            value={formData.surname}
-                            onChange={handleChange}
-                            className="w-full px-3 py-2 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                        />
-                    </div>
-                </div>
-            </div>
+          Şifre
+        </label>
+        <div className="border-effect relative w-full rounded-lg bg-white before:rounded-lg after:rounded-lg after:border-r-2 after:border-b-2">
+          <input
+            {...register("password")}
+            id="password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="********"
+            className="w-full rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+          />
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            className="absolute inset-y-0 right-0 flex cursor-pointer items-center px-4 py-2 text-gray-400 hover:text-white"
+          >
+            {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+          </button>
+        </div>
+        {errors.password && (
+          <span className="mt-1.5 text-sm text-red-500">
+            {errors.password.message}
+          </span>
+        )}
+      </div>
 
-            {/* Mail */}
-            <div>
-                <label className="block font-medium text-base text-secondary-color mb-1.5">
-                    Mail Adresi
-                </label>
-                <div className="w-full border-effect rounded-lg after:border-r-2 after:border-b-2 before:rounded-lg after:rounded-lg">
-                    <input
-                        name="email"
-                        type="email"
-                        placeholder="ahmetdemir@gmail.com"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                    />
-                </div>
-            </div>
+      {/* Checkbox */}
+      <div className="mb-3 flex items-start space-x-2 text-sm">
+        <input
+          id="privacy"
+          type="checkbox"
+          checked={accepted}
+          onChange={(e) => setAccepted(e.target.checked)}
+          className="align-self-top size-7 accent-emerald-400"
+        />
+        <label
+          htmlFor="privacy"
+          className="text-secondary-color text-sm font-medium"
+        >
+          Kişisel verilerimin işlenmesine yönelik{" "}
+          <a href="#" className="text-emerald-400 underline">
+            aydınlatma metnini
+          </a>{" "}
+          okudum ve kabul ediyorum.
+        </label>
+      </div>
 
-            {/* Saha Adı */}
-            <div>
-                <label className="block font-medium text-base text-secondary-color mb-1.5">
-                    Saha Adı
-                </label>
-                <div className="w-full border-effect rounded-lg after:border-r-2 after:border-b-2 before:rounded-lg after:rounded-lg">
-                    <input
-                        name="fieldName"
-                        type="text"
-                        placeholder="Küçükçekmece saha"
-                        value={formData.fieldName}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                    />
-                </div>
-            </div>
-
-            {/* Telefon */}
-            <div>
-                <label className="block font-medium text-base text-secondary-color mb-1.5">
-                    Telefon Numarası
-                </label>
-                <div className="flex w-full border-effect rounded-lg after:border-r-2 after:border-b-2 before:rounded-lg after:rounded-lg">
-                    <span className="block py-2 px-2 rounded-l-lg bg-white focus:outline-none text-secondary-color">
-                        +90
-                    </span>
-                    <input
-                        name="phone"
-                        type="tel"
-                        placeholder="5*********"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="flex-1 px-3 py-2 rounded-r-lg bg-white border-l focus:outline-none"
-                    />
-                </div>
-            </div>
-
-            {/* Şifre */}
-            <div>
-                <label
-                    htmlFor="password"
-                    className="block font-medium text-base text-secondary-color mb-1.5"
-                >
-                    Şifre
-                </label>
-                <div className="relative w-full border-effect rounded-lg bg-white after:border-r-2 after:border-b-2 before:rounded-lg after:rounded-lg">
-                    <input
-                        id="password"
-                        name="password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="********"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 pr-10"
-                    />
-                    <button
-                        type="button"
-                        onClick={togglePasswordVisibility}
-                        className="absolute inset-y-0 right-0 px-4 py-2 flex items-center text-gray-400 hover:text-white"
-                    >
-                        {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
-                    </button>
-                </div>
-            </div>
-
-            {/* Checkbox */}
-            <div className="flex items-start space-x-2 text-sm mb-3">
-                <input
-                    id="privacy"
-                    type="checkbox"
-                    checked={accepted}
-                    onChange={(e) => setAccepted(e.target.checked)}
-                    className="size-7 align-self-top accent-emerald-400"
-                />
-                <label
-                    htmlFor="privacy"
-                    className="font-medium text-sm text-secondary-color"
-                >
-                    Kişisel verilerimin işlenmesine yönelik{" "}
-                    <a href="#" className="text-emerald-400 underline">
-                        aydınlatma metnini
-                    </a>{" "}
-                    okudum ve kabul ediyorum.
-                </label>
-            </div>
-
-            {/* Button */}
-            <button
-                type="submit"
-                disabled={!accepted}
-                className="font-medium text-base btn-primary btn-border-effect disabled:before:hidden disabled:after:hidden transition disabled:opacity-50"
-            >
-                Kayıt Ol
-            </button>
-        </form>
-    );
+      {/* Button */}
+      <button
+        type="submit"
+        disabled={!accepted}
+        className="btn-primary btn-border-effect text-base font-medium transition disabled:opacity-50 disabled:before:hidden disabled:after:hidden"
+      >
+        Kayıt Ol
+      </button>
+    </form>
+  );
 };
 
 export default SignupForm;

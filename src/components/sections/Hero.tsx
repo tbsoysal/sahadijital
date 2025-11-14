@@ -1,45 +1,51 @@
 import Navbar from "@/components/ui/Navbar";
-import Badge from "../ui/Badge";
+import Badge from "@/components/ui/Badge";
 import Image from "next/image";
 
 export default function Hero() {
   return (
-    <header className="pt-4 px-5 bg-linear-to-b from-[#93CFEC] to-[#F6FFE8] tablet:pt-5 tablet:px-12 desktop:pt-6">
-
+    <header className="tablet:pt-5 tablet:px-12 desktop:pt-6 bg-linear-to-b from-[#93CFEC] to-[#F6FFE8] px-5 pt-4">
       {/* Navigation Bar */}
       <Navbar />
 
       {/* Hero Section Main Content */}
-      <main className="max-w-[832px] mx-auto my-10 tablet:my-12">
+      <main className="desktop:max-w-[1264px] tablet:my-12 mx-auto my-10 max-w-[928px]">
         {/* Badge */}
         <Badge />
 
         {/* Heading */}
-        <h1 className="font-bold text-5xl text-center mb-6">Halı Saha 3 Adımda Rezervasyon</h1>
+        <h1 className="tablet:text-[56px] desktop:text-6xl mb-4 text-center text-5xl leading-16 font-bold">
+          Halı Saha 3 Adımda Rezervasyon
+        </h1>
 
         {/* Paragraph */}
-        <p className="font-medium text-lg text-center mb-5">Online rezervasyonlar alın, takviminizi yönetin ve gelir istatistiklerinizi anında görün. Hepsi tek platformda, modern bir arayüzle.</p>
+        <p className="tablet:mb-6 desktop:mb-8 mb-5 text-center text-lg font-medium">
+          Online rezervasyonlar alın, takviminizi yönetin ve gelir
+          istatistiklerinizi anında görün. Hepsi tek platformda, modern bir
+          arayüzle.
+        </p>
 
         {/* CTA Button */}
-        <button className="btn-primary btn-border-effect mx-auto px-5 py-3">Hemen Demo Kullan</button>
+        <button className="btn-primary btn-border-effect mx-auto px-5 py-3">
+          Hemen Demo Kullan
+        </button>
       </main>
 
       {/* Hero Image */}
-      <div className="relative w-full rounded-2xl h-[400px] overflow-hidden drop-shadow-xl pb-4 mx-auto tablet:mb-0 tablet:rounded-b-none tablet:drop-shadow-none tablet:max-w-[928px] desktop:max-w-[1048px]">
+      <div className="tablet:mb-0 tablet:rounded-b-none tablet:drop-shadow-none tablet:max-w-[928px] desktop:max-w-[1048px] relative mx-auto h-[400px] w-full overflow-hidden rounded-2xl pb-4 drop-shadow-xl">
         <Image
           src="/images/heroimage.png"
           alt="reservation calendar screen"
           fill
-          className="absolute hidden tablet:block object-cover object-top-left"
+          className="tablet:block absolute hidden object-cover object-top-left"
         />
         <Image
           src="/images/mobileHero.png"
           alt="reservation calendar screen"
           fill
-          className="absolute block object-cover tablet:hidden object-top-left"
+          className="tablet:hidden absolute block object-cover object-top-left"
         />
       </div>
-
     </header>
-  )
+  );
 }
