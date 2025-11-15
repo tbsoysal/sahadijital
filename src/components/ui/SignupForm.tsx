@@ -6,6 +6,7 @@ import Input from "./Input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema, SignupFormData } from "@/lib/schemas/signup";
 import { useForm } from "react-hook-form";
+import Modal from "./Modal";
 
 const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,15 +14,20 @@ const SignupForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
   });
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
   const onSubmit = async (data: SignupFormData) => {
-    console.log(data);
+    setIsSuccess(true);
   };
+
+  if (isSuccess) {
+    return <Modal />;
+  }
 
   return (
     <form
