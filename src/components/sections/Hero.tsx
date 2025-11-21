@@ -1,15 +1,16 @@
 import Navbar from "@/components/ui/Navbar";
 import Badge from "@/components/ui/Badge";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero() {
   return (
-    <header className="tablet:pt-5 tablet:px-12 desktop:pt-6 bg-linear-to-b from-[#93CFEC] to-[#F6FFE8] px-5 pt-4">
+    <header className="tablet:pt-5 tablet:px-12 desktop:pt-6 h-screen overflow-hidden bg-linear-to-b from-[#93CFEC] to-[#F6FFE8] px-5 pt-4">
       {/* Navigation Bar */}
       <Navbar />
 
       {/* Hero Section Main Content */}
-      <main className="desktop:max-w-[1264px] tablet:my-12 mx-auto my-10 max-w-[928px]">
+      <main className="desktop:max-w-[1264px] tablet:my-12 mx-auto my-10 max-w-[928px] text-center">
         {/* Badge */}
         <Badge />
 
@@ -26,18 +27,21 @@ export default function Hero() {
         </p>
 
         {/* CTA Button */}
-        <button className="btn-primary btn-border-effect mx-auto px-5 py-3">
+        <Link
+          href="/signup"
+          className="btn-primary btn-border-effect mx-auto inline-block px-5 py-3"
+        >
           Hemen Demo Kullan
-        </button>
+        </Link>
       </main>
 
       {/* Hero Image */}
-      <div className="tablet:mb-0 tablet:rounded-b-none tablet:drop-shadow-none tablet:max-w-[928px] desktop:max-w-[1048px] relative mx-auto h-[400px] w-full overflow-hidden rounded-2xl pb-4 drop-shadow-xl">
+      <div className="tablet:mb-0 tablet:rounded-b-none tablet:drop-shadow-none tablet:max-w-[928px] desktop:max-w-[1048px] tablet:h-full relative mx-auto h-[400px] w-full overflow-hidden rounded-2xl pb-4 drop-shadow-xl">
         <Image
           src="/images/heroimage.png"
           alt="reservation calendar screen"
           fill
-          className="tablet:block absolute hidden object-cover object-top-left"
+          className="tablet:block absolute bottom-0 hidden object-contain object-top"
         />
         <Image
           src="/images/mobileHero.png"

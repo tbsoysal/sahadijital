@@ -41,7 +41,7 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="bg-linear-to-b from-[#F6FFE8] to-white">
+    <section id="features" className="bg-linear-to-b from-[#F6FFE8] to-white">
       <div className="tablet:px-12 tablet:py-16 desktop:px-0 mx-auto max-w-[1264px] px-5 py-12">
         {/* Badge */}
         <Badge className="tablet:mb-6 desktop:mb-8 mx-0 mb-5" />

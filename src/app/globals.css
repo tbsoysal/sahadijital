@@ -32,6 +32,10 @@ font-face {
   * {
     @apply font-satoshi text-primary-color
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer components {

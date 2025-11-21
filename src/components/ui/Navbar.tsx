@@ -29,10 +29,10 @@ export default function Navbar() {
 
       {/* Desktop Navigation Menu */}
       <ul className="hidden desktop:flex z-10">
-        <li><a href="#" className="nav-link">Özellikler</a></li>
-        <li><a href="#" className="nav-link">Faydalar</a></li>
-        <li><a href="#" className="nav-link">Nasıl Çalışır?</a></li>
-        <li><a href="#" className="nav-link">Fiyatlandırma</a></li>
+        <li><a href="#features" className="nav-link">Özellikler</a></li>
+        <li><a href="#benefits" className="nav-link">Faydalar</a></li>
+        <li><a href="#howitworks" className="nav-link">Nasıl Çalışır?</a></li>
+        <li><a href="#pricing" className="nav-link">Fiyatlandırma</a></li>
       </ul>
 
       {/* Desktop CTA Buttons */}

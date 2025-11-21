@@ -23,6 +23,7 @@ const SignupForm = () => {
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
   const onSubmit = async (data: SignupFormData) => {
     setIsSuccess(true);
+    console.log(data);
   };
 
   if (isSuccess) {

@@ -37,7 +37,7 @@ export default function Benefits() {
   const ActiveTab = benefitsData[selected]?.component;
 
   return (
-    <section className="bg-linear-to-b from-white to-[#D9FFDD]">
+    <section id="benefits" className="bg-linear-to-b from-white to-[#D9FFDD]">
       <div className="tablet:px-12 tablet:py-16 desktop:px-0 mx-auto max-w-[1264px] px-5 py-12">
         {/* Badge */}
         <Badge className="mb-5" />
