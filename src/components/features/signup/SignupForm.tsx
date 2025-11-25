@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import Input from "./Input";
+import Input from "@/components/ui/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema, SignupFormData } from "@/lib/schemas/signup";
 import { useForm } from "react-hook-form";
-import Modal from "./Modal";
+import Modal from "@/components/ui/Modal";
 
 const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);

@@ -1,4 +1,4 @@
-import Navbar from "@/components/ui/Navbar";
+import Navbar from "@/components/features/landing/Navbar";
 import Badge from "@/components/ui/Badge";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,7 +28,7 @@ export default function Hero() {
 
         {/* CTA Button */}
         <Link
-          href="/signup"
+          href="/login"
           className="btn-primary btn-border-effect mx-auto inline-block px-5 py-3"
         >
           Hemen Demo Kullan

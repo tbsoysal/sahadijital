@@ -2,11 +2,11 @@
 
 import { useState, ReactNode } from "react";
 import Badge from "@/components/ui/Badge";
-import TabButton from "@/components/ui/TabButton";
-import BenefitBox1 from "@/components/ui/BenefitBox1";
-import BenefitBox2 from "@/components/ui/BenefitBox2";
-import BenefitBox3 from "@/components/ui/BenefitBox3";
-import BenefitBox4 from "@/components/ui/BenefitBox4";
+import TabButton from "@/components/features/landing/TabButton";
+import BenefitBox1 from "@/components/features/landing/BenefitBox1";
+import BenefitBox2 from "@/components/features/landing/BenefitBox2";
+import BenefitBox3 from "@/components/features/landing/BenefitBox3";
+import BenefitBox4 from "@/components/features/landing/BenefitBox4";
 
 interface Benefit {
   label: string;

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import SignupForm from "@/components/features/signup/SignupForm";
+import LoginForm from "@/components/features/login/LoginForm";
 
-export default function Signup() {
+export default function Login() {
   return (
     <div className="min-h-screen bg-linear-to-b from-[#93CFEC] to-white">
       <div className="px-5 py-12">
@@ -20,15 +20,15 @@ export default function Signup() {
             />
             <span className="text-xl font-medium">Sahadijital</span>
           </Link>
-          <h2 className="text-[32px] font-bold">Hemen üye ol</h2>
+
+          <h2 className="text-[32px] font-bold">Hemen Giriş Yap</h2>
           <p className="text-secondary-color text-xl font-medium">
             Rezervasyonlarını yönet, bildirimleri takip et ve sahalarını kontrol
             et.
           </p>
         </div>
 
-        {/* Form */}
-        <SignupForm />
+        <LoginForm />
       </div>
     </div>
   );
