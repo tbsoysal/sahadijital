@@ -51,8 +51,12 @@ export default function Navbar() {
       <div className="flex items-center gap-3">
         {/* Desktop CTA Buttons */}
         <div className="tablet:flex z-10 hidden gap-3">
-          <Button variant="secondary">Ücretsiz Kayıt Ol</Button>
-          <Button>Giriş Yap</Button>
+          <Link href="/signup">
+            <Button variant="secondary">Ücretsiz Kayıt Ol</Button>
+          </Link>
+          <Link href="/login">
+            <Button>Giriş Yap</Button>
+          </Link>
         </div>
 
         {/* Mobile Hamburger Icon */}
@@ -102,7 +106,10 @@ export default function Navbar() {
             </button>
           </div>
 
-          <ul className="mb-6 flex flex-col gap-2 p-0">
+          <ul
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="mb-6 flex flex-col gap-2 p-0"
+          >
             <li>
               <a
                 href="#features"
@@ -137,10 +144,14 @@ export default function Navbar() {
             </li>
           </ul>
 
-          <Button className="mb-3 w-full" variant="secondary">
-            Ücretsiz Kayıt Ol
-          </Button>
-          <Button className="w-full">Giriş Yap</Button>
+          <Link href="/signup" className="w-full">
+            <Button className="mb-3 w-full" variant="secondary">
+              Ücretsiz Kayıt Ol
+            </Button>
+          </Link>
+          <Link href="/login" className="w-full">
+            <Button className="w-full">Giriş Yap</Button>
+          </Link>
         </div>
       )}
     </div>
