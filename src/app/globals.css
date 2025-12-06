@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-font-face {
+@font-face {
   font-family: "Satoshi";
   src: url("/fonts/satoshi/Satoshi-Regular.woff") format("woff");
   font-weight: 400;
@@ -16,21 +16,29 @@ font-face {
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Arial";
+  src: url("/fonts/arial/ARIALBD.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-satoshi: 'Satoshi', sans-serif;
+  --font-satoshi: "Satoshi", sans-serif;
+  --font-arial: "Arial", sans-serif;
 
   --breakpoint-tablet: 920px;
   --breakpoint-desktop: 1440px;
 
-  --color-primary: #12B76A;
-  --color-primary-color: #181D27;
+  --color-primary: #12b76a;
+  --color-primary-color: #181d27;
   --color-secondary-color: #414651;
-
 }
 
 @layer base {
   * {
-    @apply font-satoshi text-primary-color
+    @apply font-satoshi text-primary-color;
   }
 
   html {
@@ -39,36 +47,20 @@ font-face {
 }
 
 @layer components {
-  .btn-border-effect {
-    @apply relative before:absolute before:inset-0 before:border-primary-color before:border-t before:border-l before:rounded-lg after:absolute after:inset-0 after:border-primary-color after:border-b-3 after:border-r-3 after:rounded-lg before:pointer-events-none before:select-none after:pointer-events-none after:select-none;
-  }
-
-  .border-effect {
-    @apply relative before:absolute before:inset-0 before:border-primary-color before:border-t before:border-l before:rounded-full before:pointer-events-none before:select-none after:absolute after:inset-0 after:border-primary-color after:border-b-4 after:border-r-4 after:rounded-full after:pointer-events-none after:select-none;
-  }
-
   .nav-link {
-    @apply font-medium text-xl px-2 py-1 text-primary-color hover:text-secondary-color;
-  }
-
-  .btn-primary {
-    @apply block bg-primary text-white text-base rounded-lg cursor-pointer px-4 py-2.5 hover:after:border-b-1 hover:after:border-r-1 active:bg-[#027A48];
-  }
-
-  .btn-secondary {
-    @apply block bg-white text-black text-base rounded-lg cursor-pointer px-4 py-2.5 hover:after:border-b-1 hover:after:border-r-1;
+    @apply text-primary-color hover:text-secondary-color px-2 py-1 text-xl font-medium;
   }
 
   .benefitContainer {
-    @apply max-w-[1264px] mx-auto bg-white rounded-[20px] after:rounded-[20px] before:rounded-[20px] tablet:flex tablet:h-[586px];
+    @apply tablet:flex tablet:h-[586px] mx-auto max-w-[1264px] rounded-[20px] bg-white before:rounded-[20px] after:rounded-[20px];
   }
 
   .benefitTextContainer {
-    @apply flex flex-col w-full p-8 mx-auto tablet:justify-center tablet:max-w-[404px] desktop:max-w-[508px];
+    @apply tablet:justify-center tablet:max-w-[404px] desktop:max-w-[508px] mx-auto flex w-full flex-col p-8;
   }
 
   .benefitImageContainer {
-    @apply w-full flex justify-start rounded-[20px] rounded-t-none items-center overflow-hidden p-8 tablet:rounded-l-none tablet:rounded-t-[20px] tablet:border-l-1;
+    @apply tablet:rounded-l-none tablet:rounded-t-[20px] tablet:border-l-1 flex w-full items-center justify-start overflow-hidden rounded-[20px] rounded-t-none p-8;
   }
 }
 

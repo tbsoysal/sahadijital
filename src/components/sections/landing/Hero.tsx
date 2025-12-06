@@ -1,7 +1,6 @@
-import Navbar from "@/components/features/landing/Navbar";
+import Navbar from "@/components/sections/landing/Navbar";
 import Badge from "@/components/ui/Badge";
 import Image from "next/image";
-import Link from "next/link";
 import Button from "@/components/ui/Button";
 
 export default function Hero() {

@@ -1,5 +1,5 @@
 import Badge from "@/components/ui/Badge";
-import TestimonialCard from "@/components/features/landing/TestimonialCard";
+import TestimonialCard from "@/components/sections/landing/TestimonialCard";
 
 const testimonials = [
   {
@@ -55,4 +55,3 @@ export default function Testimonials() {
     </section>
   );
 }
-

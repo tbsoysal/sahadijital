@@ -9,12 +9,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const baseStyles =
-  "cursor-pointer inline-flex items-center justify-center transition-shadow duration-200 rounded-lg text-sm font-medium shadow-[2px_2px_0_#181D27] border-1 border-[#181D27] hover:shadow-none focus:outline-none px-6 py-3";
+  "cursor-pointer inline-flex items-center justify-center transition-shadow duration-200 rounded-lg text-sm tablet:text-lg desktop:text-xl font-medium shadow-[2px_2px_0_#181D27] border-1 border-[#181D27] hover:shadow-none focus:outline-none px-6 py-3";
 
 const variantStyles = {
   primary: "bg-[#12B76A] text-white active:bg-[#027A48]",
-  secondary:
-    "bg-white text-gray-800 border border-gray-300 hover:bg-gray-50 focus:ring-indigo-500",
+  secondary: "bg-white text-[#181D27]",
 };
 
 export const Button: React.FC<ButtonProps> = ({
