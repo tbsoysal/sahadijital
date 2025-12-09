@@ -9,7 +9,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="tablet:px-8 tablet:py-4 mx-auto flex w-full max-w-[1264px] items-center justify-between rounded-full border-t-1 border-r-4 border-b-4 border-l-1 bg-white px-8 py-2">
+    <div className="tablet:px-8 tablet:py-4 mx-auto flex w-full max-w-[1264px] items-center justify-between rounded-full border-t border-r-4 border-b-4 bg-white px-8 py-2">
       {/* Logo */}
       <Link href="/" className="z-10 flex items-center gap-2">
         <Image

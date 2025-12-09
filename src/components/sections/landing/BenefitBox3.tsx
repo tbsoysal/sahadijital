@@ -1,47 +1,55 @@
 export default function BenefitBox3() {
-    return (
-        <div className="benefitContainer border-effect">
-            {/* Text Content */}
-            <div className="benefitTextContainer bg-[#FEEE95] rounded-t-[20px] tablet:rounded-tr-none">
-                <h3 className="font-bold text-3xl leading-[44px] mb-8">Tesisinizi Dijitalleştirin</h3>
-                <p className="font-medium text-xl text-secondary-color leading-[28px]">Rakipleriniz hala defter kullanırken siz dijital yönetime geçin. Müşteri memnuniyetini arttırın, işletmenizi büyütün.</p>
+  return (
+    <div className="benefitContainer border-primary-color border border-r-4 border-b-4">
+      {/* Text Content */}
+      <div className="benefitTextContainer tablet:rounded-tr-none rounded-t-[20px] bg-[#FEEE95]">
+        <h3 className="leading-[44px]ont-bold mb-8 text-3xl">
+          Tesisinizi Dijitalleştirin
+        </h3>
+        <p className="text-secondary-color text-xl leading-7 font-medium">
+          Rakipleriniz hala defter kullanırken siz dijital yönetime geçin.
+          Müşteri memnuniyetini arttırın, işletmenizi büyütün.
+        </p>
+      </div>
+      {/* Image content */}
+      <div className="benefitImageContainer">
+        <div className="mx-auto">
+          <div className="grid w-[460px] grid-cols-2 gap-6">
+            {/* Card */}
+            <div className="border-effect w-[218px] rounded-2xl p-8 before:rounded-2xl after:rounded-2xl">
+              <p className="mb-4 text-xl font-medium text-[#D92D20]">Öncesi</p>
+              <ul className="mb-4 list-disc pl-5 text-base marker:text-[#F97066]">
+                <li>Kayıp defterler</li>
+                <li>Manuel takip</li>
+                <li>Zaman kaybı</li>
+              </ul>
+              <span className="mb-4 block h-px max-w-[154px] bg-[#E9EAEB]"></span>
+              <p className="mb-1 text-base font-medium">Müşteri kaybı</p>
+              <p className="text-4xl font-bold text-[#D92D20]">-%20</p>
             </div>
-            {/* Image content */}
-            <div className="benefitImageContainer">
-                <div className="mx-auto">
-                    <div className="w-[460px] grid grid-cols-2 gap-6">
-                        {/* Card */}
-                        <div className="w-[218px] border-effect rounded-[16px] before:rounded-[16px] after:rounded-[16px] p-8">
-                            <p className="text-[#D92D20] font-medium text-xl mb-4">Öncesi</p>
-                            <ul className="text-base mb-4 list-disc marker:text-[#F97066] pl-5">
-                                <li>Kayıp defterler</li>
-                                <li>Manuel takip</li>
-                                <li>Zaman kaybı</li>
-                            </ul>
-                            <span className="block max-w-[154px] h-[1px] mb-4 bg-[#E9EAEB]"></span>
-                            <p className="font-medium text-base mb-1">Müşteri kaybı</p>
-                            <p className="text-[#D92D20] font-bold text-4xl">-%20</p>
-                        </div>
 
-                        {/* Card */}
-                        <div className="w-[218px] border-effect rounded-[16px] before:rounded-[16px] after:rounded-[16px] p-8">
-                            <p className="text-[#039855] font-medium text-xl mb-4">Sonrası</p>
-                            <ul className="text-base mb-4 list-disc marker:text-[#32D583] pl-5">
-                                <li className="min-w-max">Online rezervasyon</li>
-                                <li>Mobil takip</li>
-                                <li>Gelir takibi</li>
-                            </ul>
-                            <span className="block max-w-[154px] h-[1px] mb-4 bg-[#E9EAEB]"></span>
-                            <p className="font-medium text-base mb-1">Müşteri artışı</p>
-                            <p className="text-[#039855] font-bold text-4xl">+%40</p>
-                        </div>
-
-                        <div className="col-span-2 bg-[#FEEE95] border-effect rounded-[16px] before:rounded-[16px] after:rounded-[16px] p-8">
-                            <p className="font-medium text-xl">İşletmeler ortalama 6 ay içinde daha fazla rezervasyon ve gelir artışı sağlıyor.</p>
-                        </div>
-                    </div>
-                </div>
+            {/* Card */}
+            <div className="border-effect w-[218px] rounded-2xl p-8 before:rounded-2xl after:rounded-2xl">
+              <p className="mb-4 text-xl font-medium text-[#039855]">Sonrası</p>
+              <ul className="mb-4 list-disc pl-5 text-base marker:text-[#32D583]">
+                <li className="min-w-max">Online rezervasyon</li>
+                <li>Mobil takip</li>
+                <li>Gelir takibi</li>
+              </ul>
+              <span className="mb-4 block h-px max-w-[154px] bg-[#E9EAEB]"></span>
+              <p className="mb-1 text-base font-medium">Müşteri artışı</p>
+              <p className="text-4xl font-bold text-[#039855]">+%40</p>
             </div>
+
+            <div className="border-effect col-span-2 rounded-2xl bg-[#FEEE95] p-8 before:rounded-2xl after:rounded-2xl">
+              <p className="text-xl font-medium">
+                İşletmeler ortalama 6 ay içinde daha fazla rezervasyon ve gelir
+                artışı sağlıyor.
+              </p>
+            </div>
+          </div>
         </div>
-    )
+      </div>
+    </div>
+  );
 }

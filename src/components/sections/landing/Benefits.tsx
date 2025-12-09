@@ -44,8 +44,10 @@ export default function Benefits() {
 
         {/* Title + Description */}
         <div className="mx-auto mb-10 max-w-[616px] text-center">
-          <h2 className="tablet:mb-4 mb-3 text-4xl font-medium">Faydalar</h2>
-          <p className="text-secondary-color text-2xl font-medium">
+          <h2 className="tablet:mb-4 tablet:text-[40px] desktop:text-5xl mb-3 text-[28px] font-medium">
+            Faydalar
+          </h2>
+          <p className="text-secondary-color tablet:text-2xl text-lg font-medium">
             Lorem ipsum dolor sit amet consectetur. Leo aliquam elit adipiscing
             mi massa nibh sit. Diam praesent elit a lorem.
           </p>

@@ -9,17 +9,20 @@ export default function Badge({ className }: Props) {
   return (
     <div
       className={cn(
-        "max-w-max flex items-center gap-2.5 bg-white px-4 py-2.5 rounded-full mx-auto border border-primary-color mb-5 tablet:mb-6 desktop:mb-8",
+        "border-primary-color tablet:mb-6 desktop:mb-8 mx-auto mb-5 flex max-w-max items-center gap-1.5 rounded-full border bg-white px-3 py-1",
         className,
       )}
     >
       <Image
-        src="/images/labelstar-icon.svg"
+        src="/images/starIcon.svg"
         alt="star icon"
-        width={20}
-        height={20}
+        width={16}
+        height={16}
+        className="h-4 w-4"
       />
-      <span className="font-medium text-base">Modern rezervasyon sistemi</span>
+      <span className="tablet:text-lg desktop:text-xl text-base font-medium">
+        Modern rezervasyon sistemi
+      </span>
     </div>
   );
 }
