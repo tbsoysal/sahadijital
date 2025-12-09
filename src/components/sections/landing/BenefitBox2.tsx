@@ -5,13 +5,13 @@ export default function BenefitBox2() {
     <div className="benefitContainer border-primary-color border border-r-4 border-b-4">
       {/* Text Content */}
       <div className="benefitTextContainer tablet:rounded-t-none tablet:rounded-l-[20px] rounded-t-[20px] bg-[#A6F4C5] p-10!">
-        <h3 className="mb-8 text-3xl leading-11 font-bold">
+        <h3 className="tablet:text-[34px] desktop:text-[40px] mb-8 text-2xl leading-8 font-bold">
           Gelirlerinizi takip edin
         </h3>
-        <p className="text-secondary-color mb-2.5 text-xl leading-7 font-medium">
+        <p className="text-secondary-color tablet:text-xl desktop:text-2xl mb-2.5 text-base leading-8 font-medium">
           Günlük, haftalık ve aylık kazançlarınızı tek ekranda görüntüleyin.
         </p>
-        <p className="text-secondary-color text-xl leading-7 font-medium">
+        <p className="text-secondary-color tablet:text-xl desktop:text-2xl text-base leading-8 font-medium">
           Hangi saatlerin daha yoğun olduğunu takip edin.
         </p>
       </div>
@@ -20,15 +20,19 @@ export default function BenefitBox2() {
       <div className="benefitImageContainer">
         <div className="mx-auto">
           {/* Card */}
-          <div className="border-effect mb-10 flex w-[460px] items-start justify-between rounded-2xl bg-[#D1FADF] p-8 before:rounded-2xl after:rounded-2xl">
+          <div className="border-primary-color mb-10 flex w-full items-start justify-between rounded-2xl border border-r-4 border-b-4 bg-[#D1FADF] px-5 py-8">
             <div className="flex flex-col">
-              <span className="mb-5 text-xl font-medium">Bu ay</span>
-              <span className="mb-1 text-4xl font-bold">84,250₺</span>
-              <span className="text-secondary-color text-base font-medium">
+              <span className="tablet:text-xl desktop:2xl mb-5 text-base font-medium">
+                Bu ay
+              </span>
+              <span className="tablet:text-[32px] desktop:text-[40px] mb-1 text-xl font-bold">
+                84,250₺
+              </span>
+              <span className="text-secondary-color tablet:text-lg desktop:text-xl text-sm font-medium">
                 280 rezervasyon tamamlandı
               </span>
             </div>
-            <span className="flex items-center rounded-full border border-[#32D583] bg-[#A6F4C5] px-5 py-2">
+            <span className="flex items-center rounded-full border border-[#32D583] bg-[#A6F4C5] px-3 py-1">
               <Image
                 src="/images/arrow.svg"
                 alt="arrow icon"
@@ -36,7 +40,7 @@ export default function BenefitBox2() {
                 height={14}
                 className="mr-2.5"
               />
-              <span className="block text-xl font-medium text-[#039855]">
+              <span className="tablet:text-lg desktop:text-2xl block text-[12px] font-medium text-[#039855]">
                 %18
               </span>
             </span>
@@ -44,7 +48,7 @@ export default function BenefitBox2() {
 
           {/* Info */}
           <div>
-            <span className="mb-6 block text-3xl font-bold">
+            <span className="tablet:text-[28px] desktop:text-[32px] mb-6 block text-xl font-bold">
               En popüler saatler
             </span>
 
@@ -56,11 +60,15 @@ export default function BenefitBox2() {
                 height={24}
                 className="mr-2"
               />
-              <span className="mr-3 text-xl font-medium">21:00-22:00</span>
-              <div className="border-secondary-color mr-3 h-6 w-60 rounded-full border bg-[#F5F5F5]">
-                <div className="bg-primary border-secondary-color h-6 w-60 rounded-full"></div>
-                <span className="text-xl font-medium">%90</span>
+              <span className="tablet:text-xl desktop:text-2xl mr-3 text-sm font-medium">
+                21:00-22:00
+              </span>
+              <div className="border-secondary-color tablet:w-[200px] mr-3 h-5 w-[120px] rounded-full border bg-[#F5F5F5]">
+                <div className="bg-primary border-secondary-color tablet:w-40 h-5 w-[105px] rounded-full"></div>
               </div>
+              <span className="tablet:text-xl desktop:text-2xl text-sm font-medium">
+                %90
+              </span>
             </div>
 
             <div className="flex items-center">
@@ -71,11 +79,15 @@ export default function BenefitBox2() {
                 height={24}
                 className="mr-2"
               />
-              <span className="mr-3 text-xl font-medium">18:00-19:00</span>
-              <div className="border-secondary-color mr-3 h-6 w-60 rounded-full border bg-[#F5F5F5]">
-                <div className="bg-primary border-secondary-color h-6 w-[167px] rounded-full"></div>
+              <span className="tablet:text-xl desktop:text-2xl mr-3 text-sm font-medium">
+                18:00-19:00
+              </span>
+              <div className="border-secondary-color tablet:w-[200px] mr-3 h-5 w-[120px] rounded-full border bg-[#F5F5F5]">
+                <div className="bg-primary border-secondary-color tablet:w-30 h-5 w-20 rounded-full"></div>
               </div>
-              <span className="text-xl font-medium">%70</span>
+              <span className="tablet:text-xl desktop:text-2xl text-sm font-medium">
+                %70
+              </span>
             </div>
           </div>
         </div>

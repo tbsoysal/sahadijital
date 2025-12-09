@@ -60,7 +60,7 @@
   }
 
   .benefitImageContainer {
-    @apply tablet:rounded-l-none tablet:rounded-t-[20px] tablet:border-l-1 flex w-full items-center justify-start overflow-hidden rounded-[20px] rounded-t-none p-8;
+    @apply tablet:rounded-l-none tablet:rounded-t-[20px] flex w-full items-center justify-start overflow-hidden rounded-[20px] rounded-t-none p-8;
   }
 }
 
