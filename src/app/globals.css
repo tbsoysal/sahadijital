@@ -52,11 +52,11 @@
   }
 
   .benefitContainer {
-    @apply tablet:flex tablet:h-[586px] mx-auto max-w-[1264px] rounded-[20px] bg-white before:rounded-[20px] after:rounded-[20px];
+    @apply tablet:flex tablet:h-[586px] mx-auto max-w-[1264px] rounded-[20px] bg-white;
   }
 
   .benefitTextContainer {
-    @apply tablet:justify-center tablet:max-w-[404px] desktop:max-w-[508px] mx-auto flex w-full flex-col p-8;
+    @apply tablet:justify-center tablet:max-w-[404px] desktop:max-w-[508px] mx-auto flex w-full flex-col px-8 py-10;
   }
 
   .benefitImageContainer {

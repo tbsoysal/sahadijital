@@ -8,11 +8,11 @@ export default function BenefitBox1() {
         <h3 className="tablet:text-[32px] tablet:leading-12 desktop:text-[40px] mb-8 text-2xl leading-8 font-bold">
           Online rezervasyon takibi
         </h3>
-        <p className="text-secondary-color tablet:text-xl mb-2.5 text-base leading-6 font-medium">
+        <p className="text-secondary-color tablet:text-xl tablet:leading-7 desktop:leading-8 mb-2.5 text-base leading-6 font-medium">
           Oyuncular istediği saatte rezervasyon yapabilsin, siz sadece
           onaylayın.
         </p>
-        <p className="text-secondary-color tablet:text-xl text-base leading-6 font-medium">
+        <p className="text-secondary-color tablet:text-xl tablet:leading-7 desktop:leading-8 text-base leading-6 font-medium">
           7/24 açık sanal saha defteriniz olsun.
         </p>
       </div>
@@ -29,7 +29,7 @@ export default function BenefitBox1() {
                 return (
                   <div
                     key={index}
-                    className="tablet:gap-[108px] desktop:gap-[83px] border-primary-color flex items-center gap-[19px] rounded-2xl border border-r-4 border-b-4 bg-white px-6 py-4"
+                    className="tablet:gap-[108px] desktop:gap-[83px] border-primary-color flex items-center gap-10 rounded-2xl border border-r-4 border-b-4 bg-white px-6 py-4"
                   >
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-3">
@@ -39,15 +39,15 @@ export default function BenefitBox1() {
                           width={20}
                           height={20}
                         />
-                        <span className="tablet:text-[28px] desktop:text-[32px] min-w-max text-base font-bold">
+                        <span className="tablet:text-[28px] desktop:text-[32px] min-w-max text-sm font-bold">
                           {time}
                         </span>
                       </div>
-                      <span className="tablet:text-xl desktop:text-2xl block text-base font-medium text-[#717680]">
+                      <span className="tablet:text-xl desktop:text-2xl block text-sm font-medium text-[#717680]">
                         Bugün
                       </span>
                     </div>
-                    <span className="tablet:text-xl desktop:text-[24px] block rounded-full bg-[#FEEE95] px-4 py-1 text-base font-medium text-[#85490E]">
+                    <span className="tablet:text-xl desktop:text-[24px] block rounded-full bg-[#FEEE95] px-4 py-1 text-[12px] font-medium text-[#85490E]">
                       Bekliyor
                     </span>
                   </div>

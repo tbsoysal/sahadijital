@@ -4,14 +4,14 @@ export default function BenefitBox2() {
   return (
     <div className="benefitContainer border-primary-color border border-r-4 border-b-4">
       {/* Text Content */}
-      <div className="benefitTextContainer tablet:rounded-t-none tablet:rounded-l-[20px] rounded-t-[20px] bg-[#A6F4C5] p-10!">
+      <div className="benefitTextContainer tablet:rounded-t-none tablet:rounded-l-[20px] rounded-t-[20px] bg-[#A6F4C5] px-8 py-10">
         <h3 className="tablet:text-[34px] desktop:text-[40px] mb-8 text-2xl leading-8 font-bold">
           Gelirlerinizi takip edin
         </h3>
-        <p className="text-secondary-color tablet:text-xl desktop:text-2xl mb-2.5 text-base leading-8 font-medium">
+        <p className="text-secondary-color tablet:text-xl desktop:text-2xl tablet:leading-7 desktop:leading-8 mb-2.5 text-base leading-6 font-medium">
           Günlük, haftalık ve aylık kazançlarınızı tek ekranda görüntüleyin.
         </p>
-        <p className="text-secondary-color tablet:text-xl desktop:text-2xl text-base leading-8 font-medium">
+        <p className="text-secondary-color tablet:text-xl desktop:text-2xl tablet:leading-7 desktop:leading-8 text-base leading-6 font-medium">
           Hangi saatlerin daha yoğun olduğunu takip edin.
         </p>
       </div>
@@ -60,7 +60,7 @@ export default function BenefitBox2() {
                 height={24}
                 className="mr-2"
               />
-              <span className="tablet:text-xl desktop:text-2xl mr-3 text-sm font-medium">
+              <span className="tablet:text-xl desktop:text-2xl tablet:w-max mr-3 w-min text-sm font-medium">
                 21:00-22:00
               </span>
               <div className="border-secondary-color tablet:w-[200px] mr-3 h-5 w-[120px] rounded-full border bg-[#F5F5F5]">
@@ -79,7 +79,7 @@ export default function BenefitBox2() {
                 height={24}
                 className="mr-2"
               />
-              <span className="tablet:text-xl desktop:text-2xl mr-3 text-sm font-medium">
+              <span className="tablet:text-xl desktop:text-2xl tablet:w-max mr-3 w-min text-sm font-medium">
                 18:00-19:00
               </span>
               <div className="border-secondary-color tablet:w-[200px] mr-3 h-5 w-[120px] rounded-full border bg-[#F5F5F5]">
