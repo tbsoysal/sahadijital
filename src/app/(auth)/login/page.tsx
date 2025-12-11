@@ -6,29 +6,35 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-linear-to-b from-[#93CFEC] to-white">
       <div className="px-5 py-12">
-        <div className="mx-auto mb-10 box-content max-w-[400px] gap-4 text-center">
+        <div className="tablet:max-w-[400px] mx-auto mb-10 box-content max-w-[350px] text-center">
           {/* Logo */}
           <Link
             href="/"
-            className="z-10 flex items-center justify-center gap-1"
+            className="mb-10 flex items-center justify-center gap-2"
           >
             <Image
-              src="/images/sahadijital-icon.svg"
+              src="/images/sahadijital-logo.svg"
               alt="saha dijital logo"
-              width={32}
-              height={30}
+              width={36}
+              height={36}
+              className="h-9 w-9"
             />
-            <span className="text-xl font-medium">Sahadijital</span>
+            <span className="text-xl font-bold text-[#039855]">
+              Saha Dijital
+            </span>
           </Link>
 
-          <h2 className="text-[32px] font-bold">Hemen Giriş Yap</h2>
-          <p className="text-secondary-color text-xl font-medium">
+          <h2 className="tablet:text-[40px] tablet:leading-14 desktop:text-5xl desktop:leading-[68px] mb-4 text-[28px] leading-10 font-medium">
+            Hemen Giriş Yap
+          </h2>
+          <p className="text-secondary-color tablet:text-xl tablet:leading-7 desktop:text-2xl desktop:leading-[34px] text-base leading-6 font-medium">
             Rezervasyonlarını yönet, bildirimleri takip et ve sahalarını kontrol
             et.
           </p>
         </div>
 
         <LoginForm />
+        <span className="mx-auto mt-6 block w-full max-w-[350px] border border-dashed border-[#A4A7AE]"></span>
       </div>
     </div>
   );

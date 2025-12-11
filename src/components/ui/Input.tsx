@@ -18,21 +18,23 @@ export default function Input({
 }: InputProps) {
   return (
     <div className={className}>
-      <label className="text-secondary-color mb-1.5 block text-base font-medium">
+      <label className="text-secondary-color tablet:text-base tablet:leading-6 desktop:text-lg desktop:leading-[26px] mb-1.5 block text-[12px] leading-[18px] font-medium">
         {label}
       </label>
       <div
-        className={`border-effect w-full rounded-lg before:rounded-lg after:rounded-lg after:border-r-2 after:border-b-2 ${errors ? "before:border-red-600 after:border-red-600" : ""}`}
+        className={`w-full rounded-lg border border-r-2 border-b-2 border-[#A4A7AE] ${errors ? "border-[#F97066]" : ""}`}
       >
         <input
           {...props}
           type={type}
           placeholder={placeholder}
-          className="w-full rounded-lg bg-white px-3 py-2 focus:outline-none"
+          className="tablet:text-lg tablet:leading-[26px] desktop:text-xl desktop:leading-7 w-full rounded-lg bg-white px-3 py-2.5 text-sm leading-5 font-medium focus:outline-none"
         />
       </div>
       {errors && (
-        <span className="mt-1.5 text-sm text-red-500">{errors.message}</span>
+        <span className="tablet:text-sm desktop:text-base mt-1.5 text-[12px] font-medium text-[#D92D20]">
+          {errors.message}
+        </span>
       )}
     </div>
   );
