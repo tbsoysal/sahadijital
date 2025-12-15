@@ -28,7 +28,7 @@ export default function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mx-auto flex max-w-[350px] flex-col gap-3 text-white"
+      className="mx-auto flex max-w-[350px] flex-col gap-3 text-start text-white"
     >
       {/* Mail */}
       <Input
@@ -90,12 +90,12 @@ export default function LoginForm() {
         Giriş Yap
       </Button>
 
-      <div className="flex gap-1.5">
-        <input type="checkbox" className="cursor-pointer" />
+      <label className="flex cursor-pointer gap-1.5">
+        <input type="checkbox" />
         <p className="tablet:text-lg desktop:text-base text-sm">
           Giriş bilgilerimi hatırla
         </p>
-      </div>
+      </label>
     </form>
   );
 }
