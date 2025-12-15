@@ -44,7 +44,7 @@ export default function Login() {
             />
             Google ile giriş yap
           </Button>
-          <p>
+          <p className="font-medium">
             Hesabın yok mu?{" "}
             <Link href="/signup" className="text-primary">
               Kayıt Ol

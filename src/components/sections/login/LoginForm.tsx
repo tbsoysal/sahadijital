@@ -92,7 +92,7 @@ export default function LoginForm() {
 
       <label className="flex cursor-pointer gap-1.5">
         <input type="checkbox" />
-        <p className="tablet:text-lg desktop:text-base text-sm">
+        <p className="tablet:text-lg desktop:text-base text-sm font-medium">
           Giriş bilgilerimi hatırla
         </p>
       </label>
