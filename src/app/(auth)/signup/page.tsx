@@ -10,18 +10,23 @@ export default function Signup() {
           {/* Logo */}
           <Link
             href="/"
-            className="z-10 flex items-center justify-center gap-1"
+            className="mb-10 flex items-center justify-center gap-2"
           >
             <Image
-              src="/images/sahadijital-icon.svg"
+              src="/images/sahadijital-logo.svg"
               alt="saha dijital logo"
-              width={32}
-              height={30}
+              width={36}
+              height={36}
+              className="h-9 w-9"
             />
-            <span className="text-xl font-medium">Sahadijital</span>
+            <span className="text-xl font-bold text-[#039855]">
+              Saha Dijital
+            </span>
           </Link>
-          <h2 className="text-[32px] font-bold">Hemen üye ol</h2>
-          <p className="text-secondary-color text-xl font-medium">
+          <h2 className="tablet:text-[40px] tablet:leading-14 desktop:text-5xl desktop:leading-[68px] mb-4 text-[28px] leading-10 font-medium">
+            Hemen Üye Ol
+          </h2>
+          <p className="text-secondary-color tablet:text-xl tablet:leading-7 desktop:text-2xl desktop:leading-[34px] tablet:mb-12 desktop:mb-16 mb-10 text-base leading-6 font-medium">
             Rezervasyonlarını yönet, bildirimleri takip et ve sahalarını kontrol
             et.
           </p>

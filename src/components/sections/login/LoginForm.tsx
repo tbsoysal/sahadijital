@@ -12,6 +12,7 @@ import Button from "@/components/ui/Button";
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+  const [accepted, setAccepted] = useState(false);
 
   const {
     register,
@@ -90,8 +91,14 @@ export default function LoginForm() {
         Giriş Yap
       </Button>
 
-      <label className="flex cursor-pointer gap-1.5">
-        <input type="checkbox" />
+      <label className="flex cursor-pointer items-center gap-1.5">
+        <input
+          id="privacy"
+          type="checkbox"
+          checked={accepted}
+          onChange={(e) => setAccepted(e.target.checked)}
+          className="size-4 accent-emerald-400"
+        />
         <p className="tablet:text-lg desktop:text-base text-sm font-medium">
           Giriş bilgilerimi hatırla
         </p>

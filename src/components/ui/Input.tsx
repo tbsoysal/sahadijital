@@ -28,7 +28,7 @@ export default function Input({
           {...props}
           type={type}
           placeholder={placeholder}
-          className="tablet:text-lg tablet:leading-[26px] desktop:text-xl desktop:leading-7 w-full rounded-lg bg-white px-3 py-2.5 text-sm leading-5 font-medium focus:outline-none"
+          className="tablet:text-lg tablet:leading-[26px] desktop:text-xl desktop:leading-7 w-full rounded-lg bg-white px-3 py-2.5 text-sm leading-5 font-medium focus:ring-2 focus:ring-emerald-400 focus:outline-none"
         />
       </div>
       {errors && (

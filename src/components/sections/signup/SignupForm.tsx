@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema, SignupFormData } from "@/lib/schemas/signup";
 import { useForm } from "react-hook-form";
 import Modal from "@/components/ui/Modal";
+import Button from "@/components/ui/Button";
 
 const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -78,7 +79,7 @@ const SignupForm = () => {
         <label className="text-secondary-color mb-1.5 block text-base font-medium">
           Telefon Numarası
         </label>
-        <div className="border-effect flex w-full rounded-lg before:rounded-lg after:rounded-lg after:border-r-2 after:border-b-2">
+        <div className="flex w-full rounded-lg border border-r-2 border-b-2 border-[#A4A7AE]">
           <span className="text-secondary-color block rounded-l-lg bg-white px-2 py-2 focus:outline-none">
             +90
           </span>
@@ -87,7 +88,7 @@ const SignupForm = () => {
             name="phone"
             type="tel"
             placeholder="5*********"
-            className="flex-1 rounded-r-lg border-l bg-white px-3 py-2 focus:outline-none"
+            className="flex-1 rounded-r-lg border-l border-[#A4A7AE] bg-white px-3 py-2 focus:outline-none"
           />
         </div>
         {errors.phone && (
@@ -105,7 +106,7 @@ const SignupForm = () => {
         >
           Şifre
         </label>
-        <div className="border-effect relative w-full rounded-lg bg-white before:rounded-lg after:rounded-lg after:border-r-2 after:border-b-2">
+        <div className="relative w-full rounded-lg border border-r-2 border-b-2 border-[#A4A7AE] bg-white">
           <input
             {...register("password")}
             id="password"
@@ -130,17 +131,17 @@ const SignupForm = () => {
       </div>
 
       {/* Checkbox */}
-      <div className="mb-3 flex items-start space-x-2 text-sm">
+      <div className="mb-6 flex items-start space-x-2 text-sm">
         <input
           id="privacy"
           type="checkbox"
           checked={accepted}
           onChange={(e) => setAccepted(e.target.checked)}
-          className="align-self-top size-7 accent-emerald-400"
+          className="mt-[3px] size-4 accent-emerald-400"
         />
         <label
           htmlFor="privacy"
-          className="text-secondary-color text-sm font-medium"
+          className="text-secondary-color text-base leading-6 font-medium"
         >
           Kişisel verilerimin işlenmesine yönelik{" "}
           <a href="#" className="text-emerald-400 underline">
@@ -151,13 +152,9 @@ const SignupForm = () => {
       </div>
 
       {/* Button */}
-      <button
-        type="submit"
-        disabled={!accepted}
-        className="btn-primary btn-border-effect text-base font-medium transition disabled:opacity-50 disabled:before:hidden disabled:after:hidden"
-      >
+      <Button type="submit" className="text-xl">
         Kayıt Ol
-      </button>
+      </Button>
     </form>
   );
 };
