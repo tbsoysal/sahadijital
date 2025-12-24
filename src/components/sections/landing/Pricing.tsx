@@ -43,7 +43,7 @@ export default function Pricing() {
             <span className="text-secondary-color mb-6 block text-base font-medium">
               12 ay boyunca sabit fiyat
             </span>
-            <Link href="/login">
+            <Link href="/signup">
               <Button className="tablet:w-auto mb-10 w-[284px] py-3">
                 14 Gün Ücretsiz Deneyin
                 <Image
