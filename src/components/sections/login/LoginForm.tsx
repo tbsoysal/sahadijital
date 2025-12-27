@@ -8,11 +8,15 @@ import { Eye, EyeOff } from "lucide-react";
 import Input from "@/components/ui/Input";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
   const [accepted, setAccepted] = useState(false);
+  const supabase = createClient();
+  const router = useRouter();
 
   const {
     register,
@@ -22,8 +26,18 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginFormData) => {
-    console.log(data);
+  const onSubmit = async (formdata: LoginFormData) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: formdata.email,
+      password: formdata.password,
+    });
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    router.push("/");
   };
 
   return (

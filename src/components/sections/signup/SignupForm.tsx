@@ -8,8 +8,11 @@ import { signupSchema, SignupFormData } from "@/lib/schemas/signup";
 import { useForm } from "react-hook-form";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
+import { createClient } from "@/lib/supabase/client";
 
 const SignupForm = () => {
+  const supabase = createClient();
+
   const [showPassword, setShowPassword] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const {
@@ -22,9 +25,21 @@ const SignupForm = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
-  const onSubmit = async (data: SignupFormData) => {
-    setIsSuccess(true);
+
+  const onSubmit = async (userdata: SignupFormData) => {
+    const { data, error } = await supabase.auth.signUp({
+      email: userdata.email,
+      password: userdata.password,
+    });
+
+    if (error) {
+      setIsSuccess(false);
+      console.log(error);
+      return;
+    }
+
     console.log(data);
+    setIsSuccess(true);
   };
 
   if (isSuccess) {
@@ -92,7 +107,7 @@ const SignupForm = () => {
           />
         </div>
         {errors.phone && (
-          <span className="mt-1.5 text-sm text-red-500">
+          <span className="tablet:text-sm desktop:text-base mt-1.5 text-[12px] text-red-500">
             {errors.phone.message}
           </span>
         )}
@@ -124,7 +139,7 @@ const SignupForm = () => {
           </button>
         </div>
         {errors.password && (
-          <span className="mt-1.5 text-sm text-red-500">
+          <span className="tablet:text-sm desktop:text-base mt-1.5 text-[12px] text-red-500">
             {errors.password.message}
           </span>
         )}
@@ -152,7 +167,7 @@ const SignupForm = () => {
       </div>
 
       {/* Button */}
-      <Button type="submit" className="text-xl">
+      <Button type="submit" disabled={!accepted} className="text-xl">
         Kayıt Ol
       </Button>
     </form>

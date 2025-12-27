@@ -50,13 +50,16 @@ export default function ResetPassword() {
             label="Mail Adresi"
             type="email"
             placeholder="sahadijital@gmail.com"
+            required
           />
 
-          <Button>Gönder</Button>
-          <Button variant="secondary">
-            <ArrowLeft className="mr-1" />
-            Geri Dön
-          </Button>
+          <Button>Sıfırlama Bağlantısı Gönder</Button>
+          <Link href="/login">
+            <Button variant="secondary" className="w-full">
+              <ArrowLeft className="mr-1" />
+              Geri dön
+            </Button>
+          </Link>
         </form>
       </div>
     </div>

@@ -32,7 +32,7 @@ export default function Input({
         />
       </div>
       {errors && (
-        <span className="tablet:text-sm desktop:text-base mt-1.5 text-[12px] font-medium text-[#D92D20]">
+        <span className="tablet:text-sm desktop:text-base mt-1.5 text-[12px] text-red-500">
           {errors.message}
         </span>
       )}
