@@ -30,6 +30,9 @@ const SignupForm = () => {
     const { data, error } = await supabase.auth.signUp({
       email: userdata.email,
       password: userdata.password,
+      options: {
+        emailRedirectTo: "https://sahadijital.com/login",
+      },
     });
 
     if (error) {
