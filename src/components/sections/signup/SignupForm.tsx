@@ -25,6 +25,7 @@ const SignupForm = () => {
   });
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
@@ -60,7 +61,6 @@ const SignupForm = () => {
       return;
     }
 
-    console.log("error yok valla");
     setIsSuccess(true);
   };
 
@@ -125,7 +125,7 @@ const SignupForm = () => {
           Telefon Numarası
         </label>
         <div className="flex w-full rounded-lg border border-r-2 border-b-2 border-[#A4A7AE]">
-          <span className="text-secondary-color block rounded-l-lg bg-white px-2 py-2 focus:outline-none">
+          <span className="text-secondary-color block rounded-l-lg bg-white px-2 py-2 font-medium focus:outline-none">
             +90
           </span>
           <input
@@ -133,7 +133,7 @@ const SignupForm = () => {
             name="phone"
             type="tel"
             placeholder="5*********"
-            className="flex-1 rounded-r-lg border-l border-[#A4A7AE] bg-white px-3 py-2 focus:outline-none"
+            className="flex-1 rounded-r-lg border-l border-[#A4A7AE] bg-white px-3 py-2 font-medium focus:outline-none"
           />
         </div>
         {errors.phone && (
@@ -158,7 +158,7 @@ const SignupForm = () => {
             name="password"
             type={showPassword ? "text" : "password"}
             placeholder="********"
-            className="w-full rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+            className="w-full rounded-lg px-3 py-2 pr-10 font-medium focus:ring-2 focus:ring-emerald-400 focus:outline-none"
           />
           <button
             type="button"
@@ -189,12 +189,68 @@ const SignupForm = () => {
           className="text-secondary-color cursor-pointer text-base leading-6 font-medium"
         >
           Kişisel verilerimin işlenmesine yönelik{" "}
-          <a href="#" className="text-emerald-400 underline">
+          <span
+            onClick={() => setIsModalOpen((prev) => !prev)}
+            className="text-emerald-400 underline"
+          >
             aydınlatma metnini
-          </a>{" "}
+          </span>{" "}
           okudum ve kabul ediyorum.
         </label>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="relative w-full max-w-lg rounded-xl bg-white p-6">
+            <span
+              onClick={() => setIsModalOpen((prev) => !prev)}
+              className="absolute top-3 right-3 cursor-pointer text-2xl text-gray-500 hover:text-black"
+            >
+              ✕
+            </span>
+            <div className="space-y-3">
+              <h3 className="font-bold">
+                Kişisel Verilerin İşlenmesine İlişkin Aydınlatma Metni
+              </h3>
+              <p>
+                Bu aydınlatma metni, sahadijital.com tarafından, 6698 sayılı
+                Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca
+                hazırlanmıştır.
+              </p>
+
+              <p>
+                Uygulama kapsamında ad, soyad, e-posta adresi gibi kişisel
+                verileriniz; üyelik işlemlerinin gerçekleştirilmesi, hizmetlerin
+                sunulması ve kullanıcı deneyiminin iyileştirilmesi amaçlarıyla
+                işlenmektedir.
+              </p>
+
+              <p>
+                Kişisel verileriniz, KVKK’nın 5. maddesinde belirtilen
+                sözleşmenin kurulması ve ifası hukuki sebebine dayanarak
+                işlenmektedir.
+              </p>
+
+              <p>
+                KVKK’nın 11. maddesi kapsamında kişisel verilerinize ilişkin
+                olarak; bilgi talep etme, düzeltme, silme ve itiraz etme
+                haklarına sahipsiniz.
+              </p>
+
+              <p>
+                Taleplerinizi{" "}
+                <a
+                  href="mailto:info@sahadijital.com"
+                  className="text-blue-700 hover:text-blue-500"
+                >
+                  info@sahadijital.com
+                </a>{" "}
+                üzerinden iletebilirsiniz.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Button */}
       <Button type="submit" disabled={!accepted} className="text-xl">
