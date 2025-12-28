@@ -33,6 +33,12 @@ const SignupForm = () => {
       email: userdata.email,
       password: userdata.password,
       options: {
+        data: {
+          first_name: userdata.name,
+          last_name: userdata.surname,
+          phone: userdata.phone,
+          field_name: userdata.fieldName,
+        },
         emailRedirectTo: "https://sahadijital.com/login",
       },
     });
