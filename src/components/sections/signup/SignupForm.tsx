@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/client";
+import ErrorPopup from "@/components/ui/ErrorPopup";
 
 const SignupForm = () => {
   const supabase = createClient();
@@ -23,6 +24,7 @@ const SignupForm = () => {
     resolver: zodResolver(signupSchema),
   });
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
@@ -35,18 +37,37 @@ const SignupForm = () => {
       },
     });
 
-    if (error) {
+    console.log(error);
+
+    if (error?.message) {
       setIsSuccess(false);
-      console.log(error);
+      setErrorMessage(error.message);
+      return;
+    } else if (
+      data.user &&
+      data.user.identities &&
+      data.user.identities.length === 0
+    ) {
+      setErrorMessage(
+        "Bu e-posta adresi zaten kullanımda. Giriş yapmayı deneyin.",
+      );
       return;
     }
 
-    console.log(data);
+    console.log("error yok valla");
     setIsSuccess(true);
   };
 
   if (isSuccess) {
     return <Modal />;
+  } else if (errorMessage) {
+    return (
+      <ErrorPopup
+        message={errorMessage}
+        onClose={() => setErrorMessage("")}
+        redirectPath="/login"
+      />
+    );
   }
 
   return (
@@ -149,17 +170,17 @@ const SignupForm = () => {
       </div>
 
       {/* Checkbox */}
-      <div className="mb-6 flex items-start space-x-2 text-sm">
+      <div className="mb-6 items-start space-x-2 text-sm">
         <input
           id="privacy"
           type="checkbox"
           checked={accepted}
           onChange={(e) => setAccepted(e.target.checked)}
-          className="mt-[3px] size-4 accent-emerald-400"
+          className="relative top-0.5 size-4 cursor-pointer accent-emerald-400"
         />
         <label
           htmlFor="privacy"
-          className="text-secondary-color text-base leading-6 font-medium"
+          className="text-secondary-color cursor-pointer text-base leading-6 font-medium"
         >
           Kişisel verilerimin işlenmesine yönelik{" "}
           <a href="#" className="text-emerald-400 underline">
