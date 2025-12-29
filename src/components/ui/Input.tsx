@@ -3,7 +3,7 @@ import { FieldError } from "react-hook-form";
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   type: React.InputHTMLAttributes<HTMLInputElement>["type"];
-  placeholder: string;
+  placeholder?: string;
   className?: React.HTMLAttributes<HTMLElement>["className"];
   errors: FieldError | undefined;
 }
@@ -28,7 +28,7 @@ export default function Input({
           {...props}
           type={type}
           placeholder={placeholder}
-          className="tablet:text-lg tablet:leading-[26px] desktop:text-xl desktop:leading-7 w-full rounded-lg bg-white px-3 py-2.5 text-sm leading-5 font-medium focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+          className="tablet:text-lg tablet:leading-[26px] desktop:text-xl desktop:leading-7 w-full rounded-lg bg-white px-3 py-2 text-sm leading-5 font-medium focus:ring-2 focus:ring-emerald-400 focus:outline-none"
         />
       </div>
       {errors && (
