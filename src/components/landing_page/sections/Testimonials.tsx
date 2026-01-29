@@ -1,5 +1,5 @@
-import Badge from "@/components/ui/Badge";
-import TestimonialCard from "@/components/sections/landing/TestimonialCard";
+import Badge from "@/components/landing_page/Badge";
+import TestimonialCard from "@/components/landing_page/TestimonialCard";
 
 const testimonials = [
   {

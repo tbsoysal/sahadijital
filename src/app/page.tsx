@@ -1,9 +1,9 @@
-import Features from "@/components/sections/landing/Features";
-import Hero from "@/components/sections/landing/Hero";
-import Benefits from "@/components/sections/landing/Benefits";
-import Pricing from "@/components/sections/landing/Pricing";
-import Testimonials from "@/components/sections/landing/Testimonials";
-import Footer from "@/components/sections/landing/Footer";
+import Features from "@/components/landing_page/sections/Features";
+import Hero from "@/components/landing_page/sections/Hero";
+import Benefits from "@/components/landing_page/sections/Benefits";
+import Pricing from "@/components/landing_page/sections/Pricing";
+import Testimonials from "@/components/landing_page/sections/Testimonials";
+import Footer from "@/components/landing_page/sections/Footer";
 
 const LandingPage = () => {
   return (

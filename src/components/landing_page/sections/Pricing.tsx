@@ -1,7 +1,7 @@
-import Badge from "@/components/ui/Badge";
+import Badge from "@/components/landing_page/Badge";
 import Image from "next/image";
 import Link from "next/link";
-import Button from "@/components/ui/Button";
+import Button from "@/components/Button";
 
 export default function Pricing() {
   return (

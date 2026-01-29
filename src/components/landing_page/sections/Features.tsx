@@ -1,5 +1,5 @@
-import Badge from "@/components/ui/Badge";
-import FeatureCard from "@/components/sections/landing/FeatureCard";
+import Badge from "@/components/landing_page/Badge";
+import FeatureCard from "@/components/landing_page/FeatureCard";
 
 const features = [
   {

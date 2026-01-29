@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, ReactNode } from "react";
-import Badge from "@/components/ui/Badge";
-import TabButton from "@/components/sections/landing/TabButton";
-import BenefitBox1 from "@/components/sections/landing/BenefitBox1";
-import BenefitBox2 from "@/components/sections/landing/BenefitBox2";
-import BenefitBox3 from "@/components/sections/landing/BenefitBox3";
-import BenefitBox4 from "@/components/sections/landing/BenefitBox4";
+import Badge from "@/components/landing_page/Badge";
+import TabButton from "@/components/landing_page/TabButton";
+import BenefitBox1 from "@/components/landing_page/BenefitBox1";
+import BenefitBox2 from "@/components/landing_page/BenefitBox2";
+import BenefitBox3 from "@/components/landing_page/BenefitBox3";
+import BenefitBox4 from "@/components/landing_page/BenefitBox4";
 
 interface Benefit {
   label: string;
