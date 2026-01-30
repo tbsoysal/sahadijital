@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 export function useSignup() {
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const router = useRouter();
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -34,7 +35,7 @@ export function useSignup() {
     if (!error) {
       router.push("/dashboard");
     } else {
-      alert(error.message);
+      setServerError(error.message);
     }
   };
 
@@ -46,5 +47,8 @@ export function useSignup() {
     errors,
     handleSubmit,
     isSubmitting,
+    serverError,
+    setServerError,
+    router,
   };
 }

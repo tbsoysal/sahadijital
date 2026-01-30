@@ -11,7 +11,9 @@ export default function AuthLayot({ children }: { children: React.ReactNode }) {
           width={32}
           height={30}
         ></Image>
-        <span className="text-xl font-medium">Saha Dijital</span>
+        <span className="text-xl font-bold">
+          Saha <span className="text-primary">Dijital</span>
+        </span>
       </Link>
       {children}
     </div>

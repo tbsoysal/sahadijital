@@ -3,9 +3,11 @@ import { supabase } from "@/lib/supabase/client";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { loginSchema, LoginFormData } from "@/lib/schemas/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 
 export function useLogin() {
   const router = useRouter();
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -24,7 +26,7 @@ export function useLogin() {
     if (!error) {
       router.push("/dashboard");
     } else {
-      alert(error.message);
+      setServerError(error.message);
     }
   };
 
@@ -34,5 +36,8 @@ export function useLogin() {
     handleLogin,
     errors,
     isSubmitting,
+    serverError,
+    setServerError,
+    router,
   };
 }

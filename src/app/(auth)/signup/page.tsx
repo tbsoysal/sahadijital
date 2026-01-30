@@ -1,6 +1,8 @@
 "use client";
 
 import InputBox from "@/components/auth/InputBox";
+import Button from "@/components/Button";
+import { NotificationModal } from "@/components/NotificationModal";
 import { useSignup } from "@/lib/hooks/useSignup";
 
 export default function SignupPage() {
@@ -12,6 +14,9 @@ export default function SignupPage() {
     isCheckboxChecked,
     setIsCheckboxChecked,
     handleSignup,
+    serverError,
+    setServerError,
+    router,
   } = useSignup();
 
   return (
@@ -86,7 +91,7 @@ export default function SignupPage() {
           <InputBox
             type="phone"
             label="Telefon"
-            placeholder="5*********"
+            placeholder="05*********"
             {...register("phone", { required: "Telefon boş olamaz" })}
           />
           {errors.phone && (
@@ -123,13 +128,21 @@ export default function SignupPage() {
           </p>
         </label>
 
-        <InputBox
-          type="submit"
-          value="Kayıt Ol"
-          disabled={!isCheckboxChecked}
-          className="cursor-pointer bg-[#12B76A]! text-white hover:border-black! disabled:border-none! disabled:bg-[#A6F4C5]!"
-        />
+        <Button disabled={!isCheckboxChecked}>
+          {isSubmitting ? "Kayıt oluşturuluyor..." : "Kayıt Ol"}
+        </Button>
       </form>
+      {serverError && (
+        <NotificationModal
+          open={true}
+          variant="error"
+          onClose={() => router.push("/login")}
+          title="Bir sorun oluştu!"
+          message={serverError ? serverError : "Bir hata oluştu!"}
+          actionText="Tamam"
+          onAction={() => setServerError(null)}
+        />
+      )}
     </div>
   );
 }

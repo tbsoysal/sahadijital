@@ -1,11 +1,22 @@
 "use client";
 
 import InputBox from "@/components/auth/InputBox";
+import Button from "@/components/Button";
+import { NotificationModal } from "@/components/NotificationModal";
 import { useLogin } from "@/lib/hooks/useLogin";
+import Link from "next/link";
 
 export default function LoginPage() {
-  const { register, handleSubmit, handleLogin, errors, isSubmitting } =
-    useLogin();
+  const {
+    register,
+    handleSubmit,
+    handleLogin,
+    errors,
+    isSubmitting,
+    serverError,
+    setServerError,
+    router,
+  } = useLogin();
 
   return (
     <div>
@@ -43,20 +54,43 @@ export default function LoginPage() {
               placeholder="Password"
               label="Şifre"
             />
-            {errors.password && (
-              <span className="text-sm text-red-700">
-                {errors.password.message}
-              </span>
-            )}
+            <div className="mt-1.5 flex flex-row-reverse items-center justify-between">
+              <Link
+                href="/forgot-password"
+                className="text-primary block text-end text-sm font-medium"
+              >
+                Şifremi unuttum?
+              </Link>
+              {errors.password && (
+                <span className="text-sm text-red-700">
+                  {errors.password.message}
+                </span>
+              )}
+            </div>
           </div>
-          <InputBox
-            type="submit"
-            value={isSubmitting ? "Giriş yapılıyor..." : "Giriş Yap"}
-            disabled={isSubmitting}
-            className="cursor-pointer bg-[#12B76A]! text-white hover:border-black! disabled:border-none! disabled:bg-[#A6F4C5]!"
-          />
+          <Button disabled={isSubmitting}>
+            {isSubmitting ? "Giriş yapılıyor..." : "Giriş Yap"}
+          </Button>
         </div>
       </form>
+
+      <p className="text-secondary-color text-center text-base font-medium">
+        Hesabın yok mu?{" "}
+        <Link href="/signup" className="text-primary">
+          Kayıt Ol
+        </Link>
+      </p>
+      {serverError && (
+        <NotificationModal
+          open={true}
+          variant="error"
+          onClose={() => router.push("/login")}
+          title="Bir sorun oluştu!"
+          message={serverError ? serverError : "Bir hata oluştu!"}
+          actionText="Tamam"
+          onAction={() => setServerError(null)}
+        />
+      )}
     </div>
   );
 }
