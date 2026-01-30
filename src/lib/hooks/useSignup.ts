@@ -1,45 +1,50 @@
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { supabase } from "../supabase/client";
+import { supabase } from "@/lib/supabase/client";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { signupSchema, SignupFormData } from "@/lib/schemas/signupSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export function useSignup() {
-  const [form, setForm] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    password: "",
-    phone: "",
-    business_name: "",
-  });
-
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
-
   const router = useRouter();
 
-  const handleSignup = async (e: FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+  });
+
+  const handleSignup: SubmitHandler<SignupFormData> = async (data) => {
     const { error } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
+      email: data.email,
+      password: data.password,
       options: {
         data: {
-          first_name: form.first_name,
-          last_name: form.last_name,
-          phone: form.phone,
-          business_name: form.business_name,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          phone: data.phone,
+          business_name: data.business_name,
         },
       },
     });
 
-    if (!error) router.push("/dashboard");
-    else window.alert(error);
+    if (!error) {
+      router.push("/dashboard");
+    } else {
+      alert(error.message);
+    }
   };
 
   return {
     isCheckboxChecked,
     setIsCheckboxChecked,
     handleSignup,
-    form,
-    setForm,
+    register,
+    errors,
+    handleSubmit,
+    isSubmitting,
   };
 }

@@ -5,8 +5,10 @@ import { useSignup } from "@/lib/hooks/useSignup";
 
 export default function SignupPage() {
   const {
-    form,
-    setForm,
+    handleSubmit,
+    register,
+    errors,
+    isSubmitting,
     isCheckboxChecked,
     setIsCheckboxChecked,
     handleSignup,
@@ -26,66 +28,84 @@ export default function SignupPage() {
 
       <form
         className="mx-auto mt-10 flex max-w-[350px] flex-col gap-3"
-        onSubmit={(e) => handleSignup(e)}
+        onSubmit={handleSubmit(handleSignup)}
       >
         <div className="flex gap-3">
-          <InputBox
-            type="text"
-            label="Ad"
-            placeholder="Ad"
-            value={form.first_name}
-            onChange={(e) =>
-              setForm({ ...form, first_name: e.currentTarget.value })
-            }
-            required
-          />
-          <InputBox
-            type="text"
-            label="Soyad"
-            placeholder="Soyad"
-            value={form.last_name}
-            onChange={(e) =>
-              setForm({ ...form, last_name: e.currentTarget.value })
-            }
-            required
-          />
+          <div>
+            <InputBox
+              type="text"
+              label="Ad"
+              placeholder="Ad"
+              {...register("first_name", { required: "Ad boş olamaz" })}
+            />
+            {errors.first_name && (
+              <span className="text-sm text-red-600">
+                {errors.first_name.message}
+              </span>
+            )}
+          </div>
+          <div>
+            <InputBox
+              type="text"
+              label="Soyad"
+              placeholder="Soyad"
+              {...register("last_name", { required: "Soyad boş olamaz" })}
+            />
+            {errors.last_name && (
+              <span className="text-sm text-red-600">
+                {errors.last_name.message}
+              </span>
+            )}
+          </div>
         </div>
-        <InputBox
-          type="mail"
-          label="Mail Adresi"
-          placeholder="Mail"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.currentTarget.value })}
-          required
-        />
-        <InputBox
-          type="text"
-          label="İşletme Adı"
-          placeholder="Mega Halı Saha"
-          value={form.business_name}
-          onChange={(e) =>
-            setForm({ ...form, business_name: e.currentTarget.value })
-          }
-          required
-        />
-        <InputBox
-          type="phone"
-          label="Telefon"
-          placeholder="5*********"
-          value={form.phone}
-          onChange={(e) => setForm({ ...form, phone: e.currentTarget.value })}
-          required
-        />
-        <InputBox
-          type="password"
-          label="Şifre"
-          placeholder="******"
-          value={form.password}
-          onChange={(e) =>
-            setForm({ ...form, password: e.currentTarget.value })
-          }
-          required
-        />
+        <div>
+          <InputBox
+            type="mail"
+            label="Mail Adresi"
+            placeholder="Mail"
+            {...register("email", { required: "Email boş olamaz" })}
+          />
+          {errors.email && (
+            <span className="text-sm text-red-600">{errors.email.message}</span>
+          )}
+        </div>
+        <div>
+          <InputBox
+            type="text"
+            label="İşletme Adı"
+            placeholder="Mega Halı Saha"
+            {...register("business_name", { required: "Saha adı boş olamaz" })}
+          />
+          {errors.business_name && (
+            <span className="text-sm text-red-600">
+              {errors.business_name.message}
+            </span>
+          )}
+        </div>
+        <div>
+          <InputBox
+            type="phone"
+            label="Telefon"
+            placeholder="5*********"
+            {...register("phone", { required: "Telefon boş olamaz" })}
+          />
+          {errors.phone && (
+            <span className="text-sm text-red-600">{errors.phone.message}</span>
+          )}
+        </div>
+        <div>
+          <InputBox
+            type="password"
+            label="Şifre"
+            placeholder="******"
+            {...register("password", { required: "Şifre belirleyiniz" })}
+          />
+          {errors.password && (
+            <span className="text-sm text-red-600">
+              {errors.password.message}
+            </span>
+          )}
+        </div>
         {/* Checkbox */}
         <label
           htmlFor="checkbox"

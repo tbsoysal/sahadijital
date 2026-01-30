@@ -32,7 +32,7 @@ export default function Pricing() {
               Rezervasyon yönetiminden gelir takibine kadar tüm özellikleri tek
               pakette kullanın.
             </p>
-            <div className="flex items-center gap-3">
+            <div className="wrap flex items-center gap-3">
               <span className="tablet:text-[32px] desktop:text-[40px] text-2xl font-medium line-through">
                 ₺5000
               </span>
@@ -44,7 +44,7 @@ export default function Pricing() {
               12 ay boyunca sabit fiyat
             </span>
             <Link href="/signup">
-              <Button className="tablet:w-auto mb-10 w-[284px] py-3">
+              <Button className="tablet:w-auto mb-10 max-w-[284px] py-3">
                 14 Gün Ücretsiz Deneyin
                 <Image
                   src="/images/linkarrow.svg"

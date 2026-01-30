@@ -4,7 +4,8 @@ import InputBox from "@/components/auth/InputBox";
 import { useLogin } from "@/lib/hooks/useLogin";
 
 export default function LoginPage() {
-  const { email, setEmail, password, setPassword, handleLogin } = useLogin();
+  const { register, handleSubmit, handleLogin, errors, isSubmitting } =
+    useLogin();
 
   return (
     <div>
@@ -18,26 +19,40 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <form onSubmit={(e) => handleLogin(e)} className="mx-auto max-w-sm p-6">
+      <form
+        onSubmit={handleSubmit(handleLogin)}
+        className="mx-auto max-w-sm p-6"
+      >
         <div className="flex flex-col gap-5">
-          <InputBox
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            label="Kullanıcı Bilgileri"
-            required
-          />
-          <InputBox
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            label="Şifre"
-            required
-          />
+          <div>
+            <InputBox
+              {...register("email", { required: "Email zorunlu" })}
+              placeholder="Email"
+              label="Kullanıcı Bilgileri"
+            />
+            {errors.email && (
+              <span className="text-sm text-red-700">
+                {errors.email.message}
+              </span>
+            )}
+          </div>
+          <div>
+            <InputBox
+              {...register("password", { required: "Şifre zorunlu" })}
+              type="password"
+              placeholder="Password"
+              label="Şifre"
+            />
+            {errors.password && (
+              <span className="text-sm text-red-700">
+                {errors.password.message}
+              </span>
+            )}
+          </div>
           <InputBox
             type="submit"
-            value="Giriş Yap"
+            value={isSubmitting ? "Giriş yapılıyor..." : "Giriş Yap"}
+            disabled={isSubmitting}
             className="cursor-pointer bg-[#12B76A]! text-white hover:border-black! disabled:border-none! disabled:bg-[#A6F4C5]!"
           />
         </div>

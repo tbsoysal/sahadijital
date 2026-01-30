@@ -1,28 +1,38 @@
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
-import { supabase } from "../supabase/client";
+import { supabase } from "@/lib/supabase/client";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { loginSchema, LoginFormData } from "@/lib/schemas/loginSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export function useLogin() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleLogin = async (e: FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const handleLogin: SubmitHandler<LoginFormData> = async (data) => {
     const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+      email: data.email,
+      password: data.password,
     });
 
-    if (!error) router.push("/dashboard");
-    else window.alert(error);
+    if (!error) {
+      router.push("/dashboard");
+    } else {
+      alert(error.message);
+    }
   };
 
   return {
-    email,
-    setEmail,
-    password,
-    setPassword,
+    register,
+    handleSubmit,
     handleLogin,
+    errors,
+    isSubmitting,
   };
 }
