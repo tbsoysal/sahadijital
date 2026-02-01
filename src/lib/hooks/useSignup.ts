@@ -7,8 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 export function useSignup() {
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
-  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
+  const router = useRouter();
 
   const {
     register,
@@ -19,6 +19,8 @@ export function useSignup() {
   });
 
   const handleSignup: SubmitHandler<SignupFormData> = async (data) => {
+    setServerError(null);
+
     const { error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
@@ -48,7 +50,6 @@ export function useSignup() {
     handleSubmit,
     isSubmitting,
     serverError,
-    setServerError,
     router,
   };
 }

@@ -8,7 +8,6 @@ type Variant = "success" | "error" | "warning";
 
 type NotificationModalProps = {
   open: boolean;
-  onClose: () => void;
   title: string;
   message: string;
   variant?: Variant;
@@ -30,7 +29,6 @@ const colors = {
 
 export function NotificationModal({
   open,
-  onClose,
   title,
   message,
   variant = "success",
@@ -59,7 +57,6 @@ export function NotificationModal({
         <Button
           onClick={() => {
             onAction?.();
-            onClose();
           }}
           className="mt-6 w-full"
         >

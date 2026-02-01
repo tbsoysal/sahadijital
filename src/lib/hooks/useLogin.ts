@@ -18,6 +18,8 @@ export function useLogin() {
   });
 
   const handleLogin: SubmitHandler<LoginFormData> = async (data) => {
+    setServerError(null);
+
     const { error } = await supabase.auth.signInWithPassword({
       email: data.email,
       password: data.password,
@@ -37,7 +39,6 @@ export function useLogin() {
     errors,
     isSubmitting,
     serverError,
-    setServerError,
     router,
   };
 }

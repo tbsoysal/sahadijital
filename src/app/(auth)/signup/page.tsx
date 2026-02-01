@@ -15,7 +15,6 @@ export default function SignupPage() {
     setIsCheckboxChecked,
     handleSignup,
     serverError,
-    setServerError,
     router,
   } = useSignup();
 
@@ -136,11 +135,10 @@ export default function SignupPage() {
         <NotificationModal
           open={true}
           variant="error"
-          onClose={() => router.push("/login")}
           title="Bir sorun oluştu!"
           message={serverError ? serverError : "Bir hata oluştu!"}
           actionText="Tamam"
-          onAction={() => setServerError(null)}
+          onAction={() => router.push("/login")}
         />
       )}
     </div>

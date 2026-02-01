@@ -14,6 +14,7 @@ export default function ForgotPassword() {
     errors,
     isSubmitSuccessful,
     sendPasswordLink,
+    serverError,
     router,
   } = useForgotPassword();
 
@@ -54,14 +55,24 @@ export default function ForgotPassword() {
         </Link>
       </form>
 
-      <NotificationModal
-        open={true}
-        onClose={() => router.push("/login")}
-        title="Başarılı!"
-        message="Şifre sıfırlama bağlantısı mail adresinize gönderildi."
-        actionText="Giriş Yap"
-        onAction={() => router.push("/login")}
-      />
+      {serverError ? (
+        <NotificationModal
+          open={isSubmitSuccessful}
+          variant="error"
+          title="Hata!"
+          message={serverError}
+          actionText="Tamam"
+          onAction={() => router.push("/login")}
+        />
+      ) : (
+        <NotificationModal
+          open={isSubmitSuccessful}
+          title="Başarılı!"
+          message="Şifre sıfırlama bağlantısı mail adresinize gönderildi."
+          actionText="Giriş Yap"
+          onAction={() => router.push("/login")}
+        />
+      )}
     </div>
   );
 }

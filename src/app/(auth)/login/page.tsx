@@ -14,7 +14,6 @@ export default function LoginPage() {
     errors,
     isSubmitting,
     serverError,
-    setServerError,
     router,
   } = useLogin();
 
@@ -84,11 +83,10 @@ export default function LoginPage() {
         <NotificationModal
           open={true}
           variant="error"
-          onClose={() => router.push("/login")}
           title="Bir sorun oluştu!"
           message={serverError ? serverError : "Bir hata oluştu!"}
           actionText="Tamam"
-          onAction={() => setServerError(null)}
+          onAction={() => router.push("/dashboard")}
         />
       )}
     </div>

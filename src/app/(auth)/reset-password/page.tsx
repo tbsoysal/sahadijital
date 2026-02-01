@@ -14,7 +14,7 @@ export default function ResetPasswordPage() {
     resetPassword,
     router,
     serverError,
-    setServerError,
+    isSuccess,
   } = useChangePassword();
 
   return (
@@ -55,29 +55,25 @@ export default function ResetPasswordPage() {
           {isSubmitSuccessful ? "Başarılı!" : "Kaydet"}
         </Button>
       </form>
-      if(!serverError)
-      {
+      {serverError && (
+        <NotificationModal
+          open={true}
+          variant="error"
+          title="Bir sorun oluştu!"
+          message={serverError ? serverError : "Bu sayfaya erişiminiz yok!"}
+          actionText="Tamam"
+          onAction={() => router.push("/login")}
+        />
+      )}
+      {isSuccess && (
         <NotificationModal
           open={isSubmitSuccessful}
-          onClose={() => router.push("/login")}
           title="Başarılı!"
           message="Şifreniz başarıyla değiştirildi! Giriş yapabilirsiniz!"
           actionText="Giriş Yap"
           onAction={() => router.push("/login")}
         />
-      }
-      else
-      {
-        <NotificationModal
-          open={true}
-          variant="error"
-          onClose={() => router.push("/login")}
-          title="Bir sorun oluştu!"
-          message={serverError ? serverError : "Bu sayfaya erişiminiz yok!"}
-          actionText="Tamam"
-          onAction={() => setServerError(null)}
-        />
-      }
+      )}
     </div>
   );
 }
