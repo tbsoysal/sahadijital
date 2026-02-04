@@ -3,7 +3,7 @@
 import InputBox from "@/components/auth/InputBox";
 import Button from "@/components/Button";
 import { NotificationModal } from "@/components/NotificationModal";
-import { useSignup } from "@/lib/hooks/useSignup";
+import { useSignup } from "@/lib/hooks/auth/useSignup";
 
 export default function SignupPage() {
   const {

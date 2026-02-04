@@ -3,7 +3,7 @@
 import InputBox from "@/components/auth/InputBox";
 import Button from "@/components/Button";
 import { NotificationModal } from "@/components/NotificationModal";
-import { useLogin } from "@/lib/hooks/useLogin";
+import { useLogin } from "@/lib/hooks/auth/useLogin";
 import Link from "next/link";
 
 export default function LoginPage() {

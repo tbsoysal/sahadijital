@@ -3,7 +3,7 @@
 import InputBox from "@/components/auth/InputBox";
 import Button from "@/components/Button";
 import { NotificationModal } from "@/components/NotificationModal";
-import { useForgotPassword } from "@/lib/hooks/useForgotPassword";
+import { useForgotPassword } from "@/lib/hooks/auth/useForgotPassword";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 

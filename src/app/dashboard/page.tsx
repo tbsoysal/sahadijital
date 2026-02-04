@@ -28,8 +28,8 @@ export default async function Dashboard() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-24">
-      <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-md">
+    <main className="p-24">
+      <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-md">
         <h1 className="text-3xl font-bold text-gray-800">
           Welcome, {profile?.first_name || "Guest"} {profile?.last_name || ""}{" "}
           👋

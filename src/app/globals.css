@@ -37,7 +37,7 @@
 }
 
 @layer base {
-  * {
+  body {
     @apply font-satoshi text-primary-color;
   }
 

@@ -3,7 +3,7 @@
 import InputBox from "@/components/auth/InputBox";
 import Button from "@/components/Button";
 import { NotificationModal } from "@/components/NotificationModal";
-import { useChangePassword } from "@/lib/hooks/useChangePassword";
+import { useChangePassword } from "@/lib/hooks/auth/useChangePassword";
 
 export default function ResetPasswordPage() {
   const {
