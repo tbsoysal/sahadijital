@@ -20,7 +20,7 @@ export default function DashboardLayout({
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
-      <header className="sticky top-0 right-0 left-0 z-10 flex h-14 items-center justify-between bg-white px-5">
+      <header className="sticky top-0 right-0 left-0 z-40 flex h-14 items-center justify-between bg-white px-5">
         {/* Hamburger Button */}
         <button
           onClick={() => setIsSidebarOpen((prev) => !prev)}
