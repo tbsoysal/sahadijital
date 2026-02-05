@@ -1,3 +1,4 @@
+import Calendar from "@/components/dashboard/Calendar";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -28,14 +29,8 @@ export default async function Dashboard() {
   }
 
   return (
-    <main className="p-24">
-      <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-md">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Welcome, {profile?.first_name || "Guest"} {profile?.last_name || ""}{" "}
-          👋
-        </h1>
-        <p className="mt-2 text-gray-500">You are logged in as {user.email}</p>
-      </div>
-    </main>
+    <div className="h-full overflow-hidden">
+      <Calendar />
+    </div>
   );
 }
