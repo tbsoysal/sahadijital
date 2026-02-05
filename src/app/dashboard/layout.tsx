@@ -9,10 +9,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  type Views = "DAILY" | "WEEKLY" | "MONTHLY";
-
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-  const [currView, setCurrView] = useState<Views>("WEEKLY");
 
   return (
     <div className="flex h-screen flex-col bg-[#F5F5F5]">
@@ -34,8 +31,6 @@ export default function DashboardLayout({
 
         {/* Sidebar */}
         <Sidebar
-          currView={currView}
-          setCurrView={setCurrView}
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
         />

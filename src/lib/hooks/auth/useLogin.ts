@@ -26,8 +26,11 @@ export function useLogin() {
     });
 
     if (!error) {
+      console.log(error);
+      console.log("Signing in...");
       router.push("/dashboard");
     } else {
+      console.log(error);
       setServerError(error.message);
     }
   };
@@ -39,6 +42,7 @@ export function useLogin() {
     errors,
     isSubmitting,
     serverError,
+    setServerError,
     router,
   };
 }
