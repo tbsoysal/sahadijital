@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { useFields } from "@/lib/hooks/dashboard/useFields";
+import { useFields } from "@/lib/hooks/dashboard/useSidebar";
 
 export function FieldMenu() {
   const { fields, selectedField, setSelectedField } = useFields();
