@@ -3,14 +3,18 @@
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
 import { format, isSameDay } from "date-fns";
 import { tr } from "date-fns/locale";
-import React from "react";
+import React, { useState } from "react";
 
 export function WeeklyCalendar() {
   const { currentDate, weekStart, weekDays } = useCalendar();
-  const hours = Array.from({ length: 12 }, (_, i) => i + 12);
+  const [selectedSlot, setSelectedSlot] = useState<{
+    day: Date;
+    hour: number;
+  } | null>(null);
+  const hours = Array.from({ length: 15 }, (_, i) => (i + 12) % 24);
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="mb-8 flex w-full flex-col">
       {/* Header: Günler */}
       <div className="grid grid-cols-8">
         <div className="p-2"></div>
@@ -45,9 +49,10 @@ export function WeeklyCalendar() {
             {/* gün hücreleri */}
             {weekDays.map((day) => (
               <div
+                onClick={() => setSelectedSlot({ day, hour })}
                 key={day.toISOString() + hour}
-                className="h-12 border-b border-l border-[#E9EAEB] p-1"
-              />
+                className={`h-12 border-b border-l border-[#E9EAEB] p-1 ${selectedSlot && isSameDay(selectedSlot.day, day) && selectedSlot.hour == hour ? "bg-primary text-white" : ""}`}
+              ></div>
             ))}
           </React.Fragment>
         ))}

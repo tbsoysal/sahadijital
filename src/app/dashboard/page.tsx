@@ -28,9 +28,5 @@ export default async function Dashboard() {
     console.error("Error loading profile:", profileError.message);
   }
 
-  return (
-    <div>
-      <WeeklyCalendar />
-    </div>
-  );
+  return <WeeklyCalendar />;
 }
