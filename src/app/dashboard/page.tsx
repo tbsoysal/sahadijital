@@ -1,7 +1,6 @@
-import Calendar from "@/components/dashboard/Calendar";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import "@/app/dashboard/fullcalendar.css";
+import { WeeklyCalendar } from "@/components/dashboard/calendar/WeeklyCalendar";
 
 export default async function Dashboard() {
   const supabase = await createClient();
@@ -30,8 +29,8 @@ export default async function Dashboard() {
   }
 
   return (
-    <div className="h-screen overflow-hidden">
-      <Calendar />
+    <div>
+      <WeeklyCalendar />
     </div>
   );
 }
