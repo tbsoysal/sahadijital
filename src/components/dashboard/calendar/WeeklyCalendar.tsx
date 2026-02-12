@@ -4,6 +4,7 @@ import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
 import { format, isSameDay } from "date-fns";
 import { tr } from "date-fns/locale";
 import React, { useState } from "react";
+import { ReservationMenu } from "./ReservationMenu";
 
 export function WeeklyCalendar() {
   const { currentDate, weekStart, weekDays } = useCalendar();
@@ -51,11 +52,17 @@ export function WeeklyCalendar() {
               <div
                 onClick={() => setSelectedSlot({ day, hour })}
                 key={day.toISOString() + hour}
-                className={`h-12 border-b border-l border-[#E9EAEB] p-1 ${selectedSlot && isSameDay(selectedSlot.day, day) && selectedSlot.hour == hour ? "bg-primary text-white" : ""}`}
+                className={`h-12 border-b border-l border-[#E9EAEB] p-1 ${selectedSlot && isSameDay(selectedSlot.day, day) && selectedSlot.hour == hour ? "border-primary border-2! text-white" : ""}`}
               ></div>
             ))}
           </React.Fragment>
         ))}
+
+        <ReservationMenu
+          isOpen={selectedSlot !== null}
+          selectedSlot={selectedSlot}
+          setSelectedSlot={setSelectedSlot}
+        />
       </div>
     </div>
   );
