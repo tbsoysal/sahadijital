@@ -51,7 +51,7 @@ export function WeeklyCalendar() {
             {weekDays.map((day) => (
               <div
                 onClick={() => setSelectedSlot({ day, hour })}
-                key={day.toISOString() + hour}
+                key={day.toISOString()}
                 className={`h-12 border-b border-l border-[#E9EAEB] p-1 ${selectedSlot && isSameDay(selectedSlot.day, day) && selectedSlot.hour == hour ? "border-primary border-2! text-white" : ""}`}
               ></div>
             ))}
