@@ -17,7 +17,7 @@ export function WeeklyCalendar() {
   return (
     <div className="mb-8 flex w-full flex-col">
       {/* Header: Günler */}
-      <div className="grid grid-cols-8">
+      <div className="sticky top-14 z-10 grid grid-cols-8 bg-[#f5f5f5]">
         <div className="p-2"></div>
         {weekDays.map((day) => (
           <div
