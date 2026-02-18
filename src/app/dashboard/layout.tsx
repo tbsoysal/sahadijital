@@ -3,7 +3,7 @@
 import Button from "@/components/Button";
 import Sidebar from "@/components/dashboard/header/Sidebar";
 import { AlignJustify } from "lucide-react";
-import { useFields } from "@/lib/hooks/dashboard/useSidebar";
+import { useFields } from "@/lib/hooks/dashboard/useFields";
 import Avatar from "@/components/dashboard/header/Avatar";
 
 export default function DashboardLayout({

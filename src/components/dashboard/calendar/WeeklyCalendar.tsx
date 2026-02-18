@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import { ReservationMenu } from "./ReservationMenu";
 
 export function WeeklyCalendar() {
-  const { currentDate, weekStart, weekDays } = useCalendar();
+  const { weekDays } = useCalendar();
   const [selectedSlot, setSelectedSlot] = useState<{
     day: Date;
     hour: number;
@@ -52,7 +52,7 @@ export function WeeklyCalendar() {
               <div
                 onClick={() => setSelectedSlot({ day, hour })}
                 key={day.toISOString()}
-                className={`h-12 border-b border-l border-[#E9EAEB] p-1 ${selectedSlot && isSameDay(selectedSlot.day, day) && selectedSlot.hour == hour ? "border-primary border-2! text-white" : ""}`}
+                className={`h-12 border-b border-l border-[#E9EAEB] p-1 ${selectedSlot && isSameDay(selectedSlot.day, day) && selectedSlot.hour === hour ? "border-primary border-2! text-white" : ""}`}
               ></div>
             ))}
           </React.Fragment>
