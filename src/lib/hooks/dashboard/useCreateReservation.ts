@@ -63,13 +63,30 @@ export function useCreateReservation() {
         return { success: false, error: errorMsg };
       }
 
-      // Convert date + time strings to full timestamps
+      // Parse date and time components
+      const [year, month, day] = reservation.date.split("-").map(Number);
+      const [startHour, startMinute] = reservation.startTime
+        .split(":")
+        .map(Number);
+      const [endHour, endMinute] = reservation.endTime.split(":").map(Number);
+
+      // Create Date objects in LOCAL timezone (Turkey UTC+3)
+      // Using Date constructor: new Date(year, monthIndex, day, hour, minute, second)
+      // This treats the time as local time, not UTC
       const startDateTime = new Date(
-        `${reservation.date}T${reservation.startTime}:00`,
+        year,
+        month - 1,
+        day,
+        startHour,
+        startMinute,
+        0,
       );
-      const endDateTime = new Date(
-        `${reservation.date}T${reservation.endTime}:00`,
-      );
+      const endDateTime = new Date(year, month - 1, day, endHour, endMinute, 0);
+
+      // Convert to ISO string - this will correctly convert local time to UTC
+      // Example: 14:00 Turkey time → stored as 11:00 UTC (which is correct!)
+      const startTimeISO = startDateTime.toISOString();
+      const endTimeISO = endDateTime.toISOString();
 
       // Map payment status
       const paymentStatus = reservation.isPaid ? "paid" : "unpaid";
@@ -82,8 +99,8 @@ export function useCreateReservation() {
           field_id: reservation.fieldId,
           customer_name: reservation.customerName.trim(),
           customer_phone: reservation.customerPhone.trim(),
-          start_time: startDateTime.toISOString(),
-          end_time: endDateTime.toISOString(),
+          start_time: startTimeISO,
+          end_time: endTimeISO,
           price: parseFloat(reservation.price) || 0,
           status: "confirmed",
           payment_status: paymentStatus,

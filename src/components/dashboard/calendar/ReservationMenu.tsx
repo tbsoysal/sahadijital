@@ -11,6 +11,7 @@ export function ReservationMenu({
   isOpen,
   selectedSlot,
   setSelectedSlot,
+  onReservationSaved,
 }: {
   isOpen: boolean;
   selectedSlot: {
@@ -23,6 +24,7 @@ export function ReservationMenu({
       hour: number;
     } | null>
   >;
+  onReservationSaved?: () => void;
 }) {
   const { createReservation, isSaving, saveError, setSaveError } =
     useCreateReservation();
@@ -58,6 +60,7 @@ export function ReservationMenu({
 
     if (result.success) {
       // Close the menu on success
+      onReservationSaved?.();
       setSelectedSlot(null);
     }
   };
@@ -267,7 +270,7 @@ export function ReservationMenu({
           open={true}
           variant="error"
           title="Bir sorun oluştu"
-          message="saveError"
+          message={saveError}
           actionText="Tamam"
           onAction={() => setSaveError(null)}
         />

@@ -5,6 +5,7 @@ import { format, isSameDay } from "date-fns";
 import { tr } from "date-fns/locale";
 import React, { useState } from "react";
 import { ReservationMenu } from "./ReservationMenu";
+import { useReservations } from "@/lib/hooks/dashboard/useReservation";
 
 export function WeeklyCalendar() {
   const { weekDays } = useCalendar();
@@ -13,6 +14,7 @@ export function WeeklyCalendar() {
     hour: number;
   } | null>(null);
   const hours = Array.from({ length: 15 }, (_, i) => (i + 12) % 24);
+  const { getReservationForSlot } = useReservations(weekDays[0], weekDays[6]);
 
   return (
     <div className="mb-8 flex w-full flex-col">
@@ -46,15 +48,24 @@ export function WeeklyCalendar() {
                 {String(hour).padStart(2, "0")}:00
               </div>
             </div>
-
             {/* gün hücreleri */}
-            {weekDays.map((day) => (
-              <div
-                onClick={() => setSelectedSlot({ day, hour })}
-                key={day.toISOString()}
-                className={`h-12 border-b border-l border-[#E9EAEB] p-1 ${selectedSlot && isSameDay(selectedSlot.day, day) && selectedSlot.hour === hour ? "border-primary border-2! text-white" : ""}`}
-              ></div>
-            ))}
+            {weekDays.map((day) => {
+              const reservation = getReservationForSlot(day, hour)[0];
+
+              return (
+                <div
+                  onClick={() => setSelectedSlot({ day, hour })}
+                  key={day.toISOString()}
+                  className={`h-12 border-b border-l border-[#E9EAEB] p-1 ${selectedSlot && isSameDay(selectedSlot.day, day) && selectedSlot.hour === hour ? "border-primary border-2! text-white" : ""} ${reservation ? "bg-primary text-white" : ""}`}
+                >
+                  {reservation && (
+                    <div className="truncate text-xs">
+                      {reservation.customer_name}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </React.Fragment>
         ))}
 
