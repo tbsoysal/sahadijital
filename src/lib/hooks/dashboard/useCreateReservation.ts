@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { useUserBusiness } from "./useUserBusiness";
 
 export type ReservationData = {
   customerName: string;
@@ -17,8 +18,14 @@ export type ReservationData = {
 export function useCreateReservation() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const { userBusiness } = useUserBusiness();
 
   const createReservation = async (reservation: ReservationData) => {
+    if (!userBusiness) {
+      setSaveError("Kullanıcı bilgisi yükleniyor, lütfen bekleyin");
+      return { success: false, error: "Kullanıcı bilgisi yükleniyor" };
+    }
+
     if (!reservation.customerName.trim()) {
       setSaveError("Müşterı adı gereklidir");
       return { success: false, error: "Müşteri adı gereklidir" };
@@ -38,31 +45,6 @@ export function useCreateReservation() {
     setSaveError(null);
 
     try {
-      // Get current user
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-
-      if (userError || !user) {
-        const errorMsg = "Oturum açmanız gerekiyor";
-        setSaveError(errorMsg);
-        return { success: false, error: errorMsg };
-      }
-
-      // Get business_id from users table
-      const { data: userData, error: userDataError } = await supabase
-        .from("users")
-        .select("business_id")
-        .eq("auth_id", user.id)
-        .single();
-
-      if (userDataError || !userData?.business_id) {
-        const errorMsg = "İşletme bilgisi bulunamadı";
-        setSaveError(errorMsg);
-        return { success: false, error: errorMsg };
-      }
-
       // Parse date and time components
       const [year, month, day] = reservation.date.split("-").map(Number);
       const [startHour, startMinute] = reservation.startTime
@@ -90,12 +72,12 @@ export function useCreateReservation() {
 
       // Map payment status
       const paymentStatus = reservation.isPaid ? "paid" : "unpaid";
-
+      console.count("🚀 Supabase API Call Save Reservation");
       // Insert reservation
       const { data, error } = await supabase
         .from("reservations")
         .insert({
-          business_id: userData.business_id,
+          business_id: userBusiness.businessId,
           field_id: reservation.fieldId,
           customer_name: reservation.customerName.trim(),
           customer_phone: reservation.customerPhone.trim(),

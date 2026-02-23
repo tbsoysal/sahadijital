@@ -5,16 +5,24 @@ import { format, isSameDay } from "date-fns";
 import { tr } from "date-fns/locale";
 import React, { useState } from "react";
 import { ReservationMenu } from "./ReservationMenu";
-import { useReservations } from "@/lib/hooks/dashboard/useReservation";
+import { useReservation } from "@/lib/hooks/dashboard/useReservation";
 
 export function WeeklyCalendar() {
-  const { weekDays } = useCalendar();
+  const { weekDays } = useCalendar(); // array of current week days dates
   const [selectedSlot, setSelectedSlot] = useState<{
     day: Date;
     hour: number;
   } | null>(null);
-  const hours = Array.from({ length: 15 }, (_, i) => (i + 12) % 24);
-  const { getReservationForSlot } = useReservations(weekDays[0], weekDays[6]);
+  const hours = Array.from({ length: 15 }, (_, i) => (i + 12) % 24); // [12, 13, 14, ..., 23, 0, 1, 2]
+  const { getReservationForSlot, loading, refresh } = useReservation(
+    weekDays[0],
+    weekDays[6],
+  );
+
+  console.log("WeeklyCalendar rendered");
+  if (loading) {
+    return <div>Takvim Yükleniyor...</div>; // Or a skeleton loader
+  }
 
   return (
     <div className="mb-8 flex w-full flex-col">
@@ -50,7 +58,7 @@ export function WeeklyCalendar() {
             </div>
             {/* gün hücreleri */}
             {weekDays.map((day) => {
-              const reservation = getReservationForSlot(day, hour)[0];
+              const reservation = getReservationForSlot(day, hour)[0]; // get reservation column values for current day and hour values
 
               return (
                 <div
@@ -73,6 +81,7 @@ export function WeeklyCalendar() {
           isOpen={selectedSlot !== null}
           selectedSlot={selectedSlot}
           setSelectedSlot={setSelectedSlot}
+          onReservationSaved={refresh}
         />
       </div>
     </div>

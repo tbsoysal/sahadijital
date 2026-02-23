@@ -26,7 +26,6 @@ export function useLogin() {
     });
 
     if (!error) {
-      console.log(error);
       console.log("Signing in...");
       router.push("/dashboard");
     } else {

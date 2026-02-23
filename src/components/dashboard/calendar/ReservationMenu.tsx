@@ -7,6 +7,58 @@ import { useCreateReservation } from "@/lib/hooks/dashboard/useCreateReservation
 import { useFields } from "@/lib/hooks/dashboard/useFields";
 import { NotificationModal } from "@/components/NotificationModal";
 
+type Reservation = {
+  // müşteri bilgileri
+  customerName: string;
+  customerPhone: string;
+
+  // zaman bilgileri
+  date: string; // "2026-11-24"
+  startTime: string; // "12:00"
+  endTime: string; // "13:00"
+
+  // saha bilgisi
+  fieldId: string;
+  fieldName: string;
+
+  // ödeme
+  price: string;
+  isPaid: boolean;
+
+  // opsiyonel
+  note?: string;
+
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Default reservation state (reusable for reset)
+function getInitialReservation(
+  selectedSlot: { day: Date; hour: number } | null,
+): Reservation {
+  const now = new Date().toISOString();
+  return {
+    customerName: "",
+    customerPhone: "",
+    date: selectedSlot
+      ? format(selectedSlot.day, "yyyy-MM-dd", { locale: tr })
+      : "",
+    startTime: selectedSlot
+      ? `${String(Math.max(selectedSlot.hour - 1, 0)).padStart(2, "0")}:00`
+      : "00:00",
+    endTime: selectedSlot
+      ? `${String(selectedSlot.hour).padStart(2, "0")}:00`
+      : "00:00",
+    fieldId: "",
+    fieldName: "",
+    price: "2000",
+    isPaid: false,
+    note: "",
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
 export function ReservationMenu({
   isOpen,
   selectedSlot,
@@ -29,29 +81,13 @@ export function ReservationMenu({
   const { createReservation, isSaving, saveError, setSaveError } =
     useCreateReservation();
   const { selectedField } = useFields();
-  const [reservation, setReservation] = useState<Reservation>({
-    customerName: "",
-    customerPhone: "",
-    date: selectedSlot
-      ? format(selectedSlot.day, "yyyy-MM-dd", { locale: tr })
-      : "",
-    startTime: selectedSlot
-      ? `${String(Math.max(selectedSlot.hour - 1, 0)).padStart(2, "0")}:00`
-      : "00:00",
-    endTime: selectedSlot
-      ? `${String(selectedSlot.hour).padStart(2, "0")}:00`
-      : "00:00",
-    fieldId: "",
-    fieldName: "",
-    price: "2000",
-    isPaid: false,
-    note: "",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  });
+  const [reservation, setReservation] = useState<Reservation>(() => 
+    getInitialReservation(selectedSlot),
+  );
   const handleSave = async () => {
     if (!selectedField) return;
 
+  console.log(reservation)
     const result = await createReservation({
       ...reservation,
       fieldId: selectedField.id,
@@ -60,6 +96,7 @@ export function ReservationMenu({
 
     if (result.success) {
       // Close the menu on success
+      setReservation(getInitialReservation(null));
       onReservationSaved?.();
       setSelectedSlot(null);
     }
@@ -75,31 +112,6 @@ export function ReservationMenu({
       }));
     }
   }, [selectedSlot]);
-
-  type Reservation = {
-    // müşteri bilgileri
-    customerName: string;
-    customerPhone: string;
-
-    // zaman bilgileri
-    date: string; // "2026-11-24"
-    startTime: string; // "12:00"
-    endTime: string; // "13:00"
-
-    // saha bilgisi
-    fieldId: string;
-    fieldName: string;
-
-    // ödeme
-    price: string;
-    isPaid: boolean;
-
-    // opsiyonel
-    note?: string;
-
-    createdAt: string;
-    updatedAt: string;
-  };
 
   function updateReservation<K extends keyof Reservation>(
     key: K,

@@ -1,48 +1,34 @@
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
-import { endOfDay, isSameDay, parseISO } from "date-fns";
-import { useEffect, useState } from "react";
+import { endOfDay, isSameDay, parseISO, startOfDay } from "date-fns";
+import { useUserBusiness } from "@/lib/hooks/dashboard/useUserBusiness";
 
-export type Reservation = {
-  id: string;
-  customer_name: string;
-  customer_phone: string;
-  start_time: string;
-  end_time: string;
-  field_id: string;
-  price: number;
-  status: string;
-};
-
-export function useReservations(startDate: Date, endDate: Date) {
-  const [reservations, setReservations] = useState<Reservation[]>([]);
+export function useReservation(startDate: Date, endDate: Date) {
+  const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+  const { userBusiness } = useUserBusiness();
+
+  // Convert dates to strings for the dependency array
+  // This prevents re-fetching if the Date object changes but the day stays the same
+  const startStr = startDate?.toISOString();
+  const endStr = endDate?.toISOString();
 
   useEffect(() => {
     const fetchReservations = async () => {
+      if (!userBusiness?.businessId || !startStr || !endStr) {
+        setLoading(false);
+        return;
+      }
+      
       setLoading(true);
-
-      // Get current user and business_id
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: userData } = await supabase
-        .from("users")
-        .select("business_id")
-        .eq("auth_id", user.id)
-        .single();
-
-      if (!userData?.business_id) return;
-
-      // Fetch reservations for the date range
+      console.count("🚀 Supabase API Call Get Reservations");
       const { data, error } = await supabase
         .from("reservations")
         .select("*")
-        .eq("business_id", userData.business_id)
-        .gte("start_time", startDate.toISOString())
-        .lte("start_time", endOfDay(endDate).toISOString())
+        .eq("business_id", userBusiness.businessId)
+        .gte("start_time", startOfDay(parseISO(startStr)).toISOString())
+        .lte("start_time", endOfDay(parseISO(endStr)).toISOString())
         .order("start_time");
 
       if (!error && data) {
@@ -52,18 +38,15 @@ export function useReservations(startDate: Date, endDate: Date) {
     };
 
     fetchReservations();
-  }, [startDate, endDate, refreshKey]);
+  }, [startStr, endStr, refreshKey, userBusiness?.businessId]);
 
-  // Helper function to get reservation for a specific day and hour
-  const getReservationForSlot = (day: Date, hour: number) => {
-    return reservations.filter((reservation) => {
-      const startTime = parseISO(reservation.start_time);
-      const reservationHour = startTime.getHours();
-      const reservationDay = startTime;
-
-      return isSameDay(reservationDay, day) && reservationHour === hour;
+  const getReservationForSlot = useCallback((day: Date, hour: number) => {
+    return reservations.filter((res) => {
+      const resDate = parseISO(res.start_time);
+      return isSameDay(resDate, day) && resDate.getHours() === hour - 1;
     });
-  };
+  }, [reservations]); // Only changes when data actually arrives
+
   return {
     reservations,
     loading,
