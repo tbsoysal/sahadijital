@@ -58,7 +58,7 @@ export function WeeklyCalendar() {
             </div>
             {/* gün hücreleri */}
             {weekDays.map((day) => {
-              const reservation = getReservationForSlot(day, hour)[0]; // get reservation column values for current day and hour values
+              const reservation = getReservationForSlot(day, hour - 1)[0]; // get reservation column values for current day and hour values
 
               return (
                 <div

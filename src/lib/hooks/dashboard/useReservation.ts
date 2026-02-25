@@ -43,7 +43,7 @@ export function useReservation(startDate: Date, endDate: Date) {
   const getReservationForSlot = useCallback((day: Date, hour: number) => {
     return reservations.filter((res) => {
       const resDate = parseISO(res.start_time);
-      return isSameDay(resDate, day) && resDate.getHours() === hour - 1;
+      return isSameDay(resDate, day) && resDate.getHours() === hour;
     });
   }, [reservations]); // Only changes when data actually arrives
 
