@@ -8,6 +8,21 @@ import { ReservationMenu } from "./ReservationMenu";
 import { useReservation } from "@/lib/hooks/dashboard/useReservation";
 
 export function WeeklyCalendar() {
+  type Reservation = {
+    business_id: string;
+    created_at: string;
+    customer_name: string;
+    customer_phone: string;
+    end_time: string;
+    field_id: string;
+    id: string;
+    note: string | null;
+    payment_method: string | null;
+    payment_status: string;
+    price: number;
+    start_time: string;
+    status: string
+  };
   const { weekDays } = useCalendar(); // array of current week days dates
   const [selectedSlot, setSelectedSlot] = useState<{
     day: Date;
@@ -58,7 +73,8 @@ export function WeeklyCalendar() {
             </div>
             {/* gün hücreleri */}
             {weekDays.map((day) => {
-              const reservation = getReservationForSlot(day, hour - 1)[0]; // get reservation column values for current day and hour values
+              const reservation: Reservation = getReservationForSlot(day, hour - 1)[0]; // get reservation column values for current day and hour values
+              console.log(reservation)
 
               return (
                 <div
