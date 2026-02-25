@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { addDays, startOfWeek, startOfDay } from "date-fns";
+import { addDays, startOfWeek } from "date-fns";
 
 export function useCalendar() {
   // 1. Keep the "reference date" in state so it stays stable 
@@ -17,7 +17,7 @@ export function useCalendar() {
   }, [weekStart]);
 
   return {
-    currentDate: referenceDate, 
+    currentDate: referenceDate,
     weekStart,
     weekDays,
   };

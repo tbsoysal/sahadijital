@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { Field } from "@/lib/hooks/dashboard/types";
 
-export type Field = {
-  id: string;
-  name: string;
-  is_active: boolean;
-};
 
 export function useFields() {
   const [fields, setFields] = useState<Field[]>([]);

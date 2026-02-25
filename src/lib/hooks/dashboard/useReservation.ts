@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { endOfDay, isSameDay, parseISO, startOfDay } from "date-fns";
 import { useUserBusiness } from "@/lib/hooks/dashboard/useUserBusiness";
+import { Reservation } from "./types";
 
 export function useReservation(startDate: Date, endDate: Date) {
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -13,21 +14,6 @@ export function useReservation(startDate: Date, endDate: Date) {
   // This prevents re-fetching if the Date object changes but the day stays the same
   const startStr = startDate?.toISOString();
   const endStr = endDate?.toISOString();
-  type Reservation = {
-    business_id: string;
-    created_at: string;
-    customer_name: string;
-    customer_phone: string;
-    end_time: string;
-    field_id: string;
-    id: string;
-    note: string | null;
-    payment_method: string | null;
-    payment_status: string;
-    price: number;
-    start_time: string;
-    status: string
-  };
 
   useEffect(() => {
     const fetchReservations = async () => {

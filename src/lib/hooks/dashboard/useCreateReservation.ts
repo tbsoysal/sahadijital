@@ -1,26 +1,15 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { useUserBusiness } from "./useUserBusiness";
+import { ReservationFormData } from "./types";
 
-export type ReservationData = {
-  customerName: string;
-  customerPhone: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  fieldId: string;
-  fieldName: string;
-  price: string;
-  isPaid: boolean;
-  note?: string;
-};
 
 export function useCreateReservation() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const { userBusiness } = useUserBusiness();
 
-  const createReservation = async (reservation: ReservationData) => {
+  const createReservation = async (reservation: ReservationFormData) => {
     if (!userBusiness) {
       setSaveError("Kullanıcı bilgisi yükleniyor, lütfen bekleyin");
       return { success: false, error: "Kullanıcı bilgisi yükleniyor" };
@@ -71,7 +60,7 @@ export function useCreateReservation() {
       const endTimeISO = endDateTime.toISOString();
 
       // Map payment status
-      const paymentStatus = reservation.isPaid ? "paid" : "unpaid";
+      const paymentStatus = reservation.paymentStatus;
       console.count("🚀 Supabase API Call Save Reservation");
       // Insert reservation
       const { data, error } = await supabase
@@ -86,7 +75,7 @@ export function useCreateReservation() {
           price: parseFloat(reservation.price) || 0,
           status: "confirmed",
           payment_status: paymentStatus,
-          payment_method: reservation.isPaid ? "cash" : null,
+          payment_method: reservation.paymentStatus,
           note: reservation.note?.trim() || null,
         })
         .select()

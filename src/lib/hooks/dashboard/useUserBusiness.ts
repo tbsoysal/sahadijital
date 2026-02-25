@@ -1,16 +1,13 @@
 import { supabase } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
+import { UserData } from "./types";
 
-type UserBusiness = {
-  userId: string;
-  businessId: string;
-};
 
-let cachedUserBusiness: UserBusiness | null = null;
-let fetchPromise: Promise<UserBusiness | null> | null = null;
+let cachedUserBusiness: UserData | null = null;
+let fetchPromise: Promise<UserData | null> | null = null;
 
 export function useUserBusiness() {
-  const [userBusiness, setUserBusiness] = useState<UserBusiness | null>(
+  const [userBusiness, setUserBusiness] = useState<UserData | null>(
     cachedUserBusiness,
   );
   const [loading, setLoading] = useState(!cachedUserBusiness);
@@ -42,7 +39,7 @@ export function useUserBusiness() {
         if (userError || !user) {
           return null;
         }
-console.count("🚀 Supabase API Call Get Business ID");
+        console.count("🚀 Supabase API Call Get Business ID");
         const { data: userData, error: userDataError } = await supabase
           .from("users")
           .select("business_id")
@@ -53,7 +50,7 @@ console.count("🚀 Supabase API Call Get Business ID");
           return null;
         }
 
-        const result: UserBusiness = {
+        const result: UserData = {
           userId: user.id,
           businessId: userData.business_id,
         };

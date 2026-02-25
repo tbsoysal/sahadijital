@@ -6,37 +6,13 @@ import { useEffect, useState } from "react";
 import { useCreateReservation } from "@/lib/hooks/dashboard/useCreateReservation";
 import { useFields } from "@/lib/hooks/dashboard/useFields";
 import { NotificationModal } from "@/components/NotificationModal";
-
-type Reservation = {
-  // müşteri bilgileri
-  customerName: string;
-  customerPhone: string;
-
-  // zaman bilgileri
-  date: string; // "2026-11-24"
-  startTime: string; // "12:00"
-  endTime: string; // "13:00"
-
-  // saha bilgisi
-  fieldId: string;
-  fieldName: string;
-
-  // ödeme
-  price: string;
-  isPaid: boolean;
-
-  // opsiyonel
-  note?: string;
-
-  createdAt: string;
-  updatedAt: string;
-};
+import { ReservationFormData, Reservation } from "@/lib/hooks/dashboard/types";
+import { useUpdateReservation } from "@/lib/hooks/dashboard/useUpdateReservation";
 
 // Default reservation state (reusable for reset)
 function getInitialReservation(
   selectedSlot: { day: Date; hour: number } | null,
-): Reservation {
-  const now = new Date().toISOString();
+): ReservationFormData {
   return {
     customerName: "",
     customerPhone: "",
@@ -50,12 +26,9 @@ function getInitialReservation(
       ? `${String(selectedSlot.hour).padStart(2, "0")}:00`
       : "00:00",
     fieldId: "",
-    fieldName: "",
     price: "2000",
-    isPaid: false,
+    paymentStatus: false,
     note: "",
-    createdAt: now,
-    updatedAt: now,
   };
 }
 
@@ -69,11 +42,13 @@ export function ReservationMenu({
   selectedSlot: {
     day: Date;
     hour: number;
+    reservation?: Reservation;
   } | null;
   setSelectedSlot: React.Dispatch<
     React.SetStateAction<{
       day: Date;
       hour: number;
+      reservation?: Reservation;
     } | null>
   >;
   onReservationSaved?: () => void;
@@ -81,41 +56,61 @@ export function ReservationMenu({
   const { createReservation, isSaving, saveError, setSaveError } =
     useCreateReservation();
   const { selectedField } = useFields();
-  const [reservation, setReservation] = useState<Reservation>(() => 
+  const [reservation, setReservation] = useState<ReservationFormData>(() =>
     getInitialReservation(selectedSlot),
   );
+  const { updateReservation } = useUpdateReservation()
   const handleSave = async () => {
     if (!selectedField) return;
 
-  console.log(reservation)
-    const result = await createReservation({
-      ...reservation,
-      fieldId: selectedField.id,
-      fieldName: selectedField.name,
-    });
+    if (selectedSlot?.reservation?.id) {
+      const result = await updateReservation(selectedSlot.reservation.id, reservation);
 
-    if (result.success) {
-      // Close the menu on success
-      setReservation(getInitialReservation(null));
-      onReservationSaved?.();
-      setSelectedSlot(null);
+      if (result.success) {
+        onReservationSaved?.();
+        setSelectedSlot(null);
+      } else {
+        setSaveError("Güncelleme sırasında bir hata oluştu");
+      }
+    } else {
+      const result = await createReservation({
+        ...reservation,
+        fieldId: selectedField.id,
+      });
+
+      if (result.success) {
+        setReservation(getInitialReservation(null));
+        onReservationSaved?.();
+        setSelectedSlot(null);
+      }
     }
   };
   useEffect(() => {
     if (selectedSlot) {
-      setReservation((prev) => ({
-        ...prev,
-        date: format(selectedSlot.day, "yyyy-MM-dd"),
-        startTime: `${String(Math.max(selectedSlot.hour - 1, 0)).padStart(2, "0")}:00`,
-        endTime: `${String(selectedSlot.hour).padStart(2, "0")}:00`,
-        updatedAt: new Date().toISOString(),
-      }));
+      if (selectedSlot.reservation) {
+        const res = selectedSlot.reservation;
+        setReservation({
+          customerName: res.customer_name || "",
+          customerPhone: res.customer_phone || "",
+          date: format(selectedSlot.day, "yyyy-MM-dd"),
+          // Saat formatlarını veritabanından gelen veriye göre ayarla
+          startTime: format(new Date(res.start_time), "HH:mm"),
+          endTime: format(new Date(res.end_time), "HH:mm"),
+          fieldId: res.field_id,
+          price: String(res.price || "2000"),
+          paymentStatus: res.payment_status,
+          note: res.note || "",
+        })
+      } else {
+        const freshReservation = getInitialReservation(selectedSlot);
+        setReservation(freshReservation);
+      }
     }
-  }, [selectedSlot]);
+  }, [selectedSlot, selectedSlot?.reservation?.id, selectedSlot?.day, selectedSlot?.hour]);
 
-  function updateReservation<K extends keyof Reservation>(
+  function updateReservationField<K extends keyof ReservationFormData>(
     key: K,
-    value: Reservation[K],
+    value: ReservationFormData[K],
   ) {
     setReservation((prev) => ({
       ...prev,
@@ -143,7 +138,8 @@ export function ReservationMenu({
               disabled={isSaving}
               className="font-satoshi text-base font-medium"
             >
-              {isSaving ? "Kaydediliyor..." : "Kaydet"}
+              {isSaving
+                ? "Kaydediliyor..." : (selectedSlot?.reservation ? "Güncelle" : "Kaydet")}
             </button>
           </div>
           {/* Name & Lastname */}
@@ -164,7 +160,7 @@ export function ReservationMenu({
                 className="border-none p-0! outline-none"
                 value={reservation.customerName}
                 onChange={(e) =>
-                  updateReservation("customerName", e.target.value)
+                  updateReservationField("customerName", e.target.value)
                 }
               />
             </div>
@@ -186,7 +182,7 @@ export function ReservationMenu({
                 className="border-none p-0! outline-none"
                 value={reservation.customerPhone}
                 onChange={(e) =>
-                  updateReservation("customerPhone", e.target.value)
+                  updateReservationField("customerPhone", e.target.value)
                 }
               />
             </div>
@@ -202,8 +198,8 @@ export function ReservationMenu({
             <p className="text-lg font-medium text-black">
               {reservation.date
                 ? format(new Date(reservation.date), "d MMMM, EEEE", {
-                    locale: tr,
-                  })
+                  locale: tr,
+                })
                 : ""}
             </p>
           </div>
@@ -238,7 +234,7 @@ export function ReservationMenu({
               placeholder="Açıklama ekle"
               className="border-none p-0! outline-0"
               value={reservation.note}
-              onChange={(e) => updateReservation("note", e.target.value)}
+              onChange={(e) => updateReservationField("note", e.target.value)}
             />
           </div>
           {/* Payment Status */}
@@ -255,7 +251,7 @@ export function ReservationMenu({
                 <span className="text-lg text-[#717680]">₺</span>
                 <input
                   value={reservation.price}
-                  onChange={(e) => updateReservation("price", e.target.value)}
+                  onChange={(e) => updateReservationField("price", e.target.value)}
                   placeholder="2000"
                   className="max-w-[100px] border-0 p-0! text-lg font-medium text-black outline-0"
                 />
@@ -264,9 +260,9 @@ export function ReservationMenu({
                 <label className="flex items-center gap-1 font-medium">
                   <input
                     type="checkbox"
-                    checked={reservation.isPaid}
+                    checked={reservation.paymentStatus}
                     onChange={(e) =>
-                      updateReservation("isPaid", e.target.checked)
+                      updateReservationField("paymentStatus", e.target.checked)
                     }
                     className="h-4 w-4"
                   ></input>
