@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { endOfDay, isSameDay, parseISO, startOfDay } from "date-fns";
-import { useUserBusiness } from "@/lib/hooks/dashboard/useUserBusiness";
+import { useUser } from "@/lib/hooks/dashboard/useUser";
 import { Reservation } from "./types";
 
 export function useReservation(startDate: Date, endDate: Date) {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
-  const { userBusiness } = useUserBusiness();
+  const { currUser } = useUser();
 
   // Convert dates to strings for the dependency array
   // This prevents re-fetching if the Date object changes but the day stays the same
@@ -17,17 +17,16 @@ export function useReservation(startDate: Date, endDate: Date) {
 
   useEffect(() => {
     const fetchReservations = async () => {
-      if (!userBusiness?.businessId || !startStr || !endStr) {
+      if (!currUser?.businessId || !startStr || !endStr) {
         setLoading(false);
         return;
       }
 
       setLoading(true);
-      console.count("🚀 Supabase API Call Get Reservations");
       const { data, error } = await supabase
         .from("reservations")
         .select("*")
-        .eq("business_id", userBusiness.businessId)
+        .eq("business_id", currUser.businessId)
         .gte("start_time", startOfDay(parseISO(startStr)).toISOString())
         .lte("start_time", endOfDay(parseISO(endStr)).toISOString())
         .order("start_time");
@@ -39,7 +38,7 @@ export function useReservation(startDate: Date, endDate: Date) {
     };
 
     fetchReservations();
-  }, [startStr, endStr, refreshKey, userBusiness?.businessId]);
+  }, [startStr, endStr, refreshKey, currUser?.businessId]);
 
   const getReservationForSlot = useCallback((day: Date, hour: number) => {
     return reservations.filter((res) => {

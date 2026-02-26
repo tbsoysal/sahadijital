@@ -3,27 +3,20 @@
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
 import { format, isSameDay } from "date-fns";
 import { tr } from "date-fns/locale";
-import React, { useState } from "react";
+import React from "react";
 import { ReservationMenu } from "./ReservationMenu";
 import { useReservation } from "@/lib/hooks/dashboard/useReservation";
 import { Reservation } from "@/lib/hooks/dashboard/types";
 
 export function WeeklyCalendar() {
-  const { weekDays } = useCalendar(); // array of current week days dates
-  const [selectedSlot, setSelectedSlot] = useState<{
-    day: Date;
-    hour: number;
-    reservation?: Reservation;
-  } | null>(null);
-  const hours = Array.from({ length: 15 }, (_, i) => (i + 12) % 24); // [12, 13, 14, ..., 23, 0, 1, 2]
+  const { weekDays, hours, selectedSlot, setSelectedSlot } = useCalendar();
   const { getReservationForSlot, loading, refresh } = useReservation(
     weekDays[0],
     weekDays[6],
   );
 
-  console.log("WeeklyCalendar rendered");
   if (loading) {
-    return <div>Takvim Yükleniyor...</div>; // Or a skeleton loader
+    return <div className="flex items-center justify-center font-medium text-2xl h-screen w-full">Takvim Yükleniyor...</div>; // Or a skeleton loader
   }
 
   return (
@@ -66,11 +59,12 @@ export function WeeklyCalendar() {
                 <div
                   onClick={() => setSelectedSlot({ day, hour, reservation })}
                   key={day.toISOString()}
-                  className={`h-12 border-b border-l border-[#E9EAEB] p-1 ${selectedSlot && isSameDay(selectedSlot.day, day) && selectedSlot.hour === hour ? "border-primary border-2! text-white" : ""} ${reservation ? "bg-primary text-white" : ""}`}
+                  className={`h-12 border-b border-l border-[#E9EAEB] p-px ${selectedSlot && isSameDay(selectedSlot.day, day) && selectedSlot.hour === hour ? "border-primary border-2! text-white" : ""}`}
                 >
                   {reservation && (
-                    <div className="truncate text-xs">
-                      {reservation.customer_name}
+                    <div className="truncate font-medium text-xs bg-primary text-white w-full h-full rounded-sm p-px">
+                      <p>{reservation.customer_name.split(" ")[0]}</p>
+                      <p>{reservation.customer_name.split(" ")[1]}</p>
                     </div>
                   )}
                 </div>

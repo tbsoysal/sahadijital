@@ -1,17 +1,16 @@
 import { useMemo, useState } from "react";
 import { addDays, startOfWeek } from "date-fns";
+import { SelectedSlot } from "./types";
 
 export function useCalendar() {
-  // 1. Keep the "reference date" in state so it stays stable 
-  // until you explicitly want to change weeks.
   const [referenceDate] = useState(new Date());
+  const hours = Array.from({ length: 15 }, (_, i) => (i + 12) % 24); // [12, 13, 14, ..., 23, 0, 1, 2]
+  const [selectedSlot, setSelectedSlot] = useState<SelectedSlot>(null);
 
-  // 2. Memoize the start of the week based on that stable state
   const weekStart = useMemo(() => {
     return startOfWeek(referenceDate, { weekStartsOn: 1 });
   }, [referenceDate]);
 
-  // 3. Generate the array of days
   const weekDays = useMemo(() => {
     return Array.from({ length: 7 }).map((_, i) => addDays(weekStart, i));
   }, [weekStart]);
@@ -20,5 +19,8 @@ export function useCalendar() {
     currentDate: referenceDate,
     weekStart,
     weekDays,
+    selectedSlot,
+    setSelectedSlot,
+    hours
   };
 }

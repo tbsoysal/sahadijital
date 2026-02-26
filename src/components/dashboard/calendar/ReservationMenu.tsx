@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import { useCreateReservation } from "@/lib/hooks/dashboard/useCreateReservation";
 import { useFields } from "@/lib/hooks/dashboard/useFields";
 import { NotificationModal } from "@/components/NotificationModal";
-import { ReservationFormData, Reservation } from "@/lib/hooks/dashboard/types";
+import { ReservationFormData, SelectedSlot } from "@/lib/hooks/dashboard/types";
 import { useUpdateReservation } from "@/lib/hooks/dashboard/useUpdateReservation";
 
 // Default reservation state (reusable for reset)
 function getInitialReservation(
-  selectedSlot: { day: Date; hour: number } | null,
+  selectedSlot: SelectedSlot,
 ): ReservationFormData {
   return {
     customerName: "",
@@ -25,9 +25,8 @@ function getInitialReservation(
     endTime: selectedSlot
       ? `${String(selectedSlot.hour).padStart(2, "0")}:00`
       : "00:00",
-    fieldId: "",
-    price: "2000",
-    paymentStatus: false,
+    price: "0",
+    paid: false,
     note: "",
   };
 }
@@ -39,32 +38,23 @@ export function ReservationMenu({
   onReservationSaved,
 }: {
   isOpen: boolean;
-  selectedSlot: {
-    day: Date;
-    hour: number;
-    reservation?: Reservation;
-  } | null;
-  setSelectedSlot: React.Dispatch<
-    React.SetStateAction<{
-      day: Date;
-      hour: number;
-      reservation?: Reservation;
-    } | null>
-  >;
+  selectedSlot: SelectedSlot
+  setSelectedSlot: React.Dispatch<React.SetStateAction<SelectedSlot | null>>;
   onReservationSaved?: () => void;
 }) {
   const { createReservation, isSaving, saveError, setSaveError } =
     useCreateReservation();
   const { selectedField } = useFields();
-  const [reservation, setReservation] = useState<ReservationFormData>(() =>
+  const [reservationForm, setReservationForm] = useState<ReservationFormData>(() =>
     getInitialReservation(selectedSlot),
   );
   const { updateReservation } = useUpdateReservation()
+
   const handleSave = async () => {
     if (!selectedField) return;
 
     if (selectedSlot?.reservation?.id) {
-      const result = await updateReservation(selectedSlot.reservation.id, reservation);
+      const result = await updateReservation(selectedSlot.reservation.id, reservationForm);
 
       if (result.success) {
         onReservationSaved?.();
@@ -74,48 +64,47 @@ export function ReservationMenu({
       }
     } else {
       const result = await createReservation({
-        ...reservation,
-        fieldId: selectedField.id,
+        ...reservationForm,
       });
 
       if (result.success) {
-        setReservation(getInitialReservation(null));
+        setReservationForm(getInitialReservation(null));
         onReservationSaved?.();
         setSelectedSlot(null);
       }
     }
   };
+
   useEffect(() => {
     if (selectedSlot) {
       if (selectedSlot.reservation) {
         const res = selectedSlot.reservation;
-        setReservation({
+
+        setReservationForm({
           customerName: res.customer_name || "",
           customerPhone: res.customer_phone || "",
           date: format(selectedSlot.day, "yyyy-MM-dd"),
           // Saat formatlarını veritabanından gelen veriye göre ayarla
           startTime: format(new Date(res.start_time), "HH:mm"),
           endTime: format(new Date(res.end_time), "HH:mm"),
-          fieldId: res.field_id,
-          price: String(res.price || "2000"),
-          paymentStatus: res.payment_status,
+          price: String(res.price || ""),
+          paid: res.paid,
           note: res.note || "",
         })
       } else {
         const freshReservation = getInitialReservation(selectedSlot);
-        setReservation(freshReservation);
+        setReservationForm(freshReservation);
       }
     }
   }, [selectedSlot, selectedSlot?.reservation?.id, selectedSlot?.day, selectedSlot?.hour]);
 
-  function updateReservationField<K extends keyof ReservationFormData>(
+  function updateFormField<K extends keyof ReservationFormData>(
     key: K,
     value: ReservationFormData[K],
   ) {
-    setReservation((prev) => ({
+    setReservationForm((prev) => ({
       ...prev,
       [key]: value,
-      updatedAt: new Date().toISOString(),
     }));
   }
 
@@ -158,9 +147,9 @@ export function ReservationMenu({
                 type="text"
                 placeholder="Ad & Soyad"
                 className="border-none p-0! outline-none"
-                value={reservation.customerName}
+                value={reservationForm.customerName}
                 onChange={(e) =>
-                  updateReservationField("customerName", e.target.value)
+                  updateFormField("customerName", e.target.value)
                 }
               />
             </div>
@@ -180,9 +169,9 @@ export function ReservationMenu({
                 type="text"
                 placeholder="___ ___ __ __"
                 className="border-none p-0! outline-none"
-                value={reservation.customerPhone}
+                value={reservationForm.customerPhone}
                 onChange={(e) =>
-                  updateReservationField("customerPhone", e.target.value)
+                  updateFormField("customerPhone", e.target.value)
                 }
               />
             </div>
@@ -196,8 +185,8 @@ export function ReservationMenu({
               height={20}
             />
             <p className="text-lg font-medium text-black">
-              {reservation.date
-                ? format(new Date(reservation.date), "d MMMM, EEEE", {
+              {reservationForm.date
+                ? format(new Date(reservationForm.date), "d MMMM, EEEE", {
                   locale: tr,
                 })
                 : ""}
@@ -213,11 +202,11 @@ export function ReservationMenu({
             />
             <div className="flex gap-5">
               <p className="text-base font-medium text-black">
-                {reservation.startTime}
+                {reservationForm.startTime}
               </p>
               <span className="h-full w-px bg-[#E9EAEB]"></span>
               <p className="text-base font-medium text-black">
-                {reservation.endTime}
+                {reservationForm.endTime}
               </p>
             </div>
           </div>
@@ -233,8 +222,8 @@ export function ReservationMenu({
               type="text"
               placeholder="Açıklama ekle"
               className="border-none p-0! outline-0"
-              value={reservation.note}
-              onChange={(e) => updateReservationField("note", e.target.value)}
+              value={reservationForm.note}
+              onChange={(e) => updateFormField("note", e.target.value)}
             />
           </div>
           {/* Payment Status */}
@@ -250,8 +239,8 @@ export function ReservationMenu({
               <div className="flex items-center gap-1">
                 <span className="text-lg text-[#717680]">₺</span>
                 <input
-                  value={reservation.price}
-                  onChange={(e) => updateReservationField("price", e.target.value)}
+                  value={reservationForm.price}
+                  onChange={(e) => updateFormField("price", e.target.value)}
                   placeholder="2000"
                   className="max-w-[100px] border-0 p-0! text-lg font-medium text-black outline-0"
                 />
@@ -260,10 +249,10 @@ export function ReservationMenu({
                 <label className="flex items-center gap-1 font-medium">
                   <input
                     type="checkbox"
-                    checked={reservation.paymentStatus}
-                    onChange={(e) =>
-                      updateReservationField("paymentStatus", e.target.checked)
-                    }
+                    checked={reservationForm.paid}
+                    onChange={() => {
+                      setReservationForm((prev) => ({ ...prev, paid: !reservationForm.paid }))
+                    }}
                     className="h-4 w-4"
                   ></input>
                   Ödeme yapıldı
@@ -272,17 +261,20 @@ export function ReservationMenu({
             </div>
           </div>
         </>
-      ) : null}
-      {saveError && (
-        <NotificationModal
-          open={true}
-          variant="error"
-          title="Bir sorun oluştu"
-          message={saveError}
-          actionText="Tamam"
-          onAction={() => setSaveError(null)}
-        />
-      )}
-    </div>
+      ) : null
+      }
+      {
+        saveError && (
+          <NotificationModal
+            open={true}
+            variant="error"
+            title="Bir sorun oluştu"
+            message={saveError}
+            actionText="Tamam"
+            onAction={() => setSaveError(null)}
+          />
+        )
+      }
+    </div >
   );
 }

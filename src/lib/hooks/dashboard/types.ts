@@ -7,8 +7,7 @@ export type Reservation = {
   field_id: string;
   id: string;
   note: string | null;
-  payment_method: string | null;
-  payment_status: boolean;
+  paid: boolean;
   price: number;
   start_time: string;
   status: string
@@ -20,9 +19,8 @@ export type ReservationFormData = {
   date: string;
   startTime: string;
   endTime: string;
-  fieldId: string;
   price: string;
-  paymentStatus: boolean;
+  paid: boolean;
   note?: string;
 };
 
@@ -36,3 +34,9 @@ export type UserData = {
   userId: string;
   businessId: string;
 };
+
+export type SelectedSlot = {
+  day: Date,
+  hour: number,
+  reservation?: Reservation
+} | null;

@@ -9,7 +9,7 @@ export function useUpdateReservation() {
         customer_name: updatedData.customerName,
         customer_phone: updatedData.customerPhone,
         price: updatedData.price,
-        payment_status: updatedData.paymentStatus,
+        paid: updatedData.paid,
         note: updatedData.note,
       })
       .eq('id', id)

@@ -3,19 +3,19 @@ import { useEffect, useState } from "react";
 import { UserData } from "./types";
 
 
-let cachedUserBusiness: UserData | null = null;
+let cachedUser: UserData | null = null;
 let fetchPromise: Promise<UserData | null> | null = null;
 
-export function useUserBusiness() {
-  const [userBusiness, setUserBusiness] = useState<UserData | null>(
-    cachedUserBusiness,
+export function useUser() {
+  const [currUser, setCurrUser] = useState<UserData | null>(
+    cachedUser,
   );
-  const [loading, setLoading] = useState(!cachedUserBusiness);
+  const [loading, setLoading] = useState(!cachedUser);
 
   useEffect(() => {
     // If already cached use it
-    if (cachedUserBusiness) {
-      setUserBusiness(cachedUserBusiness);
+    if (cachedUser) {
+      setCurrUser(cachedUser);
       setLoading(false);
       return;
     }
@@ -23,7 +23,7 @@ export function useUserBusiness() {
     // If already fetching, wait for that promise
     if (fetchPromise) {
       fetchPromise.then((data) => {
-        setUserBusiness(data);
+        setCurrUser(data);
         setLoading(false);
       });
       return;
@@ -56,8 +56,8 @@ export function useUserBusiness() {
         };
 
         // Cache the result
-        cachedUserBusiness = result;
-        setUserBusiness(result);
+        cachedUser = result;
+        setCurrUser(result);
         setLoading(false);
         return result;
       } catch (err) {
@@ -70,10 +70,10 @@ export function useUserBusiness() {
     })();
 
     fetchPromise.then((data) => {
-      setUserBusiness(data);
+      setCurrUser(data);
       setLoading(false);
     });
   }, []);
 
-  return { userBusiness, loading };
+  return { currUser, loading };
 }
