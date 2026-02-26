@@ -3,24 +3,49 @@
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
 import { format, isSameDay } from "date-fns";
 import { tr } from "date-fns/locale";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { ReservationMenu } from "./ReservationMenu";
 import { useReservation } from "@/lib/hooks/dashboard/useReservation";
 import { Reservation } from "@/lib/hooks/dashboard/types";
 
 export function WeeklyCalendar() {
-  const { weekDays, hours, selectedSlot, setSelectedSlot } = useCalendar();
+  const calendarRef = useRef<HTMLDivElement>(null)
+  const { weekDays, hours, selectedSlot, setSelectedSlot, nextWeek, prevWeek } = useCalendar();
   const { getReservationForSlot, loading, refresh } = useReservation(
     weekDays[0],
     weekDays[6],
   );
+
+  useEffect(() => {
+    // 1. Only run if we are in the browser and have a ref
+    if (typeof window === "undefined" || !calendarRef.current) return;
+
+    let mc: HammerManager | null = null;
+
+    // 2. Import Hammer dynamically
+    import("hammerjs").then((HammerModule) => {
+      const Hammer = HammerModule.default;
+
+      mc = new Hammer(calendarRef.current!);
+      mc.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+
+      mc.on("swipeleft", () => nextWeek());
+      mc.on("swiperight", () => prevWeek());
+    });
+
+    // 3. Cleanup
+    return () => {
+      if (mc) mc.destroy();
+    };
+  }, [nextWeek, prevWeek]);
+
 
   if (loading) {
     return <div className="flex items-center justify-center font-medium text-2xl h-screen w-full">Takvim Yükleniyor...</div>; // Or a skeleton loader
   }
 
   return (
-    <div className="mb-8 flex w-full flex-col">
+    <div ref={calendarRef} style={{ touchAction: 'pan-y', userSelect: 'none' }} className="mb-8 flex w-full flex-col">
       {/* Header: Günler */}
       <div className="sticky top-14 z-10 grid grid-cols-8 bg-[#f5f5f5]">
         <div className="p-2"></div>

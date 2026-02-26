@@ -1,11 +1,15 @@
 import { useMemo, useState } from "react";
-import { addDays, startOfWeek } from "date-fns";
+import { addDays, addWeeks, startOfWeek, subWeeks } from "date-fns";
 import { SelectedSlot } from "./types";
 
 export function useCalendar() {
-  const [referenceDate] = useState(new Date());
+  const [referenceDate, setReferenceDate] = useState(new Date());
   const hours = Array.from({ length: 15 }, (_, i) => (i + 12) % 24); // [12, 13, 14, ..., 23, 0, 1, 2]
   const [selectedSlot, setSelectedSlot] = useState<SelectedSlot>(null);
+
+  const nextWeek = () => setReferenceDate((prev) => addWeeks(prev, 1));
+  const prevWeek = () => setReferenceDate((prev) => subWeeks(prev, 1));
+  const goToToday = () => setReferenceDate(new Date());
 
   const weekStart = useMemo(() => {
     return startOfWeek(referenceDate, { weekStartsOn: 1 });
@@ -21,6 +25,9 @@ export function useCalendar() {
     weekDays,
     selectedSlot,
     setSelectedSlot,
-    hours
+    hours,
+    nextWeek,
+    prevWeek,
+    goToToday
   };
 }

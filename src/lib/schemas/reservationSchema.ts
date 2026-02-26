@@ -31,7 +31,7 @@ export const reservationSchema = z.object({
     .regex(/^\d+(\.\d{1,2})?$/, "Geçerli bir fiyat girin")
     .refine((val) => parseFloat(val) >= 0, "Fiyat negatif olamaz"),
 
-  isPaid: z.boolean(),
+  paid: z.boolean(),
 
   note: z.string().max(500, "Not çok uzun").optional(),
 });

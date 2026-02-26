@@ -12,7 +12,7 @@ type Props = {
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: Props) {
+export default function Sidebar({ isSidebarOpen }: Props) {
   return (
     <aside
       className={cn(

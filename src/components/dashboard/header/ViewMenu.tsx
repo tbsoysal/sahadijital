@@ -7,11 +7,6 @@ type View = {
   icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element;
 };
 
-type Props = {
-  currView: View;
-  onChange: (view: View) => void;
-};
-
 export function ViewMenu() {
   const [currView, setCurrView] = useState<View>(VIEWS[0]);
 

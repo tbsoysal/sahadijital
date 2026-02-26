@@ -1,6 +1,5 @@
 "use client";
 
-import Button from "@/components/Button";
 import Sidebar from "@/components/dashboard/header/Sidebar";
 import { AlignJustify } from "lucide-react";
 import { useFields } from "@/lib/hooks/dashboard/useFields";
@@ -35,39 +34,8 @@ export default function DashboardLayout({
           >
             <AlignJustify className="h6 w-6" />
           </button>
-
-          {/* Date control buttons */}
-          <div className="flex items-center gap-1">
-            <Button className="p-2">
-              <svg
-                width="7"
-                height="8"
-                viewBox="0 0 7 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0.5 4.4656C-0.166667 4.0807 -0.166667 3.11845 0.5 2.73355L5 0.13547C5.66667 -0.24943 6.5 0.231695 6.5 1.00149L6.5 6.19765C6.5 6.96745 5.66667 7.44857 5 7.06367L0.5 4.4656Z"
-                  fill="white"
-                />
-              </svg>
-            </Button>
-            <Button className="p-2">
-              <svg
-                width="7"
-                height="8"
-                viewBox="0 0 7 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6 2.73355C6.66667 3.11845 6.66667 4.0807 6 4.4656L1.5 7.06367C0.833334 7.44857 3.27826e-07 6.96745 3.27826e-07 6.19765V1.00149C3.27826e-07 0.231695 0.833333 -0.249431 1.5 0.135469L6 2.73355Z"
-                  fill="white"
-                />
-              </svg>
-            </Button>
-          </div>
         </div>
+
         {/* Right Side */}
         <div className="flex items-center gap-2">
           <p className="border-r border-[#E9EAEB] pr-3 text-sm font-medium">
