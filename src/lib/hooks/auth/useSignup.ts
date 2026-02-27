@@ -1,9 +1,9 @@
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { signupSchema, SignupFormData } from "@/lib/schemas/signupSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { authService } from "@/lib/services/authService";
 
 export function useSignup() {
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
@@ -19,25 +19,12 @@ export function useSignup() {
   });
 
   const handleSignup: SubmitHandler<SignupFormData> = async (data) => {
-    setServerError(null);
-
-    const { error } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        data: {
-          first_name: data.first_name,
-          last_name: data.last_name,
-          phone: data.phone,
-          business_name: data.business_name,
-        },
-      },
-    });
-
-    if (!error) {
-      router.push("/dashboard");
-    } else {
-      setServerError(error.message);
+    const fullName = data.first_name + data.last_name;
+    try {
+      await authService.signUp(data.email, data.password, fullName, data.phone, data.business_name);
+      router.push("/login");
+    } catch (error) {
+      setServerError("Sign up error: " + error);
     }
   };
 

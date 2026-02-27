@@ -2,11 +2,11 @@ import {
   ForgotPasswordFormData,
   forgotPasswordSchema,
 } from "@/lib/schemas/forgotPasswordSchema";
-import { supabase } from "@/lib/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { authService } from "@/lib/services/authService";
 
 export function useForgotPassword() {
   const router = useRouter();
@@ -22,13 +22,10 @@ export function useForgotPassword() {
   const sendPasswordLink: SubmitHandler<ForgotPasswordFormData> = async (
     data,
   ) => {
-    setServerError(null);
-    const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-
-    if (error) {
-      setServerError(error.message);
+    try {
+      await authService.sendPasswordReset(data.email);
+    } catch (error) {
+      setServerError(error instanceof Error ? error.message : "Beklenmedik bir hata oluştu")
     }
   };
 

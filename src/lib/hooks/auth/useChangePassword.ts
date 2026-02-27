@@ -7,17 +7,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { authService } from "@/lib/services/authService";
 
 export function useChangePassword() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
-
   const router = useRouter();
+
   useEffect(() => {
     const checkAccess = async () => {
-      const { data } = await supabase.auth.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
 
-      if (!data.session) {
+      if (!session) {
         setServerError("Bu sayfaya erişemezsiniz");
         setIsSuccess(false);
       }
@@ -35,17 +36,11 @@ export function useChangePassword() {
   });
 
   const resetPassword: SubmitHandler<ChangePasswordFormData> = async (data) => {
-    setServerError(null);
-
-    const { error } = await supabase.auth.updateUser({
-      password: data.password,
-    });
-
-    if (error) {
-      setServerError(error.message);
-      setIsSuccess(false);
-    } else {
+    try {
+      await authService.updateUser("password", data.password)
       setIsSuccess(true);
+    } catch (error) {
+      setServerError(error instanceof Error ? error.message : "Beklenmeyen bir hata oluştu");
     }
   };
 
