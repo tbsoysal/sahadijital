@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { authService } from "@/lib/services/authService";
+import { profileService } from "@/lib/services/profileService";
 
 export function useChangePassword() {
   const [serverError, setServerError] = useState<string | null>(null);
@@ -37,7 +37,7 @@ export function useChangePassword() {
 
   const resetPassword: SubmitHandler<ChangePasswordFormData> = async (data) => {
     try {
-      await authService.updateUser("password", data.password)
+      await profileService.updateUser("password", data.password)
       setIsSuccess(true);
     } catch (error) {
       setServerError(error instanceof Error ? error.message : "Beklenmeyen bir hata oluştu");

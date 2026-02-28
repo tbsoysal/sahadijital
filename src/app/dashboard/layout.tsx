@@ -1,17 +1,32 @@
 "use client";
 
-import Sidebar from "@/components/dashboard/header/Sidebar";
+import Sidebar from "@/components/dashboard/sidebar/Sidebar";
 import { AlignJustify } from "lucide-react";
-import { useFields } from "@/lib/hooks/dashboard/useFields";
-import Avatar from "@/components/dashboard/header/Avatar";
+import Avatar from "@/components/dashboard/sidebar/Avatar";
+import { useDashboard } from "@/lib/hooks/dashboard/useDashboard";
+import { useState, useEffect } from "react";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { isSidebarOpen, setIsSidebarOpen, businessName, firstName, lastName } =
-    useFields();
+  const { getUserInfo } = useDashboard();
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [businessName, setBusinessName] = useState<string>("");
+
+  useEffect(() => {
+    const getProfileInfo = async () => {
+      const { firstName, lastName, businessName } = await getUserInfo();
+      setFirstName(firstName);
+      setLastName(lastName);
+      setBusinessName(businessName);
+    }
+
+    getProfileInfo();
+  });
 
   return (
     <div className="flex h-screen flex-col bg-[#F5F5F5]">

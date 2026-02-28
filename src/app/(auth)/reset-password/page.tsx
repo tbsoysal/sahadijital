@@ -19,7 +19,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div>
-      <div className="mx-auto mt-10 max-w-[400px] text-center">
+      <div className="mx-auto mt-10 max-w-100 text-center">
         <h2 className="text-primary-color mb-4 text-4xl font-medium">
           Yeni Şifre
         </h2>
