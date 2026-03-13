@@ -1,31 +1,65 @@
+import { calendarService } from "@/lib/services/calendarService";
 import { profileService } from "@/lib/services/profileService";
+import { useEffect, useState } from "react";
+import { Field, View } from "@/lib/hooks/types";
+import { VIEWS } from "@/lib/hooks/constants";
 
 export function useDashboard() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [fields, setFields] = useState<Field[] | undefined>();
+  const [selectedField, setSelectedField] = useState<Field | undefined>();
+  const [selectedView, setSelectedView] = useState<View>(VIEWS[1]);
+  const [userData, setUserData] = useState({
+    id: "",
+    firstName: "",
+    lastName: "",
+    businessName: "",
+  });
 
-  let firstName: string = "";
-  let lastName: string = "";
-  let businessName: string = "";
+  useEffect(() => {
+    const getUserInfo = async () => {
+      try {
+        const profile = await profileService.fetchProfile();
+        const nameParts = profile.full_name?.split(" ") || ["", ""];
+        setUserData({
+          id: profile.id,
+          firstName: nameParts[0],
+          lastName: nameParts.slice(1).join(" "), // handles middle names
+          businessName: profile.business_name || "",
+        });
+      } catch (error) {
+        if (error instanceof Error) throw error;
+        throw "Profil bilgileri alınırken bir hata oluştu";
+      }
+    };
 
-  const getUserInfo = async () => {
-    try {
-      const profile = await profileService.getUserInfo();
-      firstName = await profile.full_name.split(" ")[0];
-      lastName = await profile.full_name.split(" ")[1];
-      businessName = await profile.business_name;
-    } catch (error) {
-      if (error instanceof Error)
-        throw error.message;
-      throw "Profil bilgileri alınırken bir hata oluştu";
-    }
+    const fetchFields = async (userId: string) => {
+      if (!userData.id) return;
 
-    return {
-      businessName,
-      firstName,
-      lastName,
-    }
-  }
+      try {
+        const fields = await calendarService.fetchFields(userId);
+        if (fields.length < 2) {
+          setSelectedField(fields[0]);
+        }
+        setFields(fields);
+      } catch (error) {
+        if (error instanceof Error) throw error;
+        throw "Saha bilgileri alınırken bir hata oluştu";
+      }
+    };
+
+    getUserInfo();
+    fetchFields(userData.id);
+  }, [userData.id]);
 
   return {
-    getUserInfo
-  }
+    userData,
+    isSidebarOpen,
+    setIsSidebarOpen,
+    fields,
+    selectedField,
+    setSelectedField,
+    selectedView,
+    setSelectedView,
+  };
 }

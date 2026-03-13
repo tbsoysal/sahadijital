@@ -15,6 +15,7 @@ export default function SignupPage() {
     setIsCheckboxChecked,
     handleSignup,
     serverError,
+    isSucceed,
     router,
   } = useSignup();
 
@@ -131,6 +132,15 @@ export default function SignupPage() {
           {isSubmitting ? "Kayıt oluşturuluyor..." : "Kayıt Ol"}
         </Button>
       </form>
+      {isSucceed && (
+        <NotificationModal
+          open={true}
+          variant="success"
+          title="Kayıt başarılı!"
+          message="Hesabınız başarıyla oluşturuldu. Giriş yapabilirsiniz."
+          onAction={() => router.push("/login")}
+        />
+      )}
       {serverError && (
         <NotificationModal
           open={true}
@@ -138,7 +148,6 @@ export default function SignupPage() {
           title="Bir sorun oluştu!"
           message={serverError ? serverError : "Bir hata oluştu!"}
           actionText="Tamam"
-          onAction={() => router.push("/login")}
         />
       )}
     </div>

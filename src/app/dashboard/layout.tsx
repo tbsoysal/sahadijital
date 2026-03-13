@@ -3,30 +3,26 @@
 import Sidebar from "@/components/dashboard/sidebar/Sidebar";
 import { AlignJustify } from "lucide-react";
 import Avatar from "@/components/dashboard/sidebar/Avatar";
-import { useDashboard } from "@/lib/hooks/dashboard/useDashboard";
-import { useState, useEffect } from "react";
+import {
+  useDashboardContext,
+  DashboardProvider,
+} from "@/context/DashboardContext";
+import React from "react";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { getUserInfo } = useDashboard();
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [businessName, setBusinessName] = useState<string>("");
+  return (
+    <DashboardProvider>
+      <DashboardContent>{children}</DashboardContent>
+    </DashboardProvider>
+  );
+}
 
-  useEffect(() => {
-    const getProfileInfo = async () => {
-      const { firstName, lastName, businessName } = await getUserInfo();
-      setFirstName(firstName);
-      setLastName(lastName);
-      setBusinessName(businessName);
-    }
-
-    getProfileInfo();
-  });
+export function DashboardContent({ children }: { children: React.ReactNode }) {
+  const { userData, isSidebarOpen, setIsSidebarOpen } = useDashboardContext();
 
   return (
     <div className="flex h-screen flex-col bg-[#F5F5F5]">
@@ -54,17 +50,14 @@ export default function DashboardLayout({
         {/* Right Side */}
         <div className="flex items-center gap-2">
           <p className="border-r border-[#E9EAEB] pr-3 text-sm font-medium">
-            {businessName}
+            {userData.businessName}
           </p>
-          <Avatar firstName={firstName} lastName={lastName} />
+          <Avatar />
         </div>
       </header>
 
       {/* Sidebar */}
-      <Sidebar
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
-      />
+      <Sidebar />
 
       <div>{children}</div>
     </div>

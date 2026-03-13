@@ -7,6 +7,7 @@ import { authService } from "@/lib/services/authService";
 
 export function useSignup() {
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  const [isSucceed, setIsSucceed] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -19,12 +20,12 @@ export function useSignup() {
   });
 
   const handleSignup: SubmitHandler<SignupFormData> = async (data) => {
-    const fullName = data.first_name + data.last_name;
+    const fullName = data.first_name + " " + data.last_name;
     try {
       await authService.signUp(data.email, data.password, fullName, data.phone, data.business_name);
-      router.push("/login");
+      setIsSucceed(true);
     } catch (error) {
-      setServerError("Sign up error: " + error);
+      setServerError(error instanceof Error ? error.message : "Bir hata oluştu.");
     }
   };
 
@@ -37,6 +38,7 @@ export function useSignup() {
     handleSubmit,
     isSubmitting,
     serverError,
-    router,
+    isSucceed,
+    router
   };
 }

@@ -6,13 +6,10 @@ import { FieldMenu } from "./FieldMenu";
 import { ViewMenu } from "./ViewMenu";
 import MenuItem from "./MenuItem";
 import LogoutButton from "./LogoutButton";
+import { useDashboardContext } from "@/context/DashboardContext";
 
-type Props = {
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-export default function Sidebar({ isSidebarOpen }: Props) {
+export default function Sidebar() {
+  const { isSidebarOpen } = useDashboardContext();
   return (
     <aside
       className={cn(

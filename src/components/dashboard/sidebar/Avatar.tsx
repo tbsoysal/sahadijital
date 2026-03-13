@@ -1,9 +1,10 @@
-type InitialAvatarProps = {
-  firstName: string;
-  lastName: string;
-};
+import { useDashboardContext } from "@/context/DashboardContext";
 
-export default function Avatar({ firstName, lastName }: InitialAvatarProps) {
+export default function Avatar() {
+  const { userData } = useDashboardContext();
+  const firstName = userData.firstName;
+  const lastName = userData.lastName;
+
   const initials =
     `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase();
 
