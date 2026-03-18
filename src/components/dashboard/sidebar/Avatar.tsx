@@ -9,24 +9,8 @@ export default function Avatar() {
     `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase();
 
   return (
-    <div
-      className="flex items-center justify-center rounded-full border"
-      style={{
-        width: 36,
-        height: 36,
-        backgroundColor: "#D1FADF",
-        borderColor: "#A6F4C5",
-      }}
-    >
-      <span
-        className="font-semibold"
-        style={{
-          color: "#0A8F44",
-          fontSize: "14px",
-        }}
-      >
-        {initials}
-      </span>
+    <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#A6F4C5] bg-[#D1FADF]">
+      <span className="text-sm font-semibold text-[#0A8F44]">{initials}</span>
     </div>
   );
 }

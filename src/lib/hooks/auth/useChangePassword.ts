@@ -16,11 +16,14 @@ export function useChangePassword() {
 
   useEffect(() => {
     const checkAccess = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         setServerError("Bu sayfaya erişemezsiniz");
         setIsSuccess(false);
+        router.replace("/login");
       }
     };
 
@@ -37,10 +40,12 @@ export function useChangePassword() {
 
   const resetPassword: SubmitHandler<ChangePasswordFormData> = async (data) => {
     try {
-      await profileService.updateUser("password", data.password)
+      await profileService.insertProfile("password", data.password);
       setIsSuccess(true);
     } catch (error) {
-      setServerError(error instanceof Error ? error.message : "Beklenmeyen bir hata oluştu");
+      setServerError(
+        error instanceof Error ? error.message : "Beklenmeyen bir hata oluştu",
+      );
     }
   };
 

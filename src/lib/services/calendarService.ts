@@ -1,4 +1,5 @@
-import { supabase } from "../supabase/client";
+import { supabase } from "@/lib/supabase/client";
+import { format } from "date-fns";
 
 export const calendarService = {
   fetchFields: async (userId: string) => {
@@ -11,29 +12,15 @@ export const calendarService = {
     return fields;
   },
 
-  fetchReservation: async ({
-    field_id,
-    date,
-    starthour,
-    endhour,
-  }: {
-    field_id: string | undefined;
-    date: Date;
-    starthour: number;
-    endhour: number;
-  }) => {
-    if (field_id) {
-      const { data: reservation, error } = await supabase
-        .from("reservations")
-        .select("*")
-        .eq("field_id", field_id)
-        .eq("reservation_date", date)
-        .eq("start_time", starthour)
-        .eq("end_time", endhour);
+  fetchReservationsForWeek: async (fieldId: string, start: Date, end: Date) => {
+    const { data, error } = await supabase
+      .from("reservations")
+      .select("*")
+      .eq("field_id", fieldId)
+      .gte("reservation_date", format(start, "yyyy-MM-dd"))
+      .lte("reservation_date", format(end, "yyyy-MM-dd"));
 
-      if (error) throw undefined;
-      return reservation;
-    }
-    return null;
+    if (error) throw error;
+    return data;
   },
 };

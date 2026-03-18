@@ -2,7 +2,7 @@
 
 import { useDashboardContext } from "@/context/DashboardContext";
 import { cn } from "@/lib/utils";
-import { VIEWS } from "@/lib/hooks/constants";
+import { VIEWS } from "@/lib/constants";
 
 export function ViewMenu() {
   const { selectedView, setSelectedView } = useDashboardContext();

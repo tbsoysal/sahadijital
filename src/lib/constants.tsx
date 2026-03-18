@@ -1,4 +1,9 @@
-import { View } from "@/lib/hooks/types";
+import { View } from "@/types";
+
+// 14 working hours: 12:00 – 01:00
+export const WORKING_HOURS: number[] = Array.from({ length: 14 }, (_, i) => (12 + i) % 24);
+// Valid end times: one step ahead of each working hour
+export const WORKING_END_HOURS: number[] = WORKING_HOURS.map((h) => (h + 1) % 24);
 
 export const VIEWS: View[] = [
   {
@@ -18,7 +23,7 @@ export const VIEWS: View[] = [
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-      </svg >
+      </svg>
     ),
   },
   {

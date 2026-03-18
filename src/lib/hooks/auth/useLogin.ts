@@ -21,7 +21,11 @@ export function useLogin() {
       await authService.signIn(data.email, data.password);
       router.push("/dashboard");
     } catch (error) {
-      setServerError("Login error: " + error);
+      setServerError(
+        error instanceof Error
+          ? error.message
+          : "Giriş yapılırken bir hata oluştu",
+      );
     }
   };
 

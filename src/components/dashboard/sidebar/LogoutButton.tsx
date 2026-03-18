@@ -18,7 +18,7 @@ export default function LogoutButton() {
       variant="secondary"
       className="px-3! py-2! text-base!"
     >
-      Logout
+      Çıkış Yap
     </Button>
   );
 }

@@ -1,8 +1,8 @@
 import { calendarService } from "@/lib/services/calendarService";
 import { profileService } from "@/lib/services/profileService";
 import { useEffect, useState } from "react";
-import { Field, View } from "@/lib/hooks/types";
-import { VIEWS } from "@/lib/hooks/constants";
+import { Field, View } from "@/types";
+import { VIEWS } from "@/lib/constants";
 
 export function useDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -29,7 +29,7 @@ export function useDashboard() {
         });
       } catch (error) {
         if (error instanceof Error) throw error;
-        throw "Profil bilgileri alınırken bir hata oluştu";
+        throw new Error("Profil bilgileri alınırken bir hata oluştu");
       }
     };
 
@@ -44,7 +44,7 @@ export function useDashboard() {
         setFields(fields);
       } catch (error) {
         if (error instanceof Error) throw error;
-        throw "Saha bilgileri alınırken bir hata oluştu";
+        throw new Error("Saha bilgileri alınırken bir hata oluştu");
       }
     };
 

@@ -1,17 +1,30 @@
+import { useDashboardContext } from "@/context/DashboardContext";
+import { WORKING_HOURS } from "@/lib/constants";
+import { calendarService } from "@/lib/services/calendarService";
+import { Reservation, Slot } from "@/types";
 import { addDays, addWeeks, startOfWeek, subWeeks } from "date-fns";
-import { useState } from "react";
-import { Slot } from "../types";
+import { useEffect, useState } from "react";
 
 export function useCalendar() {
+  const { selectedField } = useDashboardContext();
   const [referenceDay, setReferenceDay] = useState<Date>(new Date());
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+
   const startDayOfWeek = startOfWeek(referenceDay, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     return addDays(startDayOfWeek, i);
   });
-  const hours = Array.from({ length: 14 }, (_, i) => {
-    return (12 + i) % 24;
-  });
+  const hours = WORKING_HOURS;
+
+  useEffect(() => {
+    if (!selectedField) return;
+    const start = startOfWeek(referenceDay, { weekStartsOn: 1 });
+    const end = addDays(start, 6);
+    calendarService
+      .fetchReservationsForWeek(selectedField.id, start, end)
+      .then(setReservations);
+  }, [referenceDay, selectedField]);
 
   const nextWeek = () => setReferenceDay((prev) => addWeeks(prev, 1));
   const prevWeek = () => setReferenceDay((prev) => subWeeks(prev, 1));
@@ -24,5 +37,6 @@ export function useCalendar() {
     setSelectedSlot,
     nextWeek,
     prevWeek,
+    reservations,
   };
 }

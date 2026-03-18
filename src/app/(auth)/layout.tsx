@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function AuthLayot({ children }: { children: React.ReactNode }) {
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className="tablet:py-16 desktop:py-20 min-h-screen bg-linear-to-b from-[#93CFEC] to-[#F6FFE8] px-5 py-12">
       <Link href={"/"} className="flex items-center justify-center gap-1">

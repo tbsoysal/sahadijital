@@ -1,7 +1,13 @@
 import { supabase } from "@/lib/supabase/client";
 
 export const authService = {
-  signUp: async (email: string, password: string, fullName: string, phone: string, businessName: string) => {
+  signUp: async (
+    email: string,
+    password: string,
+    fullName: string,
+    phone: string,
+    businessName: string,
+  ) => {
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -21,7 +27,7 @@ export const authService = {
   signIn: async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password
+      password,
     });
 
     if (error) throw error;
@@ -35,8 +41,10 @@ export const authService = {
   },
 
   sendPasswordReset: async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: "sahadijital.com/resetpassword" });
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "https://sahadijital.com/resetpassword",
+    });
 
     if (error) throw error;
   },
-}
+};
