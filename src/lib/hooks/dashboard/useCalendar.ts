@@ -5,18 +5,39 @@ import { Reservation, Slot } from "@/types";
 import { addDays, addWeeks, startOfWeek, subWeeks } from "date-fns";
 import { useEffect, useState } from "react";
 import { useCreateReservation } from "./useCreateReservation";
+import { useDeleteReservation } from "./useDeleteReservation";
+import { useUpdateReservation } from "./useUpdateReservation";
 
 export function useCalendar() {
   const { selectedField } = useDashboardContext();
   const [referenceDay, setReferenceDay] = useState<Date>(new Date());
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [reservations, setReservations] = useState<Reservation[]>([]);
-  const { createReservation, isLoading, error } = useCreateReservation(
+  const { createReservation, isLoading, error, clearError } = useCreateReservation(
     (newReservation) => {
       setReservations((prev) => [...prev, newReservation]);
       setSelectedSlot(null);
     },
   );
+  const { updateReservation, isUpdating, updateError, clearUpdateError } = useUpdateReservation(
+    (updated) => {
+      setReservations((prev) => prev.map((r) => r.id === updated.id ? updated : r));
+      setSelectedSlot(null);
+    },
+  );
+  const { deleteReservation, isDeleting, deleteError, clearDeleteError } = useDeleteReservation(
+    (id) => {
+      setReservations((prev) => prev.filter((r) => r.id !== id));
+      setSelectedSlot(null);
+    },
+  );
+
+  const closeMenu = () => {
+    setSelectedSlot(null);
+    clearError();
+    clearUpdateError();
+    clearDeleteError();
+  };
 
   const startDayOfWeek = startOfWeek(referenceDay, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => {
@@ -42,11 +63,18 @@ export function useCalendar() {
     hours,
     selectedSlot,
     setSelectedSlot,
+    closeMenu,
     nextWeek,
     prevWeek,
     reservations,
     createReservation,
     isLoading,
     error,
+    updateReservation,
+    isUpdating,
+    updateError,
+    deleteReservation,
+    isDeleting,
+    deleteError,
   };
 }

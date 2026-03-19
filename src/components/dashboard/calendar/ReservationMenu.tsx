@@ -25,6 +25,8 @@ interface ReservationMenuProps {
   onSave: (data: ReservationFormData & { date: Date }) => void;
   isLoading?: boolean;
   error?: string | null;
+  onDelete?: () => void;
+  isDeleting?: boolean;
 }
 
 const formatHour = (hour: number) => `${String(hour).padStart(2, "0")}:00`;
@@ -35,6 +37,8 @@ export function ReservationMenu({
   onSave,
   isLoading,
   error,
+  onDelete,
+  isDeleting,
 }: ReservationMenuProps) {
   const {
     register,
@@ -45,13 +49,19 @@ export function ReservationMenu({
   } = useForm<ReservationFormData>({
     resolver: zodResolver(reservationSchema),
     defaultValues: {
-      customerName: "",
-      phone: "",
-      startTime: slot.hour === 0 ? 23 : slot.hour - 1,
-      endTime: slot.hour,
-      description: "",
-      price: "",
-      isPaid: false,
+      customerName: slot.reservation?.customer_name ?? "",
+      phone: slot.reservation?.customer_phone ?? "",
+      startTime: slot.reservation
+        ? parseInt(slot.reservation.start_time)
+        : slot.hour === 0
+          ? 23
+          : slot.hour - 1,
+      endTime: slot.reservation
+        ? parseInt(slot.reservation.end_time)
+        : slot.hour,
+      description: slot.reservation?.description ?? "",
+      price: slot.reservation?.price?.toString() ?? "",
+      isPaid: slot.reservation?.is_paid ?? false,
     },
   });
 
@@ -59,9 +69,9 @@ export function ReservationMenu({
   const endTime = watch("endTime");
   const isPaid = watch("isPaid");
 
-  // Hours < 12 are past midnight — they belong to the next calendar day
+  // Only hour 0 is past midnight (the working schedule ends at 01:00)
   const resolveDate = (hour: number) =>
-    hour < 12 ? addDays(slot.day, 1) : slot.day;
+    hour === 0 ? addDays(slot.day, 1) : slot.day;
 
   const formattedDate = format(resolveDate(startTime), "d MMMM, EEEE", {
     locale: tr,
@@ -85,14 +95,29 @@ export function ReservationMenu({
         >
           Vazgeç
         </button>
-        <div className="h-1 w-10 rounded-full bg-gray-300" />
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="text-sm font-semibold text-green-600 disabled:opacity-50"
-        >
-          {isLoading ? "Kaydediliyor..." : "Kaydet"}
-        </button>
+        <div className="flex items-center gap-5">
+          {slot.reservation && (
+            <button
+              type="button"
+              onClick={onDelete}
+              disabled={isDeleting}
+              className="text-sm font-semibold text-red-500 disabled:opacity-50"
+            >
+              {isDeleting ? "Siliniyor..." : "Sil"}
+            </button>
+          )}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="text-sm font-semibold text-green-600 disabled:opacity-50"
+          >
+            {isLoading
+              ? "Kaydediliyor..."
+              : slot.reservation
+                ? "Güncelle"
+                : "Kaydet"}
+          </button>
+        </div>
       </div>
 
       {error && <p className="px-4 pt-2 text-xs text-red-500">{error}</p>}

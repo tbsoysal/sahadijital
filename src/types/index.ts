@@ -30,5 +30,5 @@ export type Reservation = {
 export type Slot = {
   day: Date;
   hour: number;
-  reservation?: string;
+  reservation?: Reservation;
 };

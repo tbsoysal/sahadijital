@@ -1,27 +1,22 @@
-import { useDashboardContext } from "@/context/DashboardContext";
 import { calendarService } from "@/lib/services/calendarService";
 import { ReservationFormData } from "@/lib/schemas/reservationSchema";
 import { Reservation } from "@/types";
 import { format } from "date-fns";
 import { useState } from "react";
 
-export function useCreateReservation(onSuccess: (reservation: Reservation) => void) {
-  const { selectedField } = useDashboardContext();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export function useUpdateReservation(onSuccess: (updated: Reservation) => void) {
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updateError, setUpdateError] = useState<string | null>(null);
 
-  const createReservation = async (data: ReservationFormData & { date: Date }) => {
-    if (!selectedField) {
-      setError("Saha seçilmedi.");
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
+  const updateReservation = async (
+    id: string,
+    data: ReservationFormData & { date: Date },
+  ) => {
+    setIsUpdating(true);
+    setUpdateError(null);
 
     try {
-      const newReservation = await calendarService.createReservation({
-        field_id: selectedField.id,
+      const updated = await calendarService.updateReservation(id, {
         reservation_date: format(data.date, "yyyy-MM-dd"),
         start_time: `${String(data.startTime).padStart(2, "0")}:00:00`,
         end_time: `${String(data.endTime).padStart(2, "0")}:00:00`,
@@ -32,17 +27,17 @@ export function useCreateReservation(onSuccess: (reservation: Reservation) => vo
         description: data.description,
       });
 
-      onSuccess(newReservation);
+      onSuccess(updated);
     } catch (err) {
-      setError(
+      setUpdateError(
         err instanceof Error
           ? err.message
           : (err as { message?: string }).message ?? "Bir hata oluştu.",
       );
     } finally {
-      setIsLoading(false);
+      setIsUpdating(false);
     }
   };
 
-  return { createReservation, isLoading, error, clearError: () => setError(null) };
+  return { updateReservation, isUpdating, updateError, clearUpdateError: () => setUpdateError(null) };
 }

@@ -1,15 +1,11 @@
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
-import { format, isSameDay, isToday } from "date-fns";
+import { addDays, format, isSameDay, isToday } from "date-fns";
 import { tr } from "date-fns/locale";
 import { ReservationMenu } from "./ReservationMenu";
 
 const DAY_LABELS = ["P", "S", "Ç", "P", "C", "C", "P"];
 
-interface WeeklyCalendarProps {
-  onAddClick?: () => void;
-}
-
-export function WeeklyCalendar({ onAddClick }: WeeklyCalendarProps) {
+export function WeeklyCalendar() {
   const {
     weekDays,
     hours,
@@ -21,17 +17,34 @@ export function WeeklyCalendar({ onAddClick }: WeeklyCalendarProps) {
     createReservation,
     isLoading,
     error,
+    updateReservation,
+    isUpdating,
+    updateError,
+    deleteReservation,
+    isDeleting,
+    deleteError,
+    closeMenu,
   } = useCalendar();
 
-  const getSlotReservations = (day: Date, hour: number) =>
-    reservations.filter(
+  const getSlotReservations = (day: Date, hour: number) => {
+    if (hour === 0) {
+      return reservations.filter(
+        (r) =>
+          isSameDay(new Date(r.reservation_date), day) &&
+          parseInt(r.end_time) === 0,
+      );
+    }
+    const reservationDay = hour === 1 ? addDays(day, 1) : day;
+    return reservations.filter(
       (r) =>
-        isSameDay(new Date(r.reservation_date), day) &&
-        parseInt(r.start_time) === hour,
+        isSameDay(new Date(r.reservation_date), reservationDay) &&
+        parseInt(r.start_time) < hour &&
+        parseInt(r.end_time) >= hour,
     );
+  };
 
   return (
-    <div className="relative flex h-full flex-col overflow-visible border border-gray-200 bg-white">
+    <div className="relative flex min-h-screen flex-col overflow-visible border-t border-r border-l border-gray-200 bg-white">
       <div className="col-span-1 flex items-center justify-between px-3 py-2">
         <button
           onClick={prevWeek}
@@ -100,6 +113,10 @@ export function WeeklyCalendar({ onAddClick }: WeeklyCalendarProps) {
                   {slotReservations.map((r) => (
                     <div
                       key={r.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedSlot({ day, hour, reservation: r });
+                      }}
                       className="mb-0.5 h-full rounded-lg bg-green-500 px-1.5 py-1 text-[10px] text-white"
                     >
                       <p className="truncate leading-tight font-semibold">
@@ -116,24 +133,32 @@ export function WeeklyCalendar({ onAddClick }: WeeklyCalendarProps) {
 
       {/* Add button */}
       <button
-        onClick={onAddClick}
-        className="absolute right-6 bottom-6 flex h-9 w-9 items-center justify-center rounded-xl bg-green-500 text-xl text-white shadow-md transition-colors hover:bg-green-600"
+        onClick={() => setSelectedSlot({ day: new Date(), hour: hours[0] })}
+        className="fixed right-6 bottom-6 z-40 flex h-9 w-9 items-center justify-center rounded-xl bg-green-500 text-xl text-white shadow-md transition-colors hover:bg-green-600"
       >
         +
       </button>
       {selectedSlot && (
         <div className="fixed inset-0 z-50 flex items-end">
-          <div
-            className="absolute inset-0 bg-black/30"
-            onClick={() => setSelectedSlot(null)}
-          />
-          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl">
+          <div className="absolute inset-0 bg-black/30" onClick={closeMenu} />
+          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-transform">
             <ReservationMenu
               slot={selectedSlot}
-              onClose={() => setSelectedSlot(null)}
-              onSave={createReservation}
-              isLoading={isLoading}
-              error={error}
+              onClose={closeMenu}
+              onSave={
+                selectedSlot.reservation
+                  ? (data) =>
+                      updateReservation(selectedSlot.reservation!.id, data)
+                  : createReservation
+              }
+              isLoading={isLoading || isUpdating}
+              error={error ?? updateError ?? deleteError}
+              onDelete={
+                selectedSlot.reservation
+                  ? () => deleteReservation(selectedSlot.reservation!.id)
+                  : undefined
+              }
+              isDeleting={isDeleting}
             />
           </div>
         </div>

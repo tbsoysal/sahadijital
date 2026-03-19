@@ -47,4 +47,34 @@ export const calendarService = {
     }
     return data;
   },
+
+  updateReservation: async (id: string, payload: {
+    customer_name: string;
+    customer_phone: string;
+    reservation_date: string;
+    start_time: string;
+    end_time: string;
+    price: number;
+    is_paid: boolean;
+    description?: string;
+  }) => {
+    const { data, error } = await supabase
+      .from("reservations")
+      .update(payload)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  deleteReservation: async (id: string): Promise<void> => {
+    const { error } = await supabase
+      .from("reservations")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+  },
 };
