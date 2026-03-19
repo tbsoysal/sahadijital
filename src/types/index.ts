@@ -15,13 +15,16 @@ export type View = {
 
 export type Reservation = {
   id: string;
+  created_at: string;
   field_id: string;
-  reservation_date: Date;
-  start_time: number;
-  end_time: number;
+  customer_name: string;
+  customer_phone: string;
+  reservation_date: string;
+  start_time: string;
+  end_time: string;
   price: number;
   is_paid: boolean;
-  customer_name: string;
+  description?: string;
 };
 
 export type Slot = {

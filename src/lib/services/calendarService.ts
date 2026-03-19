@@ -23,4 +23,28 @@ export const calendarService = {
     if (error) throw error;
     return data;
   },
+
+  createReservation: async (payload: {
+    field_id: string;
+    customer_name: string;
+    customer_phone: string;
+    reservation_date: string;
+    start_time: string;
+    end_time: string;
+    price: number;
+    is_paid: boolean;
+    description?: string;
+  }) => {
+    const { data, error } = await supabase
+      .from("reservations")
+      .insert(payload)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("createReservation error:", error);
+      throw error;
+    }
+    return data;
+  },
 };

@@ -4,12 +4,19 @@ import { calendarService } from "@/lib/services/calendarService";
 import { Reservation, Slot } from "@/types";
 import { addDays, addWeeks, startOfWeek, subWeeks } from "date-fns";
 import { useEffect, useState } from "react";
+import { useCreateReservation } from "./useCreateReservation";
 
 export function useCalendar() {
   const { selectedField } = useDashboardContext();
   const [referenceDay, setReferenceDay] = useState<Date>(new Date());
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const { createReservation, isLoading, error } = useCreateReservation(
+    (newReservation) => {
+      setReservations((prev) => [...prev, newReservation]);
+      setSelectedSlot(null);
+    },
+  );
 
   const startDayOfWeek = startOfWeek(referenceDay, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => {
@@ -38,5 +45,8 @@ export function useCalendar() {
     nextWeek,
     prevWeek,
     reservations,
+    createReservation,
+    isLoading,
+    error,
   };
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { WORKING_END_HOURS, WORKING_HOURS } from "@/lib/constants";
+import { RESERVATION_START_HOURS, WORKING_END_HOURS } from "@/lib/constants";
 import {
   reservationSchema,
   ReservationFormData,
@@ -23,11 +23,19 @@ interface ReservationMenuProps {
   slot: Slot;
   onClose: () => void;
   onSave: (data: ReservationFormData & { date: Date }) => void;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
 const formatHour = (hour: number) => `${String(hour).padStart(2, "0")}:00`;
 
-export function ReservationMenu({ slot, onClose, onSave }: ReservationMenuProps) {
+export function ReservationMenu({
+  slot,
+  onClose,
+  onSave,
+  isLoading,
+  error,
+}: ReservationMenuProps) {
   const {
     register,
     handleSubmit,
@@ -55,7 +63,9 @@ export function ReservationMenu({ slot, onClose, onSave }: ReservationMenuProps)
   const resolveDate = (hour: number) =>
     hour < 12 ? addDays(slot.day, 1) : slot.day;
 
-  const formattedDate = format(resolveDate(startTime), "d MMMM, EEEE", { locale: tr });
+  const formattedDate = format(resolveDate(startTime), "d MMMM, EEEE", {
+    locale: tr,
+  });
 
   const onSubmit = (data: ReservationFormData) => {
     onSave({ ...data, date: resolveDate(data.startTime) });
@@ -76,10 +86,16 @@ export function ReservationMenu({ slot, onClose, onSave }: ReservationMenuProps)
           Vazgeç
         </button>
         <div className="h-1 w-10 rounded-full bg-gray-300" />
-        <button type="submit" className="text-sm font-semibold text-green-600">
-          Kaydet
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="text-sm font-semibold text-green-600 disabled:opacity-50"
+        >
+          {isLoading ? "Kaydediliyor..." : "Kaydet"}
         </button>
       </div>
+
+      {error && <p className="px-4 pt-2 text-xs text-red-500">{error}</p>}
 
       <div className="flex-1 overflow-y-auto px-4 pb-6">
         {/* Rezervasyon Bilgileri */}
@@ -145,7 +161,7 @@ export function ReservationMenu({ slot, onClose, onSave }: ReservationMenuProps)
               }
               className="text-sm font-medium text-gray-800 outline-none"
             >
-              {WORKING_HOURS.map((h) => (
+              {RESERVATION_START_HOURS.map((h) => (
                 <option key={h} value={h}>
                   {formatHour(h)}
                 </option>

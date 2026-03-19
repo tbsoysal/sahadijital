@@ -52,16 +52,30 @@
   }
 
   .benefitContainer {
-    @apply tablet:flex tablet:h-[586px] mx-auto max-w-[1264px] rounded-[20px] bg-white;
+    @apply tablet:flex tablet:h-146.5 mx-auto max-w-316 rounded-[20px] bg-white;
   }
 
   .benefitTextContainer {
-    @apply tablet:justify-center tablet:max-w-[404px] desktop:max-w-[508px] mx-auto flex w-full flex-col px-8 py-10;
+    @apply tablet:justify-center tablet:max-w-101 desktop:max-w-127 mx-auto flex w-full flex-col px-8 py-10;
   }
 
   .benefitImageContainer {
     @apply tablet:rounded-l-none tablet:rounded-t-[20px] flex w-full items-center justify-start overflow-hidden rounded-[20px] rounded-t-none p-8;
   }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@theme {
+  --animate-slide-up: slide-up 0.3s ease-out;
+  --animate-slide-down: slide-down 0.25s ease-in forwards;
 }
 
 @layer utilities {

@@ -18,12 +18,16 @@ export function WeeklyCalendar({ onAddClick }: WeeklyCalendarProps) {
     nextWeek,
     prevWeek,
     reservations,
+    createReservation,
+    isLoading,
+    error,
   } = useCalendar();
 
   const getSlotReservations = (day: Date, hour: number) =>
     reservations.filter(
       (r) =>
-        isSameDay(new Date(r.reservation_date), day) && r.start_time === hour,
+        isSameDay(new Date(r.reservation_date), day) &&
+        parseInt(r.start_time) === hour,
     );
 
   return (
@@ -89,14 +93,14 @@ export function WeeklyCalendar({ onAddClick }: WeeklyCalendarProps) {
                 <div
                   key={di}
                   onClick={() => setSelectedSlot({ day, hour })}
-                  className={`cursor-pointer border-b border-l border-gray-100 p-0.5 transition-colors ${
+                  className={`cursor-pointer overflow-hidden border-b border-l border-gray-100 p-0.5 transition-colors ${
                     isSelected ? "bg-green-50" : "hover:bg-gray-50"
                   }`}
                 >
                   {slotReservations.map((r) => (
                     <div
                       key={r.id}
-                      className="mb-0.5 rounded-lg bg-green-500 px-1.5 py-1 text-[10px] text-white"
+                      className="mb-0.5 h-full rounded-lg bg-green-500 px-1.5 py-1 text-[10px] text-white"
                     >
                       <p className="truncate leading-tight font-semibold">
                         {r.customer_name}
@@ -123,11 +127,13 @@ export function WeeklyCalendar({ onAddClick }: WeeklyCalendarProps) {
             className="absolute inset-0 bg-black/30"
             onClick={() => setSelectedSlot(null)}
           />
-          <div className="relative w-full rounded-t-2xl bg-white shadow-xl">
+          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl">
             <ReservationMenu
               slot={selectedSlot}
               onClose={() => setSelectedSlot(null)}
-              onSave={() => setSelectedSlot(null)}
+              onSave={createReservation}
+              isLoading={isLoading}
+              error={error}
             />
           </div>
         </div>
