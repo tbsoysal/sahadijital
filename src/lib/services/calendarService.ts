@@ -47,16 +47,19 @@ export const calendarService = {
     return data;
   },
 
-  updateReservation: async (id: string, payload: {
-    customer_name: string;
-    customer_phone: string;
-    reservation_date: string;
-    start_time: string;
-    end_time: string;
-    price: number;
-    is_paid: boolean;
-    description?: string;
-  }) => {
+  updateReservation: async (
+    id: string,
+    payload: {
+      customer_name: string;
+      customer_phone: string;
+      reservation_date: string;
+      start_time: string;
+      end_time: string;
+      price: number;
+      is_paid: boolean;
+      description?: string;
+    },
+  ) => {
     const { data, error } = await supabase
       .from("reservations")
       .update(payload)
@@ -69,11 +72,27 @@ export const calendarService = {
   },
 
   deleteReservation: async (id: string): Promise<void> => {
-    const { error } = await supabase
-      .from("reservations")
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase.from("reservations").delete().eq("id", id);
 
     if (error) throw error;
+  },
+
+  fetchMonthlyReservations: async (
+    fieldId: string,
+    year: number,
+    month: number,
+  ) => {
+    const start = new Date(year, month - 1, 1);
+    const end = new Date(year, month, 0);
+
+    const { data, error } = await supabase
+      .from("reservations")
+      .select("*")
+      .eq("field_id", fieldId)
+      .gte("reservation_date", format(start, "yyyy-MM-dd"))
+      .lte("reservation_date", format(end, "yyyy-MM-dd"));
+
+    if (error) throw error;
+    return data;
   },
 };
