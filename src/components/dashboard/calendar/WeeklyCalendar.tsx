@@ -15,6 +15,7 @@ export function WeeklyCalendar() {
     nextWeek,
     prevWeek,
     reservations,
+    isFetching,
     createReservation,
     isLoading,
     error,
@@ -96,7 +97,22 @@ export function WeeklyCalendar() {
           ))}
         </div>
 
-        {hours.map((hour) => (
+        {isFetching ? (
+          Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="grid min-h-12 grid-cols-[56px_repeat(7,1fr)]">
+              <div className="flex items-center justify-end pr-2">
+                <div className="h-3 w-8 animate-pulse rounded bg-gray-100" />
+              </div>
+              {Array.from({ length: 7 }).map((_, j) => (
+                <div key={j} className="border-b border-l border-gray-100 p-1">
+                  {i % 3 === 0 && j % 2 === 0 && (
+                    <div className="h-full w-full animate-pulse rounded-lg bg-gray-100" />
+                  )}
+                </div>
+              ))}
+            </div>
+          ))
+        ) : hours.map((hour) => (
           <div
             key={hour}
             className="grid min-h-12 grid-cols-[56px_repeat(7,1fr)]"

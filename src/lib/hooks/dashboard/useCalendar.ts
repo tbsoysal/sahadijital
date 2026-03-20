@@ -13,24 +13,24 @@ export function useCalendar() {
   const [referenceDay, setReferenceDay] = useState<Date>(new Date());
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [reservations, setReservations] = useState<Reservation[]>([]);
-  const { createReservation, isLoading, error, clearError } = useCreateReservation(
-    (newReservation) => {
+  const [isFetching, setIsFetching] = useState(true);
+  const { createReservation, isLoading, error, clearError } =
+    useCreateReservation((newReservation) => {
       setReservations((prev) => [...prev, newReservation]);
       setSelectedSlot(null);
-    },
-  );
-  const { updateReservation, isUpdating, updateError, clearUpdateError } = useUpdateReservation(
-    (updated) => {
-      setReservations((prev) => prev.map((r) => r.id === updated.id ? updated : r));
+    });
+  const { updateReservation, isUpdating, updateError, clearUpdateError } =
+    useUpdateReservation((updated) => {
+      setReservations((prev) =>
+        prev.map((r) => (r.id === updated.id ? updated : r)),
+      );
       setSelectedSlot(null);
-    },
-  );
-  const { deleteReservation, isDeleting, deleteError, clearDeleteError } = useDeleteReservation(
-    (id) => {
+    });
+  const { deleteReservation, isDeleting, deleteError, clearDeleteError } =
+    useDeleteReservation((id) => {
       setReservations((prev) => prev.filter((r) => r.id !== id));
       setSelectedSlot(null);
-    },
-  );
+    });
 
   const closeMenu = () => {
     setSelectedSlot(null);
@@ -49,9 +49,11 @@ export function useCalendar() {
     if (!selectedField) return;
     const start = startOfWeek(referenceDay, { weekStartsOn: 1 });
     const end = addDays(start, 6);
+    setIsFetching(true);
     calendarService
       .fetchReservationsForWeek(selectedField.id, start, end)
-      .then(setReservations);
+      .then(setReservations)
+      .finally(() => setIsFetching(false));
   }, [referenceDay, selectedField]);
 
   const nextWeek = () => setReferenceDay((prev) => addWeeks(prev, 1));
@@ -76,5 +78,6 @@ export function useCalendar() {
     deleteReservation,
     isDeleting,
     deleteError,
+    isFetching,
   };
 }

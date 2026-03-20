@@ -11,10 +11,18 @@ export default function StaticsPage() {
 
   const monthLabel = format(new Date(), "MMMM yyyy", { locale: tr });
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col items-center gap-3 pt-32 text-center">
+        <p className="text-sm text-gray-400">Hesaplanıyor...</p>
+      </div>
+    );
+  }
+
   if (!selectedField) {
     return (
       <div className="flex min-h-screen flex-col items-center gap-3 pt-32 text-center">
-        <p className="text-sm text-gray-400">Lütfen bir saha seçin.</p>
+        <p className="text-sm text-gray-400">Lütfen bir saha seçiniz</p>
       </div>
     );
   }
@@ -25,18 +33,39 @@ export default function StaticsPage() {
         <div className="flex items-center gap-2">
           <h1 className="text-lg font-bold text-gray-800">İstatistikler</h1>
           <span className="text-lg font-bold text-gray-400">·</span>
-          <span className="text-lg font-bold text-gray-400">{selectedField.name}</span>
+          <span className="text-lg font-bold text-gray-400">
+            {selectedField.name}
+          </span>
         </div>
-        <p className="text-sm capitalize text-gray-400">{monthLabel}</p>
+        <p className="text-sm text-gray-400 capitalize">{monthLabel}</p>
       </div>
 
       {error && <p className="text-sm text-red-500">{error}</p>}
 
       <div className="grid grid-cols-2 gap-4">
-        <StatCard label="Toplam Rezervasyon" value={total} isLoading={isLoading} />
-        <StatCard label="Ödendi" value={paid} isLoading={isLoading} color="text-green-500" />
-        <StatCard label="Ödenmedi" value={unpaid} isLoading={isLoading} color="text-amber-500" />
-        <StatCard label="Aylık Gelir" value={`₺${revenue}`} isLoading={isLoading} color="text-green-600" />
+        <StatCard
+          label="Toplam Rezervasyon"
+          value={total}
+          isLoading={isLoading}
+        />
+        <StatCard
+          label="Ödendi"
+          value={paid}
+          isLoading={isLoading}
+          color="text-green-500"
+        />
+        <StatCard
+          label="Ödenmedi"
+          value={unpaid}
+          isLoading={isLoading}
+          color="text-amber-500"
+        />
+        <StatCard
+          label="Aylık Gelir"
+          value={`₺${revenue}`}
+          isLoading={isLoading}
+          color="text-green-600"
+        />
       </div>
     </div>
   );
