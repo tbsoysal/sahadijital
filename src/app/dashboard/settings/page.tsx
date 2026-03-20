@@ -7,7 +7,7 @@ export default function SettingsPage() {
         src="/images/sahadijital-logo.svg"
         alt="Saha Dijital Logo"
         width={48}
-        height={45}
+        height={48}
       />
       <p className="text-lg font-semibold text-gray-700">Çok Yakında</p>
       <p className="text-sm text-gray-400">Ayarlar sayfası henüz hazır değil.</p>
