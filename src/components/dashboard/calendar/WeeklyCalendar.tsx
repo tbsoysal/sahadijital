@@ -1,6 +1,7 @@
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
 import { addDays, format, isSameDay, isToday } from "date-fns";
 import { tr } from "date-fns/locale";
+import { useEffect } from "react";
 import { ReservationMenu } from "./ReservationMenu";
 
 const DAY_LABELS = ["P", "S", "Ç", "P", "C", "C", "P"];
@@ -26,6 +27,13 @@ export function WeeklyCalendar() {
     closeMenu,
   } = useCalendar();
 
+  useEffect(() => {
+    document.body.style.overflow = selectedSlot ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selectedSlot]);
+
   const getSlotReservations = (day: Date, hour: number) => {
     if (hour === 0) {
       return reservations.filter(
@@ -43,6 +51,7 @@ export function WeeklyCalendar() {
     );
   };
 
+
   return (
     <div className="relative flex min-h-screen flex-col overflow-visible border-t border-r border-l border-gray-200 bg-white">
       <div className="col-span-1 flex items-center justify-between px-3 py-2">
@@ -52,10 +61,13 @@ export function WeeklyCalendar() {
         >
           ‹
         </button>
-        <p className="font-medium">
-          {format(weekDays[0], "d MMMM", { locale: tr })} -{" "}
-          {format(weekDays[6], "d MMMM", { locale: tr })}
-        </p>
+        <div className="flex flex-col items-center">
+          <p className="font-medium">
+            {format(weekDays[0], "d MMMM", { locale: tr })} -{" "}
+            {format(weekDays[6], "d MMMM", { locale: tr })}
+          </p>
+          <p className="text-xs text-gray-400">{reservations.length} rezervasyon</p>
+        </div>
         <button
           onClick={nextWeek}
           className="text-md font-m leading-none text-gray-700 hover:text-gray-600"
@@ -117,7 +129,7 @@ export function WeeklyCalendar() {
                         e.stopPropagation();
                         setSelectedSlot({ day, hour, reservation: r });
                       }}
-                      className="mb-0.5 h-full rounded-lg bg-green-500 px-1.5 py-1 text-[10px] text-white"
+                      className={`mb-0.5 h-full rounded-lg px-1.5 py-1 text-[10px] ${r.is_paid ? "bg-green-500 text-white" : "bg-gray-400 text-gray-600"}`}
                     >
                       <p className="truncate leading-tight font-semibold">
                         {r.customer_name}
@@ -141,7 +153,7 @@ export function WeeklyCalendar() {
       {selectedSlot && (
         <div className="fixed inset-0 z-50 flex items-end">
           <div className="absolute inset-0 bg-black/30" onClick={closeMenu} />
-          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-transform">
+          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-transform backface-hidden">
             <ReservationMenu
               slot={selectedSlot}
               onClose={closeMenu}

@@ -34,11 +34,16 @@ export function useCreateReservation(onSuccess: (reservation: Reservation) => vo
 
       onSuccess(newReservation);
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : (err as { message?: string }).message ?? "Bir hata oluştu.",
-      );
+      const code = (err as { code?: string }).code;
+      if (code === "23P01") {
+        setError("Bu saatte zaten bir rezervasyon mevcut.");
+      } else {
+        setError(
+          err instanceof Error
+            ? err.message
+            : (err as { message?: string }).message ?? "Bir hata oluştu.",
+        );
+      }
     } finally {
       setIsLoading(false);
     }

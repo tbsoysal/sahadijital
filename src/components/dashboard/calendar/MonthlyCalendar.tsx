@@ -1,3 +1,16 @@
+import Image from "next/image";
+
 export function MonthlyCalendar() {
-  return <h1>Monthly Calendar Component</h1>;
+  return (
+    <div className="flex min-h-screen flex-col items-center gap-3 pt-32 text-center">
+      <Image
+        src="/images/sahadijital-logo.svg"
+        alt="Saha Dijital Logo"
+        width={48}
+        height={45}
+      />
+      <p className="text-lg font-semibold text-gray-700">Çok Yakında</p>
+      <p className="text-sm text-gray-400">Aylık takvim görünümü henüz hazır değil.</p>
+    </div>
+  );
 }

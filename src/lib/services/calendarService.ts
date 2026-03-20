@@ -42,7 +42,6 @@ export const calendarService = {
       .single();
 
     if (error) {
-      console.error("createReservation error:", error);
       throw error;
     }
     return data;

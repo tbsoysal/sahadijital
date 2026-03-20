@@ -41,12 +41,12 @@ export default function Sidebar() {
           <ul className="py-4">
             <MenuItem
               label="İstatistikler"
-              destination="/statics"
+              destination="/dashboard/statics"
               icon="/images/staticsMenuIcon.svg"
             />
             <MenuItem
               label="Ayarlar"
-              destination="/settings"
+              destination="/dashboard/settings"
               icon="/images/settingsMenuIcon.svg"
             />
           </ul>
