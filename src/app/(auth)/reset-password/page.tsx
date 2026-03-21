@@ -19,45 +19,47 @@ export default function ResetPasswordPage() {
 
   return (
     <div>
-      <div className="mx-auto mt-10 max-w-100 text-center">
-        <h2 className="text-primary-color mb-4 text-4xl font-medium">
-          Yeni Şifre
-        </h2>
-        <p className="text-secondary-color text-xl font-medium">
-          Şifrenizi bu sayfadan değiştirebilirsiniz!
-        </p>
-      </div>
       {isRecoverySession && (
-        <form
-          className="mx-auto max-w-sm p-6"
-          onSubmit={handleSubmit(resetPassword)}
-        >
-          <InputBox
-            {...register("password")}
-            type="password"
-            placeholder="Yeni Şifre"
-          />
-          {errors.password && (
-            <span className="block text-sm text-red-600">
-              {errors.password.message}
-            </span>
-          )}
-          <InputBox
-            {...register("confirmPassword")}
-            type="password"
-            placeholder="Yeni Şifre Tekrar"
-          />
-          {errors.confirmPassword && (
-            <span className="block text-sm text-red-600">
-              {errors.confirmPassword.message}
-            </span>
-          )}
-          <Button disabled={isSuccess} className="mt-5 mb-3 w-full">
-            {isSuccess ? "Başarılı!" : "Kaydet"}
-          </Button>
-        </form>
+        <>
+          <div className="mx-auto mt-10 max-w-100 text-center">
+            <h2 className="text-primary-color mb-4 text-4xl font-medium">
+              Yeni Şifre
+            </h2>
+            <p className="text-secondary-color text-xl font-medium">
+              Şifrenizi bu sayfadan değiştirebilirsiniz!
+            </p>
+          </div>
+          <form
+            className="mx-auto max-w-sm p-6"
+            onSubmit={handleSubmit(resetPassword)}
+          >
+            <InputBox
+              {...register("password")}
+              type="password"
+              placeholder="Yeni Şifre"
+            />
+            {errors.password && (
+              <span className="block text-sm text-red-600">
+                {errors.password.message}
+              </span>
+            )}
+            <InputBox
+              {...register("confirmPassword")}
+              type="password"
+              placeholder="Yeni Şifre Tekrar"
+            />
+            {errors.confirmPassword && (
+              <span className="block text-sm text-red-600">
+                {errors.confirmPassword.message}
+              </span>
+            )}
+            <Button disabled={isSuccess} className="mt-5 mb-3 w-full">
+              {isSuccess ? "Başarılı!" : "Kaydet"}
+            </Button>
+          </form>
+        </>
       )}
-{serverError && (
+      {serverError && (
         <NotificationModal
           open={true}
           variant="error"

@@ -18,26 +18,17 @@ export function useChangePassword() {
   const router = useRouter();
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const isResetType = urlParams.get("type") === "reset";
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(
-        "Olay: ",
-        event,
-        "HasParams: ",
-        isResetType,
-        "Session: ",
-        session,
-      );
-      if (event === "SIGNED_IN" && isResetType) {
+    } = supabase.auth.onAuthStateChange((event) => {
+      console.log(event);
+      if (event === "PASSWORD_RECOVERY") {
         setIsRecoverySession(true);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [router]);
+  }, []);
 
   const {
     register,
