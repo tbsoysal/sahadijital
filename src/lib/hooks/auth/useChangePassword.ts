@@ -12,25 +12,26 @@ import { profileService } from "@/lib/services/profileService";
 export function useChangePassword() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const [isRecoverySession, setIsRecoverySession] = useState<boolean | null>(
-    null,
-  );
-  const [isUnauthorized, setIsUnauthorized] = useState<boolean>(false);
+  const [isRecoverySession, setIsRecoverySession] = useState<boolean | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "PASSWORD_RECOVERY") {
         setIsRecoverySession(true);
-      } else {
-        setIsUnauthorized(true);
+      } else if (event === "INITIAL_SESSION") {
+        if (session) {
+          router.replace("/dashboard");
+        } else {
+          router.replace("/login");
+        }
       }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [router]);
 
   const {
     register,
@@ -60,6 +61,5 @@ export function useChangePassword() {
     serverError,
     isSuccess,
     isRecoverySession,
-    isUnauthorized,
   };
 }

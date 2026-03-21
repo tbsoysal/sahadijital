@@ -15,7 +15,6 @@ export default function ResetPasswordPage() {
     serverError,
     isSuccess,
     isRecoverySession,
-    isUnauthorized,
   } = useChangePassword();
 
   return (
@@ -58,17 +57,7 @@ export default function ResetPasswordPage() {
           </Button>
         </form>
       )}
-      {isUnauthorized && (
-        <NotificationModal
-          open={true}
-          variant="warning"
-          title="Yetkisiz Erişim"
-          message="Bu sayfaya yalnızca şifre sıfırlama e-postasındaki bağlantıyla erişebilirsiniz."
-          actionText="Geri Dön"
-          onAction={() => router.replace("/dashboard")}
-        />
-      )}
-      {serverError && (
+{serverError && (
         <NotificationModal
           open={true}
           variant="error"
