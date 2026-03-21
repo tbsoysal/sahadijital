@@ -18,10 +18,13 @@ export function useChangePassword() {
   const router = useRouter();
 
   useEffect(() => {
+    const isRecovery =
+      window.location.hash.includes("type=recovery") ||
+      window.location.search.includes("type=recovery");
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(event);
+      console.log(isRecovery);
       if (event === "PASSWORD_RECOVERY") {
         setIsRecoverySession(true);
       } else if (event === "INITIAL_SESSION" && !session) {
