@@ -16,17 +16,22 @@ export function useChangePassword() {
   const router = useRouter();
 
   useEffect(() => {
+    const hash = window.location.hash;
+    const query = new URLSearchParams(window.location.search);
+    const isFromEmail = hash.includes("type=recovery") || query.has("code");
+
+    if (!isFromEmail) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        router.replace(session ? "/dashboard" : "/login");
+      });
+      return;
+    }
+
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
         setIsRecoverySession(true);
-      } else if (event === "INITIAL_SESSION") {
-        if (session) {
-          router.replace("/dashboard");
-        } else {
-          router.replace("/login");
-        }
       }
     });
 
