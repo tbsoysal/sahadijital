@@ -12,6 +12,7 @@ export const authService = {
       email,
       password,
       options: {
+        emailRedirectTo: "https://sahadijital.com/login",
         data: {
           full_name: fullName,
           business_name: businessName,
