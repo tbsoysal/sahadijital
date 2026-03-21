@@ -2,8 +2,8 @@ import {
   changePasswordSchema,
   ChangePasswordFormData,
 } from "@/lib/schemas/changePasswordSchema";
-import { supabase } from "@/lib/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { supabase } from "@/lib/supabase/client";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,16 +18,18 @@ export function useChangePassword() {
   const router = useRouter();
 
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
-      console.log(event);
-      if (event === "PASSWORD_RECOVERY") {
+    const checkAccess = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        console.log("Session var: ", data.session);
         setIsRecoverySession(true);
+      } else {
+        console.log("Session yok: ", data.session);
+        setIsRecoverySession(false);
       }
-    });
+    };
 
-    return () => subscription.unsubscribe();
+    checkAccess();
   }, []);
 
   const {
