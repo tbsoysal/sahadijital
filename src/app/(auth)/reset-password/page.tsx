@@ -59,6 +59,16 @@ export default function ResetPasswordPage() {
           </form>
         </>
       )}
+      {isRecoverySession === false && (
+        <NotificationModal
+          open={true}
+          variant="error"
+          title="Bu sayfaya erişiminiz yok"
+          message="Bu sayfaya yalnızca mail adresinize gelen link ile görüntüleyebilirsiniz"
+          actionText="Geri dön"
+          onAction={() => router.push("/login")}
+        />
+      )}
       {serverError && (
         <NotificationModal
           open={true}
