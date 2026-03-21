@@ -43,7 +43,7 @@ export const authService = {
 
   sendPasswordReset: async (email: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://sahadijital.com/reset-password",
+      redirectTo: "https://sahadijital.com/reset-password?type=reset",
     });
 
     if (error) throw error;
