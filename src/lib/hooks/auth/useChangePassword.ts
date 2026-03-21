@@ -23,13 +23,16 @@ export function useChangePassword() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(isResetType, event);
+      console.log(
+        "Olay: ",
+        event,
+        "HasParams: ",
+        isResetType,
+        "Session: ",
+        session,
+      );
       if (event === "SIGNED_IN" && isResetType) {
         setIsRecoverySession(true);
-      } else if (session) {
-        router.replace("/dashboard");
-      } else {
-        router.replace("/login");
       }
     });
 
