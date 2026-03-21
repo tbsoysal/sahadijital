@@ -12,28 +12,30 @@ import { profileService } from "@/lib/services/profileService";
 export function useChangePassword() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [isRecoverySession, setIsRecoverySession] = useState<boolean | null>(
+    null,
+  );
+  const [isUnauthorized, setIsUnauthorized] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
-    const checkAccess = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) {
-        setServerError("Bu sayfaya erişemezsiniz");
-        setIsSuccess(false);
-        router.replace("/login");
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setIsRecoverySession(true);
+      } else {
+        setIsUnauthorized(true);
       }
-    };
+    });
 
-    checkAccess();
-  }, [router]);
+    return () => subscription.unsubscribe();
+  }, []);
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors },
   } = useForm<ChangePasswordFormData>({
     resolver: zodResolver(changePasswordSchema),
   });
@@ -54,9 +56,10 @@ export function useChangePassword() {
     handleSubmit,
     resetPassword,
     errors,
-    isSubmitSuccessful,
     router,
     serverError,
     isSuccess,
+    isRecoverySession,
+    isUnauthorized,
   };
 }

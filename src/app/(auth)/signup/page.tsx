@@ -21,7 +21,7 @@ export default function SignupPage() {
 
   return (
     <div>
-      <div className="mx-auto mt-10 max-w-[400px] text-center">
+      <div className="mx-auto mt-10 max-w-100 text-center">
         <h2 className="text-primary-color mb-4 text-4xl font-medium">
           Hemen Üye Ol
         </h2>
@@ -32,7 +32,7 @@ export default function SignupPage() {
       </div>
 
       <form
-        className="mx-auto mt-10 flex max-w-[350px] flex-col gap-3"
+        className="mx-auto mt-10 flex max-w-87.5 flex-col gap-3"
         onSubmit={handleSubmit(handleSignup)}
       >
         <div className="flex gap-3">
@@ -115,13 +115,14 @@ export default function SignupPage() {
         <label
           htmlFor="checkbox"
           className="flex cursor-pointer items-start gap-1.5"
-          onClick={() => setIsCheckboxChecked((prev) => !prev)}
         >
-          <input type="checkbox" id="checkbox" className="relative top-1" />
-          <p
-            className="text-secondary-color text-sm font-medium"
-            onClick={() => setIsCheckboxChecked((prev) => !prev)}
-          >
+          <input
+            type="checkbox"
+            id="checkbox"
+            className="relative top-1"
+            onChange={(e) => setIsCheckboxChecked(e.target.checked)}
+          />
+          <p className="text-secondary-color text-sm font-medium">
             Kişisel verilerimin işlenmesine yönelik{" "}
             <span className="text-[#039855]">aydınlatma metnini</span> okudum ve
             kabul ediyorum.

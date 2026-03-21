@@ -20,7 +20,7 @@ export default function ForgotPassword() {
 
   return (
     <div>
-      <div className="mx-auto mt-10 max-w-[400px] text-center">
+      <div className="mx-auto mt-10 max-w-100 text-center">
         <h2 className="text-primary-color mb-4 text-4xl font-medium">
           Şifre Yenileme
         </h2>
@@ -57,7 +57,7 @@ export default function ForgotPassword() {
 
       {serverError ? (
         <NotificationModal
-          open={isSubmitSuccessful}
+          open={true}
           variant="error"
           title="Hata!"
           message={serverError}
