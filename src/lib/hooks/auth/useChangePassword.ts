@@ -20,22 +20,17 @@ export function useChangePassword() {
     const query = new URLSearchParams(window.location.search);
     const isFromEmail = hash.includes("type=recovery") || query.has("code");
 
-    if (!isFromEmail) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        router.replace(session ? "/dashboard" : "/login");
-      });
-      return;
-    }
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (isFromEmail && session) {
         setIsRecoverySession(true);
+      } else if (isFromEmail && !session) {
+        router.replace("/login");
+      } else if (session) {
+        router.replace("/dashboard");
+      } else {
+        router.replace("/login");
       }
     });
-
-    return () => subscription.unsubscribe();
   }, [router]);
 
   const {
