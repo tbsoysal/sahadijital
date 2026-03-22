@@ -1,33 +1,10 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/satoshi/Satoshi-Regular.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/satoshi/Satoshi-Medium.woff") format("woff");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Arial";
-  src: url("/fonts/arial/ARIALBD.woff") format("woff");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
 
 @theme {
   --font-satoshi: "Satoshi", sans-serif;
-  --font-arial: "Arial", sans-serif;
 
+  --breakpoint-md: 900px;
   --breakpoint-tablet: 920px;
   --breakpoint-desktop: 1440px;
 
@@ -37,12 +14,20 @@
 }
 
 @layer base {
-  body {
-    @apply font-satoshi text-primary-color;
-  }
-
   html {
     scroll-behavior: smooth;
+    @apply font-satoshi;
+  }
+
+  body {
+    @apply text-primary-color;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font-family: inherit;
   }
 }
 

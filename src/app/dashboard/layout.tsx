@@ -67,7 +67,7 @@ export function DashboardContent({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page content */}
-        <div className="tablet:p-8 flex-1 overflow-auto">{children}</div>
+        <div className="flex-1 overflow-auto md:p-8">{children}</div>
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ export default function Navbar() {
           height={36}
           className="h-9 w-9"
         />
-        <span className="font-arial text-xl font-bold text-[#039855]">
+        <span className="text-xl font-bold text-[#039855]">
           Saha Dijital
         </span>
       </Link>
@@ -86,7 +86,7 @@ export default function Navbar() {
                 height={36}
                 className="h-9 w-9"
               />
-              <span className="font-arial text-xl font-bold text-[#039855]">
+              <span className="text-xl font-bold text-[#039855]">
                 Saha Dijital
               </span>
             </Link>

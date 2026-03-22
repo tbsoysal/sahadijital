@@ -54,10 +54,10 @@ export function WeeklyCalendar() {
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-visible border-t border-r border-l border-gray-200 bg-white md:rounded-xl">
-      <div className="tablet:justify-center tablet:gap-5 col-span-1 flex items-center justify-between px-3 py-2">
+      <div className="col-span-1 flex items-center justify-between px-3 py-2 md:justify-center md:gap-5">
         <button
           onClick={prevWeek}
-          className="text-md tablet:text-xl cursor-pointer leading-none font-medium text-gray-700 hover:text-gray-600"
+          className="text-md cursor-pointer leading-none font-medium text-gray-700 hover:text-gray-600 md:text-xl"
         >
           ‹
         </button>
@@ -72,7 +72,7 @@ export function WeeklyCalendar() {
         </div>
         <button
           onClick={nextWeek}
-          className="text-md tablet:text-xl cursor-pointer leading-none font-medium text-gray-700 hover:text-gray-600 md:p-2"
+          className="text-md cursor-pointer leading-none font-medium text-gray-700 hover:text-gray-600 md:p-2 md:text-xl"
         >
           ›
         </button>
@@ -102,7 +102,7 @@ export function WeeklyCalendar() {
               </div>
               {/* Tablet/Desktop: inline pill */}
               <span
-                className={`hidden items-center gap-1 rounded-full px-2.5 py-1 text-base md:flex ${
+                className={`hidden items-center gap-1 rounded-full px-2 py-1 text-base md:flex ${
                   isToday(day) ? "bg-[#12B76A] text-white" : "text-gray-700"
                 }`}
               >
