@@ -13,8 +13,11 @@ export default function Sidebar() {
   return (
     <aside
       className={cn(
-        "fixed top-0 left-0 z-50 h-full w-64 bg-white transition-transform duration-300",
+        // Mobile: fixed overlay, toggled via isSidebarOpen
+        "fixed top-0 left-0 z-50 h-full w-64 shrink-0 bg-white shadow-lg transition-transform duration-300",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full",
+        // md+: always visible, part of normal flow
+        "md:relative md:translate-x-0 md:shadow-none",
       )}
     >
       <div className="flex h-full flex-col justify-between p-4">

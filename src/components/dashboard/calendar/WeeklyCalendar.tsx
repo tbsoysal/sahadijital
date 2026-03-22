@@ -4,7 +4,7 @@ import { tr } from "date-fns/locale";
 import { useEffect } from "react";
 import { ReservationMenu } from "./ReservationMenu";
 
-const DAY_LABELS = ["P", "S", "Ç", "P", "C", "C", "P"];
+const DAY_LABELS = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
 
 export function WeeklyCalendar() {
   const {
@@ -52,26 +52,27 @@ export function WeeklyCalendar() {
     );
   };
 
-
   return (
-    <div className="relative flex min-h-screen flex-col overflow-visible border-t border-r border-l border-gray-200 bg-white">
-      <div className="col-span-1 flex items-center justify-between px-3 py-2">
+    <div className="relative flex min-h-screen flex-col overflow-visible border-t border-r border-l border-gray-200 bg-white md:rounded-xl">
+      <div className="tablet:justify-center tablet:gap-5 col-span-1 flex items-center justify-between px-3 py-2">
         <button
           onClick={prevWeek}
-          className="text-md leading-none font-medium text-gray-700 hover:text-gray-600"
+          className="text-md tablet:text-xl cursor-pointer leading-none font-medium text-gray-700 hover:text-gray-600"
         >
           ‹
         </button>
         <div className="flex flex-col items-center">
-          <p className="font-medium">
+          <p className="font-medium md:text-lg">
             {format(weekDays[0], "d MMMM", { locale: tr })} -{" "}
             {format(weekDays[6], "d MMMM", { locale: tr })}
           </p>
-          <p className="text-xs text-gray-400">{reservations.length} rezervasyon</p>
+          <p className="text-xs text-gray-400 md:text-lg">
+            {reservations.length} rezervasyon
+          </p>
         </div>
         <button
           onClick={nextWeek}
-          className="text-md font-m leading-none text-gray-700 hover:text-gray-600"
+          className="text-md tablet:text-xl cursor-pointer leading-none font-medium text-gray-700 hover:text-gray-600 md:p-2"
         >
           ›
         </button>
@@ -79,90 +80,115 @@ export function WeeklyCalendar() {
       {/* Scrollable time grid */}
       <div>
         {/* Week header */}
-        <div className="grid grid-cols-[56px_repeat(7,1fr)] border-b border-gray-200 bg-white">
+        <div className="grid grid-cols-[56px_repeat(7,1fr)] border-b border-gray-200 bg-white md:grid-cols-[74px_repeat(7,1fr)] md:border-gray-300">
           <div></div>
           {weekDays.map((day, i) => (
-            <div key={i} className="flex flex-col items-center gap-0.5 py-2">
-              <span className="text-[11px] font-medium text-gray-400">
-                {DAY_LABELS[i]}
-              </span>
+            <div
+              key={i}
+              className="flex items-center justify-center py-2 md:py-3"
+            >
+              {/* Mobile: stacked label + number circle */}
+              <div className="flex flex-col items-center gap-0.5 md:hidden">
+                <span className="text-[11px] font-medium text-gray-400">
+                  {DAY_LABELS[i]}
+                </span>
+                <span
+                  className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold ${
+                    isToday(day) ? "bg-[#12B76A] text-white" : "text-gray-800"
+                  }`}
+                >
+                  {day.getDate()}
+                </span>
+              </div>
+              {/* Tablet/Desktop: inline pill */}
               <span
-                className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold ${
-                  isToday(day) ? "bg-green-500 text-white" : "text-gray-800"
+                className={`hidden items-center gap-1 rounded-full px-2.5 py-1 text-base md:flex ${
+                  isToday(day) ? "bg-[#12B76A] text-white" : "text-gray-700"
                 }`}
               >
-                {day.getDate()}
+                <span className="mr-1 text-lg font-bold">{day.getDate()}</span>
+                <span
+                  className={`text-lg font-normal ${isToday(day) ? "text-white" : "text-gray-500"}`}
+                >
+                  {DAY_LABELS[i]}
+                </span>
               </span>
             </div>
           ))}
         </div>
 
-        {isFetching ? (
-          Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="grid min-h-12 grid-cols-[56px_repeat(7,1fr)]">
-              <div className="flex items-center justify-end pr-2">
-                <div className="h-3 w-8 animate-pulse rounded bg-gray-100" />
+        {isFetching
+          ? Array.from({ length: 8 }).map((_, i) => (
+              <div
+                key={i}
+                className="grid min-h-12 grid-cols-[56px_repeat(7,1fr)] md:min-h-16 md:grid-cols-[74px_repeat(7,1fr)]"
+              >
+                <div className="flex items-center justify-end pr-2">
+                  <div className="h-3 w-8 animate-pulse rounded bg-gray-100" />
+                </div>
+                {Array.from({ length: 7 }).map((_, j) => (
+                  <div
+                    key={j}
+                    className="border-b border-l border-gray-100 p-1"
+                  >
+                    {i % 3 === 0 && j % 2 === 0 && (
+                      <div className="h-full w-full animate-pulse rounded-lg bg-gray-100" />
+                    )}
+                  </div>
+                ))}
               </div>
-              {Array.from({ length: 7 }).map((_, j) => (
-                <div key={j} className="border-b border-l border-gray-100 p-1">
-                  {i % 3 === 0 && j % 2 === 0 && (
-                    <div className="h-full w-full animate-pulse rounded-lg bg-gray-100" />
-                  )}
+            ))
+          : hours.map((hour) => (
+              <div
+                key={hour}
+                className="grid min-h-12 grid-cols-[56px_repeat(7,1fr)] md:min-h-16 md:grid-cols-[74px_repeat(7,1fr)]"
+              >
+                {/* Hour label */}
+                <div className="relative -bottom-2 flex items-end justify-end pt-1 pr-2 text-sm font-medium text-[#717680] md:justify-center md:text-base">
+                  {String(hour).padStart(2, "0")}:00
                 </div>
-              ))}
-            </div>
-          ))
-        ) : hours.map((hour) => (
-          <div
-            key={hour}
-            className="grid min-h-12 grid-cols-[56px_repeat(7,1fr)]"
-          >
-            {/* Hour label */}
-            <div className="relative -bottom-2 flex items-end justify-end pt-1 pr-2 text-sm font-medium text-[#717680]">
-              {String(hour).padStart(2, "0")}:00
-            </div>
 
-            {/* Day cells */}
-            {weekDays.map((day, di) => {
-              const slotReservations = getSlotReservations(day, hour);
-              const isSelected =
-                selectedSlot &&
-                isSameDay(selectedSlot.day, day) &&
-                selectedSlot.hour === hour;
+                {/* Day cells */}
+                {weekDays.map((day, di) => {
+                  const slotReservations = getSlotReservations(day, hour);
+                  const isSelected =
+                    selectedSlot &&
+                    isSameDay(selectedSlot.day, day) &&
+                    selectedSlot.hour === hour;
 
-              return (
-                <div
-                  key={di}
-                  onClick={() => setSelectedSlot({ day, hour })}
-                  className={`cursor-pointer overflow-hidden border-b border-l border-gray-100 p-0.5 transition-colors ${
-                    isSelected ? "bg-green-50" : "hover:bg-gray-50"
-                  }`}
-                >
-                  {slotReservations.map((r) => (
+                  return (
                     <div
-                      key={r.id}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedSlot({ day, hour, reservation: r });
-                      }}
-                      className={`mb-0.5 h-full rounded-lg px-1.5 py-1 text-[10px] ${r.is_paid ? "bg-green-500 text-white" : "bg-gray-400 text-gray-600"}`}
+                      key={di}
+                      onClick={() => setSelectedSlot({ day, hour })}
+                      className={`cursor-pointer overflow-hidden border-b border-l border-gray-100 p-0.5 transition-colors md:border-gray-300 ${
+                        isSelected ? "bg-[#12B76A]" : "hover:bg-gray-50"
+                      }`}
                     >
-                      <p className="truncate leading-tight font-semibold">
-                        {r.customer_name}
-                      </p>
+                      {slotReservations.map((r) => (
+                        <div
+                          key={r.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedSlot({ day, hour, reservation: r });
+                          }}
+                          className={`mb-0.5 h-full rounded-lg px-1.5 py-1 text-[10px] md:text-xs ${r.is_paid ? "bg-[#12B76A] text-white" : "bg-gray-400 text-gray-600"}`}
+                        >
+                          <p className="truncate leading-tight font-semibold">
+                            {r.customer_name}
+                          </p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
-        ))}
+                  );
+                })}
+              </div>
+            ))}
       </div>
 
       {/* Add button */}
       <button
         onClick={() => setSelectedSlot({ day: new Date(), hour: hours[0] })}
-        className="fixed right-6 bottom-6 z-40 flex h-9 w-9 items-center justify-center rounded-xl bg-green-500 text-xl text-white shadow-md transition-colors hover:bg-green-600"
+        className="fixed right-6 bottom-6 z-40 flex h-9 w-9 items-center justify-center rounded-xl bg-[#12B76A] text-xl text-white shadow-md transition-colors hover:bg-[#12B76A] md:hidden"
       >
         +
       </button>

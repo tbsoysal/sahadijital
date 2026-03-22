@@ -38,9 +38,13 @@ export function useDashboard() {
 
       try {
         const fields = await calendarService.fetchFields(userId);
-        if (fields.length < 2) {
-          setSelectedField(fields[0]);
-        }
+        const savedFieldId = localStorage.getItem(
+          `sahadijital_selected_field_${userId}`,
+        );
+        const savedField = savedFieldId
+          ? fields.find((f) => f.id === savedFieldId)
+          : undefined;
+        setSelectedField(savedField ?? fields[0]);
         setFields(fields);
       } catch (error) {
         if (error instanceof Error) throw error;
@@ -52,6 +56,11 @@ export function useDashboard() {
     fetchFields(userData.id);
   }, [userData.id]);
 
+  const handleSetSelectedField = (field: Field) => {
+    setSelectedField(field);
+    localStorage.setItem(`sahadijital_selected_field_${userData.id}`, field.id);
+  };
+
   return {
     userData,
     setUserData,
@@ -60,7 +69,7 @@ export function useDashboard() {
     fields,
     setFields,
     selectedField,
-    setSelectedField,
+    setSelectedField: handleSetSelectedField,
     selectedView,
     setSelectedView,
   };

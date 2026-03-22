@@ -25,44 +25,50 @@ export function DashboardContent({ children }: { children: React.ReactNode }) {
   const { userData, isSidebarOpen, setIsSidebarOpen } = useDashboardContext();
 
   return (
-    <div className="flex h-screen flex-col bg-[#F5F5F5]">
-      {/* 1. The Backdrop Layer */}
+    <div className="flex h-screen bg-[#F5F5F5]">
+      {/* Backdrop — mobile only */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/20 backdrop-blur-sm"
+          className="fixed inset-0 z-20 bg-black/20 backdrop-blur-sm md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
-      {/* Header Bar */}
-      <header className="sticky top-0 right-0 left-0 z-10 flex h-14 items-center justify-between bg-white px-5 py-4 shadow-sm">
-        {/* Left Side */}
-        <button
-          onClick={() => setIsSidebarOpen((prev) => !prev)}
-          className="cursor-pointer p-1 transition-colors hover:bg-gray-200"
-        >
-          <AlignJustify className="h6 w-6" />
-        </button>
-
-        {/* Center: Logo + App Name */}
-        <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2">
-          <Image
-            src="/images/sahadijital-logo.svg"
-            alt="SahaDijital Logo"
-            width={28}
-            height={28}
-          />
-          <span className="text-primary text-sm font-bold">SahaDijital</span>
-        </div>
-
-        {/* Right Side: Business Name */}
-        <p className="text-sm text-gray-600">{userData.businessName}</p>
-      </header>
-
       {/* Sidebar */}
       <Sidebar />
 
-      <div>{children}</div>
+      {/* Main area */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {/* Header Bar */}
+        <header className="sticky top-0 z-10 flex h-14 items-center justify-between bg-white px-5 py-4 shadow-sm md:static md:mx-8 md:rounded-lg">
+          {/* Hamburger — mobile only */}
+          <button
+            onClick={() => setIsSidebarOpen((prev) => !prev)}
+            className="cursor-pointer p-1 transition-colors hover:bg-gray-200 md:hidden"
+          >
+            <AlignJustify className="h6 w-6" />
+          </button>
+
+          {/* Center: Logo + App Name — mobile only */}
+          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2 md:static md:translate-x-0">
+            <Image
+              src="/images/sahadijital-logo.svg"
+              alt="SahaDijital Logo"
+              width={28}
+              height={28}
+            />
+            <span className="text-primary text-sm font-bold">SahaDijital</span>
+          </div>
+
+          {/* Right Side: Business Name */}
+          <p className="ml-auto text-sm text-gray-600">
+            {userData.businessName}
+          </p>
+        </header>
+
+        {/* Page content */}
+        <div className="tablet:p-8 flex-1 overflow-auto">{children}</div>
+      </div>
     </div>
   );
 }

@@ -126,7 +126,8 @@ export default function FieldsSection() {
                       onClick={() =>
                         setDeleteTarget({ id: field.id, name: field.name })
                       }
-                      className="cursor-pointer rounded-md p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                      disabled={fields.length === 1 ? true : false}
+                      className="cursor-pointer rounded-md p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 disabled:hidden"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -182,7 +183,7 @@ export default function FieldsSection() {
                 Vazgeç
               </Button>
               <Button
-                className="flex-1 !bg-red-500 !text-white active:!bg-red-700"
+                className="flex-1 bg-red-500! text-white! active:bg-red-700!"
                 onClick={handleDeleteConfirm}
               >
                 Sil
