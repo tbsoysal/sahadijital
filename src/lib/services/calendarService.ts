@@ -95,4 +95,30 @@ export const calendarService = {
     if (error) throw error;
     return data;
   },
+
+  addField: async (userId: string, name: string) => {
+    const { data, error } = await supabase
+      .from("fields")
+      .insert({ user_id: userId, name })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  renameField: async (fieldId: string, name: string) => {
+    const { error } = await supabase
+      .from("fields")
+      .update({ name })
+      .eq("id", fieldId);
+
+    if (error) throw error;
+  },
+
+  deleteField: async (fieldId: string) => {
+    const { error } = await supabase.from("fields").delete().eq("id", fieldId);
+
+    if (error) throw error;
+  },
 };

@@ -54,9 +54,11 @@ export function useDashboard() {
 
   return {
     userData,
+    setUserData,
     isSidebarOpen,
     setIsSidebarOpen,
     fields,
+    setFields,
     selectedField,
     setSelectedField,
     selectedView,
