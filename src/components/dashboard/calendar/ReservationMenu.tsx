@@ -91,7 +91,7 @@ export function ReservationMenu({
         <button
           type="button"
           onClick={onClose}
-          className="text-sm font-medium text-gray-500"
+          className="cursor-pointer text-sm font-medium text-gray-500"
         >
           Vazgeç
         </button>
@@ -101,7 +101,7 @@ export function ReservationMenu({
               type="button"
               onClick={onDelete}
               disabled={isDeleting}
-              className="text-sm font-semibold text-red-500 disabled:opacity-50"
+              className="cursor-pointer text-sm font-semibold text-red-500 disabled:opacity-50"
             >
               {isDeleting ? "Siliniyor..." : "Sil"}
             </button>
@@ -109,7 +109,7 @@ export function ReservationMenu({
           <button
             type="submit"
             disabled={isLoading}
-            className="text-sm font-semibold text-green-600 disabled:opacity-50"
+            className="cursor-pointer text-sm font-semibold text-green-600 disabled:opacity-50"
           >
             {isLoading
               ? "Kaydediliyor..."

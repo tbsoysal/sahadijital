@@ -22,16 +22,27 @@ export const profileService = {
     updateField: "password" | "full_name" | "business_name" | "email",
     newValue: string,
   ) => {
-    let updatePayload = {};
-    if (updateField === "full_name")
-      updatePayload = { data: { full_name: newValue } };
-    else if (updateField === "password") updatePayload = { password: newValue };
-    else if (updateField === "business_name")
-      updatePayload = { data: { business_name: newValue } };
-    else if (updateField === "email") updatePayload = { email: newValue };
+    if (updateField === "full_name" || updateField === "business_name") {
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+      if (authError || !user) throw authError;
 
-    const { error } = await supabase.auth.updateUser(updatePayload);
-
-    if (error) throw error;
+      const column =
+        updateField === "full_name" ? "full_name" : "business_name";
+      const { error } = await supabase
+        .from("profiles")
+        .update({ [column]: newValue })
+        .eq("id", user.id);
+      if (error) throw error;
+    } else {
+      const payload =
+        updateField === "password"
+          ? { password: newValue }
+          : { email: newValue };
+      const { error } = await supabase.auth.updateUser(payload);
+      if (error) throw error;
+    }
   },
 };

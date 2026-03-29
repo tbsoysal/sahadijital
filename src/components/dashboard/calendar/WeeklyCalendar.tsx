@@ -53,11 +53,11 @@ export function WeeklyCalendar() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-visible border-t border-r border-l border-gray-200 bg-white md:rounded-xl">
+    <div className="relative flex h-full flex-col overflow-hidden border-t border-r border-l border-gray-200 bg-white md:rounded-xl">
       <div className="col-span-1 flex items-center justify-between px-3 py-2 md:justify-center md:gap-5">
         <button
           onClick={prevWeek}
-          className="text-md cursor-pointer leading-none font-medium text-gray-700 hover:text-gray-600 md:text-xl"
+          className="cursor-pointer p-2 text-2xl leading-none font-medium text-gray-700 hover:text-gray-600 md:text-4xl"
         >
           ‹
         </button>
@@ -72,56 +72,67 @@ export function WeeklyCalendar() {
         </div>
         <button
           onClick={nextWeek}
-          className="text-md cursor-pointer leading-none font-medium text-gray-700 hover:text-gray-600 md:p-2 md:text-xl"
+          className="cursor-pointer p-2 text-2xl leading-none font-medium text-gray-700 hover:text-gray-600 md:text-4xl"
         >
           ›
         </button>
       </div>
-      {/* Scrollable time grid */}
-      <div>
-        {/* Week header */}
-        <div className="grid grid-cols-[56px_repeat(7,1fr)] border-b border-gray-200 bg-white md:grid-cols-[74px_repeat(7,1fr)] md:border-gray-300">
-          <div></div>
-          {weekDays.map((day, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-center py-2 md:py-3"
-            >
-              {/* Mobile: stacked label + number circle */}
-              <div className="flex flex-col items-center gap-0.5 md:hidden">
-                <span className="text-[11px] font-medium text-gray-400">
-                  {DAY_LABELS[i]}
-                </span>
-                <span
-                  className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold ${
-                    isToday(day) ? "bg-[#12B76A] text-white" : "text-gray-800"
-                  }`}
-                >
-                  {day.getDate()}
-                </span>
-              </div>
-              {/* Tablet/Desktop: inline pill */}
+      {/* Color legend */}
+      <div className="flex items-center justify-center gap-4 border-b border-gray-100 px-3 py-1.5 md:border-gray-300">
+        <div className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#12B76A]" />
+          <span className="text-xs text-gray-500">Ödendi</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-gray-400" />
+          <span className="text-xs text-gray-500">Ödenmedi</span>
+        </div>
+      </div>
+      {/* Week header — fixed, does not scroll */}
+      <div className="grid shrink-0 grid-cols-[56px_repeat(7,1fr)] border-b border-gray-200 bg-white md:grid-cols-[74px_repeat(7,1fr)] md:border-gray-300">
+        <div></div>
+        {weekDays.map((day, i) => (
+          <div
+            key={i}
+            className="flex items-center justify-center py-2 md:py-3"
+          >
+            {/* Mobile: stacked label + number circle */}
+            <div className="flex flex-col items-center gap-0.5 md:hidden">
+              <span className="text-[11px] font-medium text-gray-400">
+                {DAY_LABELS[i]}
+              </span>
               <span
-                className={`hidden items-center gap-1 rounded-full px-2 py-1 text-base md:flex ${
-                  isToday(day) ? "bg-[#12B76A] text-white" : "text-gray-700"
+                className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold ${
+                  isToday(day) ? "bg-[#12B76A] text-white" : "text-gray-800"
                 }`}
               >
-                <span className="mr-1 text-lg font-bold">{day.getDate()}</span>
-                <span
-                  className={`text-lg font-normal ${isToday(day) ? "text-white" : "text-gray-500"}`}
-                >
-                  {DAY_LABELS[i]}
-                </span>
+                {day.getDate()}
               </span>
             </div>
-          ))}
-        </div>
+            {/* Tablet/Desktop: inline pill */}
+            <span
+              className={`hidden items-center gap-1 rounded-full px-2 py-1 text-base md:flex ${
+                isToday(day) ? "bg-[#12B76A] text-white" : "text-gray-700"
+              }`}
+            >
+              <span className="mr-1 text-lg font-bold">{day.getDate()}</span>
+              <span
+                className={`text-lg font-normal ${isToday(day) ? "text-white" : "text-gray-500"}`}
+              >
+                {DAY_LABELS[i]}
+              </span>
+            </span>
+          </div>
+        ))}
+      </div>
 
+      {/* Time slot rows — only this area scrolls */}
+      <div className="flex-1 overflow-y-auto">
         {isFetching
           ? Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="grid min-h-12 grid-cols-[56px_repeat(7,1fr)] md:min-h-16 md:grid-cols-[74px_repeat(7,1fr)]"
+                className="grid h-12 grid-cols-[56px_repeat(7,1fr)] md:h-16 md:grid-cols-[74px_repeat(7,1fr)]"
               >
                 <div className="flex items-center justify-end pr-2">
                   <div className="h-3 w-8 animate-pulse rounded bg-gray-100" />
@@ -141,7 +152,7 @@ export function WeeklyCalendar() {
           : hours.map((hour) => (
               <div
                 key={hour}
-                className="grid min-h-12 grid-cols-[56px_repeat(7,1fr)] md:min-h-16 md:grid-cols-[74px_repeat(7,1fr)]"
+                className="grid h-12 grid-cols-[56px_repeat(7,1fr)] md:h-16 md:grid-cols-[74px_repeat(7,1fr)]"
               >
                 {/* Hour label */}
                 <div className="relative -bottom-2 flex items-end justify-end pt-1 pr-2 text-sm font-medium text-[#717680] md:justify-center md:text-base">
@@ -161,7 +172,9 @@ export function WeeklyCalendar() {
                       key={di}
                       onClick={() => setSelectedSlot({ day, hour })}
                       className={`cursor-pointer overflow-hidden border-b border-l border-gray-100 p-0.5 transition-colors md:border-gray-300 ${
-                        isSelected ? "bg-[#12B76A]" : "hover:bg-gray-50"
+                        isSelected
+                          ? "ring-2 ring-[#12B76A] ring-inset"
+                          : "hover:bg-gray-50"
                       }`}
                     >
                       {slotReservations.map((r) => (
@@ -175,6 +188,10 @@ export function WeeklyCalendar() {
                         >
                           <p className="truncate leading-tight font-semibold">
                             {r.customer_name}
+                          </p>
+                          <p className="hidden leading-tight font-semibold opacity-80 md:block">
+                            {r.start_time.slice(0, 5)} -{" "}
+                            {r.end_time.slice(0, 5)}
                           </p>
                         </div>
                       ))}
@@ -193,9 +210,9 @@ export function WeeklyCalendar() {
         +
       </button>
       {selectedSlot && (
-        <div className="fixed inset-0 z-50 flex items-end">
+        <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
           <div className="absolute inset-0 bg-black/30" onClick={closeMenu} />
-          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-transform backface-hidden">
+          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-transform backface-hidden md:max-h-[90vh] md:max-w-lg md:overflow-hidden md:rounded-2xl">
             <ReservationMenu
               slot={selectedSlot}
               onClose={closeMenu}

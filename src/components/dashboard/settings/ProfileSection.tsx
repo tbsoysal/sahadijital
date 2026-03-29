@@ -33,7 +33,8 @@ export default function ProfileSection({
   });
 
   // save logic
-  const { setUserData } = useDashboardContext();
+  const { setUserData, userData } = useDashboardContext();
+  const isLoadingData = !userData.id;
   const [loading, setLoading] = useState(false);
   const handleSave = async () => {
     setLoading(true);
@@ -73,18 +74,18 @@ export default function ProfileSection({
           <div className="flex gap-4">
             <InputBox
               label="Ad"
-              value={firstName ? firstName : "Yükleniyor..."}
+              value={isLoadingData ? "Yükleniyor..." : firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
             <InputBox
               label="Soyad"
-              value={lastName ? lastName : "Yükleniyor..."}
+              value={isLoadingData ? "Yükleniyor..." : lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
           </div>
           <InputBox
             label="İşletme Adı"
-            value={businessName ? businessName : "Yükleniyor..."}
+            value={isLoadingData ? "Yükleniyor..." : businessName}
             onChange={(e) => setBusinessName(e.target.value)}
           />
           <Button

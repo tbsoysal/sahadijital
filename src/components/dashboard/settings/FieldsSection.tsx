@@ -82,6 +82,20 @@ export default function FieldsSection() {
   return (
     <>
       <SettingsCard title="Saha Yönetimi">
+        <p className="mb-4 text-sm text-gray-500">
+          Tesisinizdeki sahaları buradan yönetebilirsiniz. Her saha için ayrı
+          bir rezervasyon takvimi oluşturulur. Saha adını düzenlemek için{" "}
+          <span className="inline-flex items-center gap-1 font-medium text-gray-700">
+            <Pencil className="inline h-3.5 w-3.5" /> kalem
+          </span>{" "}
+          ikonuna, silmek için{" "}
+          <span className="inline-flex items-center gap-1 font-medium text-gray-700">
+            <Trash2 className="inline h-3.5 w-3.5" /> çöp kutusu
+          </span>{" "}
+          ikonuna tıklayın. Yeni saha eklemek için aşağıdaki alana saha adını
+          yazıp <span className="font-medium text-gray-700">Ekle</span>{" "}
+          butonuna basın.
+        </p>
         <div className="flex flex-col gap-3">
           {/* Field List */}
           {fields && fields.length > 0 ? (
@@ -142,7 +156,7 @@ export default function FieldsSection() {
           {/* Add New Field */}
           <div className="mt-2 flex gap-2">
             <input
-              className="flex-1 rounded-lg border border-[#A4A7AE] bg-white px-3.5 py-3 text-base font-medium focus:outline-none"
+              className="min-w-0 flex-1 rounded-lg border border-[#A4A7AE] bg-white px-3.5 py-3 text-base font-medium focus:outline-none"
               placeholder="Yeni saha adı"
               value={newFieldName}
               onChange={(e) => setNewFieldName(e.target.value)}
@@ -151,7 +165,7 @@ export default function FieldsSection() {
             <Button
               onClick={handleAdd}
               disabled={!newFieldName.trim()}
-              className="gap-1.5"
+              className="shrink-0 gap-1.5"
             >
               <Plus className="h-4 w-4" />
               Ekle

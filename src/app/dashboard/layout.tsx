@@ -8,6 +8,7 @@ import {
   DashboardProvider,
 } from "@/context/DashboardContext";
 import React from "react";
+import Link from "next/link";
 
 export default function DashboardLayout({
   children,
@@ -50,7 +51,10 @@ export function DashboardContent({ children }: { children: React.ReactNode }) {
           </button>
 
           {/* Center: Logo + App Name — mobile only */}
-          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2 md:static md:translate-x-0">
+          <Link
+            href="/dashboard"
+            className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2 md:static md:translate-x-0"
+          >
             <Image
               src="/images/sahadijital-logo.svg"
               alt="SahaDijital Logo"
@@ -58,10 +62,10 @@ export function DashboardContent({ children }: { children: React.ReactNode }) {
               height={28}
             />
             <span className="text-primary text-sm font-bold">SahaDijital</span>
-          </div>
+          </Link>
 
           {/* Right Side: Business Name */}
-          <p className="ml-auto text-sm text-gray-600">
+          <p className="ml-auto max-w-[30%] truncate text-sm text-gray-600">
             {userData.businessName}
           </p>
         </header>
