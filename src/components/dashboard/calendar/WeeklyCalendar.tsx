@@ -224,7 +224,6 @@ export function WeeklyCalendar() {
         <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
           <div className="absolute inset-0 bg-black/30" onClick={closeMenu} />
           <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-transform md:max-h-[90vh] md:max-w-lg md:overflow-hidden md:rounded-2xl">
-            <div style={{ contentVisibility: menuContentVisible ? "visible" : "hidden" }}>
             <ReservationMenu
               slot={selectedSlot}
               onClose={closeMenu}
@@ -242,8 +241,8 @@ export function WeeklyCalendar() {
                   : undefined
               }
               isDeleting={isDeleting}
+              contentVisible={menuContentVisible}
             />
-            </div>
           </div>
         </div>
       )}
