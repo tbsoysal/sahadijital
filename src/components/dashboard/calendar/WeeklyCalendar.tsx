@@ -1,11 +1,108 @@
+"use client";
+
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
+import { Reservation, Slot } from "@/types";
 import { addDays, format, isSameDay, isToday } from "date-fns";
 import { tr } from "date-fns/locale";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
+import { memo, useCallback, useEffect } from "react";
 import { ReservationMenu } from "./ReservationMenu";
 
 const DAY_LABELS = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
+
+interface CalendarGridProps {
+  weekDays: Date[];
+  hours: number[];
+  reservations: Reservation[];
+  isFetching: boolean;
+  onSlotClick: (slot: Slot) => void;
+}
+
+const CalendarGrid = memo(function CalendarGrid({
+  weekDays,
+  hours,
+  reservations,
+  isFetching,
+  onSlotClick,
+}: CalendarGridProps) {
+  const getSlotReservations = (day: Date, hour: number) => {
+    if (hour === 0) {
+      return reservations.filter(
+        (r) =>
+          isSameDay(new Date(r.reservation_date), day) &&
+          parseInt(r.end_time) === 0,
+      );
+    }
+    const reservationDay = hour === 1 ? addDays(day, 1) : day;
+    return reservations.filter(
+      (r) =>
+        isSameDay(new Date(r.reservation_date), reservationDay) &&
+        parseInt(r.start_time) < hour &&
+        parseInt(r.end_time) >= hour,
+    );
+  };
+
+  return (
+    <div className="flex-1 overflow-y-auto">
+      {isFetching
+        ? Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={i}
+              className="grid h-12 grid-cols-[56px_repeat(7,1fr)] md:h-16 md:grid-cols-[74px_repeat(7,1fr)]"
+            >
+              <div className="flex items-center justify-end pr-2">
+                <div className="h-3 w-8 animate-pulse rounded bg-gray-100" />
+              </div>
+              {Array.from({ length: 7 }).map((_, j) => (
+                <div key={j} className="border-b border-l border-gray-100 p-1">
+                  {i % 3 === 0 && j % 2 === 0 && (
+                    <div className="h-full w-full animate-pulse rounded-lg bg-gray-100" />
+                  )}
+                </div>
+              ))}
+            </div>
+          ))
+        : hours.map((hour) => (
+            <div
+              key={hour}
+              className="grid h-12 grid-cols-[56px_repeat(7,1fr)] md:h-16 md:grid-cols-[74px_repeat(7,1fr)]"
+            >
+              <div className="relative -bottom-2 flex items-end justify-end pt-1 pr-2 text-sm font-medium text-[#717680] md:justify-center md:text-base">
+                {String(hour).padStart(2, "0")}:00
+              </div>
+              {weekDays.map((day, di) => {
+                const slotReservations = getSlotReservations(day, hour);
+                return (
+                  <div
+                    key={di}
+                    onClick={() => onSlotClick({ day, hour })}
+                    className="cursor-pointer overflow-hidden border-b border-l border-gray-100 p-0.5 hover:bg-gray-50 md:border-gray-300"
+                  >
+                    {slotReservations.map((r) => (
+                      <div
+                        key={r.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSlotClick({ day, hour, reservation: r });
+                        }}
+                        className={`mb-0.5 h-full rounded-lg px-1.5 py-1 text-[10px] md:text-xs ${r.is_paid ? "bg-[#12B76A] text-white" : "bg-gray-400 text-gray-600"}`}
+                      >
+                        <p className="truncate leading-tight font-semibold">
+                          {r.customer_name}
+                        </p>
+                        <p className="hidden leading-tight font-semibold opacity-80 md:block">
+                          {r.start_time.slice(0, 5)} - {r.end_time.slice(0, 5)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+    </div>
+  );
+});
 
 export function WeeklyCalendar() {
   const {
@@ -29,29 +126,17 @@ export function WeeklyCalendar() {
     closeMenu,
   } = useCalendar();
 
+  const handleSlotClick = useCallback(
+    (slot: Slot) => setSelectedSlot(slot),
+    [setSelectedSlot],
+  );
+
   useEffect(() => {
     document.body.style.overflow = selectedSlot ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [selectedSlot]);
-
-  const getSlotReservations = (day: Date, hour: number) => {
-    if (hour === 0) {
-      return reservations.filter(
-        (r) =>
-          isSameDay(new Date(r.reservation_date), day) &&
-          parseInt(r.end_time) === 0,
-      );
-    }
-    const reservationDay = hour === 1 ? addDays(day, 1) : day;
-    return reservations.filter(
-      (r) =>
-        isSameDay(new Date(r.reservation_date), reservationDay) &&
-        parseInt(r.start_time) < hour &&
-        parseInt(r.end_time) >= hour,
-    );
-  };
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden border-t border-r border-l border-gray-200 bg-white md:rounded-xl">
@@ -127,81 +212,13 @@ export function WeeklyCalendar() {
         ))}
       </div>
 
-      {/* Time slot rows — only this area scrolls */}
-      <div className="flex-1 overflow-y-auto">
-        {isFetching
-          ? Array.from({ length: 8 }).map((_, i) => (
-              <div
-                key={i}
-                className="grid h-12 grid-cols-[56px_repeat(7,1fr)] md:h-16 md:grid-cols-[74px_repeat(7,1fr)]"
-              >
-                <div className="flex items-center justify-end pr-2">
-                  <div className="h-3 w-8 animate-pulse rounded bg-gray-100" />
-                </div>
-                {Array.from({ length: 7 }).map((_, j) => (
-                  <div
-                    key={j}
-                    className="border-b border-l border-gray-100 p-1"
-                  >
-                    {i % 3 === 0 && j % 2 === 0 && (
-                      <div className="h-full w-full animate-pulse rounded-lg bg-gray-100" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            ))
-          : hours.map((hour) => (
-              <div
-                key={hour}
-                className="grid h-12 grid-cols-[56px_repeat(7,1fr)] md:h-16 md:grid-cols-[74px_repeat(7,1fr)]"
-              >
-                {/* Hour label */}
-                <div className="relative -bottom-2 flex items-end justify-end pt-1 pr-2 text-sm font-medium text-[#717680] md:justify-center md:text-base">
-                  {String(hour).padStart(2, "0")}:00
-                </div>
-
-                {/* Day cells */}
-                {weekDays.map((day, di) => {
-                  const slotReservations = getSlotReservations(day, hour);
-                  const isSelected =
-                    selectedSlot &&
-                    isSameDay(selectedSlot.day, day) &&
-                    selectedSlot.hour === hour;
-
-                  return (
-                    <div
-                      key={di}
-                      onClick={() => setSelectedSlot({ day, hour })}
-                      className={`cursor-pointer overflow-hidden border-b border-l border-gray-100 p-0.5 transition-colors md:border-gray-300 ${
-                        isSelected
-                          ? "ring-2 ring-[#12B76A] ring-inset"
-                          : "hover:bg-gray-50"
-                      }`}
-                    >
-                      {slotReservations.map((r) => (
-                        <div
-                          key={r.id}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedSlot({ day, hour, reservation: r });
-                          }}
-                          className={`mb-0.5 h-full rounded-lg px-1.5 py-1 text-[10px] md:text-xs ${r.is_paid ? "bg-[#12B76A] text-white" : "bg-gray-400 text-gray-600"}`}
-                        >
-                          <p className="truncate leading-tight font-semibold">
-                            {r.customer_name}
-                          </p>
-                          <p className="hidden leading-tight font-semibold opacity-80 md:block">
-                            {r.start_time.slice(0, 5)} -{" "}
-                            {r.end_time.slice(0, 5)}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-      </div>
+      <CalendarGrid
+        weekDays={weekDays}
+        hours={hours}
+        reservations={reservations}
+        isFetching={isFetching}
+        onSlotClick={handleSlotClick}
+      />
 
       {/* Add button */}
       <button
