@@ -22,10 +22,18 @@ export function useSignup() {
   const handleSignup: SubmitHandler<SignupFormData> = async (data) => {
     const fullName = data.first_name + " " + data.last_name;
     try {
-      await authService.signUp(data.email, data.password, fullName, data.phone, data.business_name);
+      await authService.signUp(
+        data.email,
+        data.password,
+        fullName,
+        data.phone,
+        data.business_name,
+      );
       setIsSucceed(true);
     } catch (error) {
-      setServerError(error instanceof Error ? error.message : "Bir hata oluştu.");
+      setServerError(
+        error instanceof Error ? error.message : "Bir hata oluştu.",
+      );
     }
   };
 
@@ -38,7 +46,8 @@ export function useSignup() {
     handleSubmit,
     isSubmitting,
     serverError,
+    setServerError,
     isSucceed,
-    router
+    router,
   };
 }

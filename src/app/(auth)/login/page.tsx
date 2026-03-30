@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import InputBox from "@/components/auth/InputBox";
 import Button from "@/components/Button";
@@ -19,7 +19,7 @@ export default function LoginPage() {
 
   return (
     <div>
-      <div className="mx-auto mt-10 max-w-[400px] text-center">
+      <div className="mx-auto mt-10 max-w-100 text-center">
         <h2 className="text-primary-color mb-4 text-4xl font-medium">
           Hemen Giriş Yap
         </h2>

@@ -14,6 +14,7 @@ export default function SignupPage() {
     isCheckboxChecked,
     setIsCheckboxChecked,
     handleSignup,
+    setServerError,
     serverError,
     isSucceed,
     router,
@@ -149,6 +150,7 @@ export default function SignupPage() {
           title="Bir sorun oluştu!"
           message={serverError ? serverError : "Bir hata oluştu!"}
           actionText="Tamam"
+          onAction={() => setServerError(null)}
         />
       )}
     </div>
