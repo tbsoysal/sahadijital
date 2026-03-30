@@ -5,6 +5,7 @@ export type Field = {
   user_id: string;
   name: string;
   created_at: Date;
+  default_price: number;
 };
 
 export type View = {

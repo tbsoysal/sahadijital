@@ -13,6 +13,7 @@ export default function FieldsSection() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
+  const [editingPrice, setEditingPrice] = useState<number>(0);
   const [newFieldName, setNewFieldName] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<{
     id: string;
@@ -20,9 +21,14 @@ export default function FieldsSection() {
   } | null>(null);
   const [errorModal, setErrorModal] = useState({ open: false, message: "" });
 
-  const handleRenameStart = (field: { id: string; name: string }) => {
+  const handleRenameStart = (field: {
+    id: string;
+    name: string;
+    default_price: number;
+  }) => {
     setEditingId(field.id);
     setEditingName(field.name);
+    setEditingPrice(field.default_price);
   };
 
   const handleRenameCancel = () => {
@@ -33,9 +39,12 @@ export default function FieldsSection() {
   const handleRenameSave = async (fieldId: string) => {
     try {
       await calendarService.renameField(fieldId, editingName.trim());
+      await calendarService.updateFieldPrice(fieldId, editingPrice);
       setFields((prev) =>
         prev?.map((f) =>
-          f.id === fieldId ? { ...f, name: editingName.trim() } : f,
+          f.id === fieldId
+            ? { ...f, name: editingName.trim(), default_price: editingPrice }
+            : f,
         ),
       );
       setEditingId(null);
@@ -93,8 +102,8 @@ export default function FieldsSection() {
             <Trash2 className="inline h-3.5 w-3.5" /> çöp kutusu
           </span>{" "}
           ikonuna tıklayın. Yeni saha eklemek için aşağıdaki alana saha adını
-          yazıp <span className="font-medium text-gray-700">Ekle</span>{" "}
-          butonuna basın.
+          yazıp <span className="font-medium text-gray-700">Ekle</span> butonuna
+          basın.
         </p>
         <div className="flex flex-col gap-3">
           {/* Field List */}
@@ -111,6 +120,13 @@ export default function FieldsSection() {
                       value={editingName}
                       onChange={(e) => setEditingName(e.target.value)}
                       autoFocus
+                    />
+                    <input
+                      type="number"
+                      className="w-24 rounded-md border border-[#A4A7AE] bg-white px-3 py-1.5 text-base font-medium focus:outline-none"
+                      value={editingPrice}
+                      onChange={(e) => setEditingPrice(Number(e.target.value))}
+                      placeholder="₺ Fiyat"
                     />
                     <button
                       onClick={() => handleRenameSave(field.id)}
@@ -129,6 +145,9 @@ export default function FieldsSection() {
                   <>
                     <span className="flex-1 text-base font-medium text-[#181D27]">
                       {field.name}
+                    </span>
+                    <span className="text-sm font-medium text-[#12B76A]">
+                      ₺{field.default_price}
                     </span>
                     <button
                       onClick={() => handleRenameStart(field)}

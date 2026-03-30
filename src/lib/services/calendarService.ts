@@ -116,6 +116,15 @@ export const calendarService = {
     if (error) throw error;
   },
 
+  updateFieldPrice: async (fieldId: string, price: number) => {
+    const { error } = await supabase
+      .from("fields")
+      .update({ default_price: price })
+      .eq("id", fieldId);
+
+    if (error) throw error;
+  },
+
   deleteField: async (fieldId: string) => {
     const { error } = await supabase.from("fields").delete().eq("id", fieldId);
 
