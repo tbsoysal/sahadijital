@@ -1,6 +1,7 @@
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
 import { addDays, format, isSameDay, isToday } from "date-fns";
 import { tr } from "date-fns/locale";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { ReservationMenu } from "./ReservationMenu";
 
@@ -209,31 +210,46 @@ export function WeeklyCalendar() {
       >
         +
       </button>
-      {selectedSlot && (
-        <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
-          <div className="absolute inset-0 bg-black/30" onClick={closeMenu} />
-          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-[transform] md:max-h-[90vh] md:max-w-lg md:overflow-hidden md:rounded-2xl">
-            <ReservationMenu
-              slot={selectedSlot}
-              onClose={closeMenu}
-              onSave={
-                selectedSlot.reservation
-                  ? (data) =>
-                      updateReservation(selectedSlot.reservation!.id, data)
-                  : createReservation
-              }
-              isLoading={isLoading || isUpdating}
-              error={error ?? updateError ?? deleteError}
-              onDelete={
-                selectedSlot.reservation
-                  ? () => deleteReservation(selectedSlot.reservation!.id)
-                  : undefined
-              }
-              isDeleting={isDeleting}
+      <AnimatePresence>
+        {selectedSlot && (
+          <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
+            <motion.div
+              className="absolute inset-0 bg-black/30"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={closeMenu}
             />
+            <motion.div
+              className="relative w-full rounded-t-2xl bg-white shadow-xl md:max-h-[90vh] md:max-w-lg md:overflow-hidden md:rounded-2xl"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+            >
+              <ReservationMenu
+                slot={selectedSlot}
+                onClose={closeMenu}
+                onSave={
+                  selectedSlot.reservation
+                    ? (data) =>
+                        updateReservation(selectedSlot.reservation!.id, data)
+                    : createReservation
+                }
+                isLoading={isLoading || isUpdating}
+                error={error ?? updateError ?? deleteError}
+                onDelete={
+                  selectedSlot.reservation
+                    ? () => deleteReservation(selectedSlot.reservation!.id)
+                    : undefined
+                }
+                isDeleting={isDeleting}
+              />
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 }
