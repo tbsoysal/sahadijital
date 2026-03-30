@@ -1,7 +1,7 @@
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
 import { addDays, format, isSameDay, isToday } from "date-fns";
 import { tr } from "date-fns/locale";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ReservationMenu } from "./ReservationMenu";
 
 const DAY_LABELS = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
@@ -27,6 +27,17 @@ export function WeeklyCalendar() {
     deleteError,
     closeMenu,
   } = useCalendar();
+
+  const [menuReady, setMenuReady] = useState(false);
+
+  useEffect(() => {
+    if (selectedSlot) {
+      const id = requestAnimationFrame(() => setMenuReady(true));
+      return () => cancelAnimationFrame(id);
+    } else {
+      setMenuReady(false);
+    }
+  }, [selectedSlot]);
 
   useEffect(() => {
     document.body.style.overflow = selectedSlot ? "hidden" : "";
@@ -213,24 +224,26 @@ export function WeeklyCalendar() {
         <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
           <div className="absolute inset-0 bg-black/30" onClick={closeMenu} />
           <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-[transform] md:max-h-[90vh] md:max-w-lg md:overflow-hidden md:rounded-2xl">
-            <ReservationMenu
-              slot={selectedSlot}
-              onClose={closeMenu}
-              onSave={
-                selectedSlot.reservation
-                  ? (data) =>
-                      updateReservation(selectedSlot.reservation!.id, data)
-                  : createReservation
-              }
-              isLoading={isLoading || isUpdating}
-              error={error ?? updateError ?? deleteError}
-              onDelete={
-                selectedSlot.reservation
-                  ? () => deleteReservation(selectedSlot.reservation!.id)
-                  : undefined
-              }
-              isDeleting={isDeleting}
-            />
+            {menuReady && (
+              <ReservationMenu
+                slot={selectedSlot}
+                onClose={closeMenu}
+                onSave={
+                  selectedSlot.reservation
+                    ? (data) =>
+                        updateReservation(selectedSlot.reservation!.id, data)
+                    : createReservation
+                }
+                isLoading={isLoading || isUpdating}
+                error={error ?? updateError ?? deleteError}
+                onDelete={
+                  selectedSlot.reservation
+                    ? () => deleteReservation(selectedSlot.reservation!.id)
+                    : undefined
+                }
+                isDeleting={isDeleting}
+              />
+            )}
           </div>
         </div>
       )}
