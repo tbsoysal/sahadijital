@@ -10,9 +10,9 @@ const nextConfig = {
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-              "style-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline' https://api.fontshare.com",
               "img-src 'self' data: https:",
-              "font-src 'self'",
+              "font-src 'self' https://api.fontshare.com",
               "connect-src 'self' https://*.supabase.co;",
               "frame-src 'none'",
               "object-src 'none'",
