@@ -252,7 +252,7 @@ export function ReservationMenu({
                 }
                 className="h-4 w-4 rounded border-gray-300 accent-green-500"
               />
-              Ödeme yapıldı
+              Ödendi
             </label>
           </div>
           {errors.price && (
