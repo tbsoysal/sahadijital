@@ -1,7 +1,8 @@
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
+import { Slot } from "@/types";
 import { addDays, format, isSameDay, isToday } from "date-fns";
 import { tr } from "date-fns/locale";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ReservationMenu } from "./ReservationMenu";
 
 const DAY_LABELS = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
@@ -27,6 +28,13 @@ export function WeeklyCalendar() {
     deleteError,
     closeMenu,
   } = useCalendar();
+
+  const [displaySlot, setDisplaySlot] = useState<Slot>({ day: new Date(), hour: 9 });
+
+  const handleSelectSlot = (slot: Slot) => {
+    setDisplaySlot(slot);
+    setSelectedSlot(slot);
+  };
 
   useEffect(() => {
     document.body.style.overflow = selectedSlot ? "hidden" : "";
@@ -170,7 +178,7 @@ export function WeeklyCalendar() {
                   return (
                     <div
                       key={di}
-                      onClick={() => setSelectedSlot({ day, hour })}
+                      onClick={() => handleSelectSlot({ day, hour })}
                       className={`cursor-pointer overflow-hidden border-b border-l border-gray-100 p-0.5 transition-colors md:border-gray-300 ${
                         isSelected
                           ? "ring-2 ring-[#12B76A] ring-inset"
@@ -182,7 +190,7 @@ export function WeeklyCalendar() {
                           key={r.id}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setSelectedSlot({ day, hour, reservation: r });
+                            handleSelectSlot({ day, hour, reservation: r });
                           }}
                           className={`mb-0.5 h-full rounded-lg px-1.5 py-1 text-[10px] md:text-xs ${r.is_paid ? "bg-[#12B76A] text-white" : "bg-gray-400 text-gray-600"}`}
                         >
@@ -204,36 +212,47 @@ export function WeeklyCalendar() {
 
       {/* Add button */}
       <button
-        onClick={() => setSelectedSlot({ day: new Date(), hour: hours[0] })}
+        onClick={() => handleSelectSlot({ day: new Date(), hour: hours[0] })}
         className="fixed right-6 bottom-6 z-40 flex h-9 w-9 items-center justify-center rounded-xl bg-[#12B76A] text-xl text-white shadow-md transition-colors hover:bg-[#12B76A] md:hidden"
       >
         +
       </button>
-      {selectedSlot && (
-        <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
-          <div className="absolute inset-0 bg-black/30" onClick={closeMenu} />
-          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-[transform] md:max-h-[90vh] md:max-w-lg md:overflow-hidden md:rounded-2xl">
-            <ReservationMenu
-              slot={selectedSlot}
-              onClose={closeMenu}
-              onSave={
-                selectedSlot.reservation
-                  ? (data) =>
-                      updateReservation(selectedSlot.reservation!.id, data)
-                  : createReservation
-              }
-              isLoading={isLoading || isUpdating}
-              error={error ?? updateError ?? deleteError}
-              onDelete={
-                selectedSlot.reservation
-                  ? () => deleteReservation(selectedSlot.reservation!.id)
-                  : undefined
-              }
-              isDeleting={isDeleting}
-            />
-          </div>
+      <div
+        className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center"
+        style={{ pointerEvents: selectedSlot ? "auto" : "none" }}
+      >
+        <div
+          className="absolute inset-0 bg-black/30 transition-opacity duration-200"
+          style={{ opacity: selectedSlot ? 1 : 0 }}
+          onClick={closeMenu}
+        />
+        <div
+          className="relative w-full rounded-t-2xl bg-white shadow-xl will-change-transform md:max-h-[90vh] md:max-w-lg md:overflow-hidden md:rounded-2xl"
+          style={{
+            transform: selectedSlot ? "translateY(0)" : "translateY(100%)",
+            transition: "transform 0.3s ease-out",
+          }}
+        >
+          <ReservationMenu
+            slot={displaySlot}
+            onClose={closeMenu}
+            onSave={
+              displaySlot.reservation
+                ? (data) =>
+                    updateReservation(displaySlot.reservation!.id, data)
+                : createReservation
+            }
+            isLoading={isLoading || isUpdating}
+            error={error ?? updateError ?? deleteError}
+            onDelete={
+              displaySlot.reservation
+                ? () => deleteReservation(displaySlot.reservation!.id)
+                : undefined
+            }
+            isDeleting={isDeleting}
+          />
         </div>
-      )}
+      </div>
     </div>
   );
 }
