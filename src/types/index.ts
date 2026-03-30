@@ -25,6 +25,7 @@ export type Reservation = {
   price: number;
   is_paid: boolean;
   description?: string;
+  status: "confirmed" | "pending" | "rejected";
 };
 
 export type Slot = {

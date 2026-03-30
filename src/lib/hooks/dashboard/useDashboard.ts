@@ -14,6 +14,7 @@ export function useDashboard() {
     firstName: "",
     lastName: "",
     businessName: "",
+    slug: "",
   });
 
   useEffect(() => {
@@ -26,6 +27,7 @@ export function useDashboard() {
           firstName: nameParts[0],
           lastName: nameParts.slice(1).join(" "), // handles middle names
           businessName: profile.business_name || "",
+          slug: profile.slug || "",
         });
       } catch (error) {
         if (error instanceof Error) throw error;

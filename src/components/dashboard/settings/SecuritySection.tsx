@@ -37,17 +37,23 @@ export default function SecuritySection({ currentEmail }: Props) {
     resolver: zodResolver(changePasswordSchema),
   });
 
-  // TODO: wire up password save logic
   const handlePasswordSave = async (data: ChangePasswordFormData) => {
     try {
       await profileService.insertProfile("password", data.password);
-      setModal({ open: true, success: true, message: "Şifreniz başarıyla güncellendi." });
+      setModal({
+        open: true,
+        success: true,
+        message: "Şifreniz başarıyla güncellendi.",
+      });
       reset();
     } catch (error) {
       setModal({
         open: true,
         success: false,
-        message: error instanceof Error ? error.message : "Bir hata oluştu, lütfen tekrar deneyin.",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Bir hata oluştu, lütfen tekrar deneyin.",
       });
     }
   };
