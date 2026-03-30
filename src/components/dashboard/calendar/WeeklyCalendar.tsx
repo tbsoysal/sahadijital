@@ -1,7 +1,7 @@
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
 import { addDays, format, isSameDay, isToday } from "date-fns";
 import { tr } from "date-fns/locale";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ReservationMenu } from "./ReservationMenu";
 
 const DAY_LABELS = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
@@ -27,6 +27,17 @@ export function WeeklyCalendar() {
     deleteError,
     closeMenu,
   } = useCalendar();
+
+  const [menuContentVisible, setMenuContentVisible] = useState(false);
+
+  useEffect(() => {
+    if (selectedSlot) {
+      const id = setTimeout(() => setMenuContentVisible(true), 320);
+      return () => clearTimeout(id);
+    } else {
+      setMenuContentVisible(false);
+    }
+  }, [selectedSlot]);
 
   useEffect(() => {
     document.body.style.overflow = selectedSlot ? "hidden" : "";
@@ -212,7 +223,8 @@ export function WeeklyCalendar() {
       {selectedSlot && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
           <div className="absolute inset-0 bg-black/30" onClick={closeMenu} />
-          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-[transform] md:max-h-[90vh] md:max-w-lg md:overflow-hidden md:rounded-2xl">
+          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-transform md:max-h-[90vh] md:max-w-lg md:overflow-hidden md:rounded-2xl">
+            <div style={{ contentVisibility: menuContentVisible ? "visible" : "hidden" }}>
             <ReservationMenu
               slot={selectedSlot}
               onClose={closeMenu}
@@ -231,6 +243,7 @@ export function WeeklyCalendar() {
               }
               isDeleting={isDeleting}
             />
+            </div>
           </div>
         </div>
       )}
