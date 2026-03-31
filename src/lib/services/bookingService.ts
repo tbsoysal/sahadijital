@@ -1,8 +1,12 @@
 import { supabase } from "@/lib/supabase/client";
+import { Reservation } from "@/types";
 import { format } from "date-fns";
 
 export const bookingService = {
-  fetchReservationsForDay: async (fieldId: string, day: Date) => {
+  fetchReservationsForDay: async (
+    fieldId: string,
+    day: Date,
+  ): Promise<Reservation[]> => {
     const { data, error } = await supabase
       .from("reservations")
       .select("*")

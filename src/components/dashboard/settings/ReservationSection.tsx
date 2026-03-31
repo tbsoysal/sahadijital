@@ -6,7 +6,7 @@ import SettingsCard from "./SettingsCard";
 
 export default function ReservationSection({ slug }: { slug: string }) {
   const [copied, setCopied] = useState(false);
-  const url = `${typeof window !== "undefined" ? window.location.origin : ""}/rezervasyon/${slug}`;
+  const url = `${typeof window !== "undefined" ? window.location.origin : ""}/book/${slug}`;
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(url);
