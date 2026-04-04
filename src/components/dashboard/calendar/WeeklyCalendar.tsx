@@ -83,8 +83,8 @@ export function WeeklyCalendar() {
             {format(weekDays[0], "d MMMM", { locale: tr })} -{" "}
             {format(weekDays[6], "d MMMM", { locale: tr })}
           </p>
-          <div className="flex-col items-center gap-2">
-            <p className="text-xs text-gray-400 md:text-lg">
+          <div className="flex-col justify-center gap-2">
+            <p className="text-center text-xs text-gray-400 md:text-lg">
               {reservations.length} rezervasyon
             </p>
             {reservations.filter((r) => r.status === "pending").length > 0 && (
