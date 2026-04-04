@@ -9,11 +9,12 @@ import { useDashboardContext } from "@/context/DashboardContext";
 import { calendarService } from "@/lib/services/calendarService";
 
 export default function FieldsSection() {
-  const { fields, setFields, userData } = useDashboardContext();
+  const { fields, setFields, userData, selectedField, setSelectedField } =
+    useDashboardContext();
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
-  const [editingPrice, setEditingPrice] = useState<number>(0);
+  const [editingPrice, setEditingPrice] = useState<string>("");
   const [newFieldName, setNewFieldName] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<{
     id: string;
@@ -28,7 +29,7 @@ export default function FieldsSection() {
   }) => {
     setEditingId(field.id);
     setEditingName(field.name);
-    setEditingPrice(field.default_price);
+    setEditingPrice(String(field.default_price));
   };
 
   const handleRenameCancel = () => {
@@ -39,14 +40,15 @@ export default function FieldsSection() {
   const handleRenameSave = async (fieldId: string) => {
     try {
       await calendarService.renameField(fieldId, editingName.trim());
-      await calendarService.updateFieldPrice(fieldId, editingPrice);
+      const price = Number(editingPrice) || 0;
+      await calendarService.updateFieldPrice(fieldId, price);
+      const updated = { name: editingName.trim(), default_price: price };
       setFields((prev) =>
-        prev?.map((f) =>
-          f.id === fieldId
-            ? { ...f, name: editingName.trim(), default_price: editingPrice }
-            : f,
-        ),
+        prev?.map((f) => (f.id === fieldId ? { ...f, ...updated } : f)),
       );
+      if (selectedField?.id === fieldId) {
+        setSelectedField({ ...selectedField, ...updated });
+      }
       setEditingId(null);
     } catch (error) {
       setErrorModal({
@@ -92,18 +94,8 @@ export default function FieldsSection() {
     <>
       <SettingsCard title="Saha Yönetimi">
         <p className="mb-4 text-sm text-gray-500">
-          Tesisinizdeki sahaları buradan yönetebilirsiniz. Her saha için ayrı
-          bir rezervasyon takvimi oluşturulur. Saha adını düzenlemek için{" "}
-          <span className="inline-flex items-center gap-1 font-medium text-gray-700">
-            <Pencil className="inline h-3.5 w-3.5" /> kalem
-          </span>{" "}
-          ikonuna, silmek için{" "}
-          <span className="inline-flex items-center gap-1 font-medium text-gray-700">
-            <Trash2 className="inline h-3.5 w-3.5" /> çöp kutusu
-          </span>{" "}
-          ikonuna tıklayın. Yeni saha eklemek için aşağıdaki alana saha adını
-          yazıp <span className="font-medium text-gray-700">Ekle</span> butonuna
-          basın.
+          Tesisinizdeki sahaları, saha adlarını ve varsayılan rezervasyon
+          ücretlerini buradan yönetebilirsiniz.
         </p>
         <div className="flex flex-col gap-3">
           {/* Field List */}
@@ -115,19 +107,21 @@ export default function FieldsSection() {
               >
                 {editingId === field.id ? (
                   <>
-                    <input
-                      className="flex-1 rounded-md border border-[#A4A7AE] bg-white px-3 py-1.5 text-base font-medium focus:outline-none"
-                      value={editingName}
-                      onChange={(e) => setEditingName(e.target.value)}
-                      autoFocus
-                    />
-                    <input
-                      type="number"
-                      className="w-24 rounded-md border border-[#A4A7AE] bg-white px-3 py-1.5 text-base font-medium focus:outline-none"
-                      value={editingPrice}
-                      onChange={(e) => setEditingPrice(Number(e.target.value))}
-                      placeholder="₺ Fiyat"
-                    />
+                    <div className="flex min-w-0 flex-1 gap-2">
+                      <input
+                        className="min-w-0 flex-1 rounded-md border border-[#A4A7AE] bg-white px-3 py-1.5 text-base font-medium focus:outline-none"
+                        value={editingName}
+                        onChange={(e) => setEditingName(e.target.value)}
+                        autoFocus
+                      />
+                      <input
+                        type="number"
+                        className="w-20 shrink-0 rounded-md border border-[#A4A7AE] bg-white px-3 py-1.5 text-base font-medium focus:outline-none"
+                        value={editingPrice}
+                        onChange={(e) => setEditingPrice(e.target.value)}
+                        placeholder="₺ Fiyat"
+                      />
+                    </div>
                     <button
                       onClick={() => handleRenameSave(field.id)}
                       className="cursor-pointer rounded-md p-1.5 text-green-600 hover:bg-green-50"
