@@ -7,7 +7,7 @@ import {
 } from "@/lib/schemas/reservationSchema";
 import { Slot } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 import {
   AlignLeft,
@@ -28,6 +28,10 @@ interface ReservationMenuProps {
   error?: string | null;
   onDelete?: () => void;
   isDeleting?: boolean;
+  onApprove?: () => void;
+  onReject?: () => void;
+  isApproving?: boolean;
+  isRejecting?: boolean;
   defaultPrice?: number;
 }
 
@@ -41,8 +45,13 @@ export function ReservationMenu({
   error,
   onDelete,
   isDeleting,
+  onApprove,
+  onReject,
+  isApproving,
+  isRejecting,
   defaultPrice,
 }: ReservationMenuProps) {
+  const isPending = slot.reservation?.status === "pending";
   const {
     register,
     handleSubmit,
@@ -75,9 +84,8 @@ export function ReservationMenu({
   const [selectedDate, setSelectedDate] = useState<Date>(slot.day);
   const dateInputRef = useRef<HTMLInputElement>(null);
 
-  // Only hour 0 is past midnight (the working schedule ends at 01:00)
-  const resolveDate = (hour: number) =>
-    hour === 0 ? addDays(selectedDate, 1) : selectedDate;
+  // All hours belong to the same working day (11:00–01:00 next calendar day)
+  const resolveDate = (_hour: number) => selectedDate;
 
   const formattedDate = format(resolveDate(startTime), "d MMMM, EEEE", {
     locale: tr,
@@ -102,27 +110,50 @@ export function ReservationMenu({
           Vazgeç
         </button>
         <div className="flex items-center gap-5">
-          {slot.reservation && (
-            <button
-              type="button"
-              onClick={onDelete}
-              disabled={isDeleting}
-              className="cursor-pointer text-sm font-semibold text-red-500 disabled:opacity-50"
-            >
-              {isDeleting ? "Siliniyor..." : "Sil"}
-            </button>
+          {isPending ? (
+            <>
+              <button
+                type="button"
+                onClick={onReject}
+                disabled={isRejecting || isApproving}
+                className="cursor-pointer text-sm font-semibold text-red-500 disabled:opacity-50"
+              >
+                {isRejecting ? "Reddediliyor..." : "Reddet"}
+              </button>
+              <button
+                type="button"
+                onClick={onApprove}
+                disabled={isApproving || isRejecting}
+                className="cursor-pointer text-sm font-semibold text-green-600 disabled:opacity-50"
+              >
+                {isApproving ? "Onaylanıyor..." : "Onayla"}
+              </button>
+            </>
+          ) : (
+            <>
+              {slot.reservation && (
+                <button
+                  type="button"
+                  onClick={onDelete}
+                  disabled={isDeleting}
+                  className="cursor-pointer text-sm font-semibold text-red-500 disabled:opacity-50"
+                >
+                  {isDeleting ? "Siliniyor..." : "Sil"}
+                </button>
+              )}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="cursor-pointer text-sm font-semibold text-green-600 disabled:opacity-50"
+              >
+                {isLoading
+                  ? "Kaydediliyor..."
+                  : slot.reservation
+                    ? "Güncelle"
+                    : "Kaydet"}
+              </button>
+            </>
           )}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="cursor-pointer text-sm font-semibold text-green-600 disabled:opacity-50"
-          >
-            {isLoading
-              ? "Kaydediliyor..."
-              : slot.reservation
-                ? "Güncelle"
-                : "Kaydet"}
-          </button>
         </div>
       </div>
 

@@ -30,6 +30,7 @@ export function useCreateReservation(onSuccess: (reservation: Reservation) => vo
         price: parseFloat(data.price),
         is_paid: data.isPaid,
         description: data.description,
+        status: "confirmed",
       });
 
       onSuccess(newReservation);

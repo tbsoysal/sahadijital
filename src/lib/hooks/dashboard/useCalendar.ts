@@ -1,9 +1,10 @@
 import { useDashboardContext } from "@/context/DashboardContext";
 import { WORKING_HOURS } from "@/lib/constants";
 import { calendarService } from "@/lib/services/calendarService";
+import { supabase } from "@/lib/supabase/client";
 import { Reservation, Slot } from "@/types";
 import { addDays, addWeeks, startOfWeek, subWeeks } from "date-fns";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCreateReservation } from "./useCreateReservation";
 import { useDeleteReservation } from "./useDeleteReservation";
 import { useUpdateReservation } from "./useUpdateReservation";
@@ -32,11 +33,49 @@ export function useCalendar() {
       setSelectedSlot(null);
     });
 
+  const [isApprovingId, setIsApprovingId] = useState<string | null>(null);
+  const [isRejectingId, setIsRejectingId] = useState<string | null>(null);
+  const [statusError, setStatusError] = useState<string | null>(null);
+
+  const approveReservation = async (id: string) => {
+    setIsApprovingId(id);
+    setStatusError(null);
+    try {
+      const updated = await calendarService.updateReservationStatus(
+        id,
+        "confirmed",
+      );
+      setReservations((prev) =>
+        prev.map((r) => (r.id === updated.id ? updated : r)),
+      );
+      setSelectedSlot(null);
+    } catch {
+      setStatusError("Onaylama sırasında hata oluştu.");
+    } finally {
+      setIsApprovingId(null);
+    }
+  };
+
+  const rejectReservation = async (id: string) => {
+    setIsRejectingId(id);
+    setStatusError(null);
+    try {
+      await calendarService.deleteReservation(id);
+      setReservations((prev) => prev.filter((r) => r.id !== id));
+      setSelectedSlot(null);
+    } catch {
+      setStatusError("Reddetme sırasında hata oluştu.");
+    } finally {
+      setIsRejectingId(null);
+    }
+  };
+
   const closeMenu = () => {
     setSelectedSlot(null);
     clearError();
     clearUpdateError();
     clearDeleteError();
+    setStatusError(null);
   };
 
   const startDayOfWeek = startOfWeek(referenceDay, { weekStartsOn: 1 });
@@ -55,6 +94,51 @@ export function useCalendar() {
       .then(setReservations)
       .finally(() => setIsFetching(false));
   }, [referenceDay, selectedField]);
+
+  const reservationsRef = useRef(reservations);
+  reservationsRef.current = reservations;
+
+  useEffect(() => {
+    if (!selectedField) return;
+
+    const channel = supabase
+      .channel(`dashboard:reservations:${selectedField.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "reservations",
+          filter: `field_id=eq.${selectedField.id}`,
+        },
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            const incoming = payload.new as Reservation;
+            const alreadyExists = reservationsRef.current.some(
+              (r) => r.id === incoming.id,
+            );
+            if (!alreadyExists) {
+              setReservations((prev) => [...prev, incoming]);
+            }
+          } else if (payload.eventType === "UPDATE") {
+            setReservations((prev) =>
+              prev.map((r) =>
+                r.id === payload.new.id ? (payload.new as Reservation) : r,
+              ),
+            );
+          } else if (payload.eventType === "DELETE") {
+            setReservations((prev) =>
+              prev.filter((r) => r.id !== payload.old.id),
+            );
+          }
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [selectedField]);
 
   const nextWeek = () => setReferenceDay((prev) => addWeeks(prev, 1));
   const prevWeek = () => setReferenceDay((prev) => subWeeks(prev, 1));
@@ -79,6 +163,11 @@ export function useCalendar() {
     deleteReservation,
     isDeleting,
     deleteError,
+    approveReservation,
+    rejectReservation,
+    isApprovingId,
+    isRejectingId,
+    statusError,
     isFetching,
   };
 }

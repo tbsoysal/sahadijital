@@ -34,6 +34,7 @@ export const calendarService = {
     price: number;
     is_paid: boolean;
     description?: string;
+    status: "confirmed" | "pending" | "rejected";
   }) => {
     const { data, error } = await supabase
       .from("reservations")
@@ -63,6 +64,21 @@ export const calendarService = {
     const { data, error } = await supabase
       .from("reservations")
       .update(payload)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  updateReservationStatus: async (
+    id: string,
+    status: "confirmed" | "pending" | "rejected",
+  ) => {
+    const { data, error } = await supabase
+      .from("reservations")
+      .update({ status })
       .eq("id", id)
       .select()
       .single();

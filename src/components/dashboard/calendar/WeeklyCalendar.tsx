@@ -1,5 +1,5 @@
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
-import { addDays, format, isSameDay } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { tr } from "date-fns/locale";
 import { useEffect, useState } from "react";
 import { ReservationMenu } from "./ReservationMenu";
@@ -28,6 +28,11 @@ export function WeeklyCalendar() {
     deleteReservation,
     isDeleting,
     deleteError,
+    approveReservation,
+    rejectReservation,
+    isApprovingId,
+    isRejectingId,
+    statusError,
     closeMenu,
   } = useCalendar();
 
@@ -45,20 +50,14 @@ export function WeeklyCalendar() {
   }, [selectedSlot]);
 
   const getSlotReservations = (day: Date, hour: number) => {
-    if (hour === 0) {
-      return reservations.filter(
-        (r) =>
-          isSameDay(new Date(r.reservation_date), day) &&
-          parseInt(r.end_time) === 0,
-      );
-    }
-    const reservationDay = hour === 1 ? addDays(day, 1) : day;
-    return reservations.filter(
-      (r) =>
-        isSameDay(new Date(r.reservation_date), reservationDay) &&
-        parseInt(r.start_time) < hour &&
-        parseInt(r.end_time) >= hour,
-    );
+    const dayStr = format(day, "yyyy-MM-dd");
+    return reservations.filter((r) => {
+      if (r.reservation_date !== dayStr) return false;
+      const start = parseInt(r.start_time);
+      const end = parseInt(r.end_time);
+      if (hour === 0) return end === 0;
+      return start < hour && end >= hour;
+    });
   };
 
   return (
@@ -84,9 +83,18 @@ export function WeeklyCalendar() {
             {format(weekDays[0], "d MMMM", { locale: tr })} -{" "}
             {format(weekDays[6], "d MMMM", { locale: tr })}
           </p>
-          <p className="text-xs text-gray-400 md:text-lg">
-            {reservations.length} rezervasyon
-          </p>
+          <div className="flex-col items-center gap-2">
+            <p className="text-xs text-gray-400 md:text-lg">
+              {reservations.length} rezervasyon
+            </p>
+            {reservations.filter((r) => r.status === "pending").length > 0 && (
+              <span className="flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700 md:text-xs">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                {reservations.filter((r) => r.status === "pending").length} onay
+                bekliyor
+              </span>
+            )}
+          </div>
         </div>
         <Button variant="secondary" onClick={nextWeek} className="px-2.5 py-2">
           <svg
@@ -120,6 +128,10 @@ export function WeeklyCalendar() {
         <div className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full bg-gray-400" />
           <span className="text-xs text-gray-500">Ödenmedi</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+          <span className="text-xs text-gray-500">Onay Bekliyor</span>
         </div>
       </div>
       {/* Week header — fixed, does not scroll */}
@@ -213,24 +225,36 @@ export function WeeklyCalendar() {
                           : "hover:bg-gray-50"
                       }`}
                     >
-                      {slotReservations.map((r) => (
-                        <div
-                          key={r.id}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedSlot({ day, hour, reservation: r });
-                          }}
-                          className={`mb-0.5 h-full rounded-lg px-1.5 py-1 text-[10px] md:text-xs ${r.is_paid ? "bg-[#12B76A] text-white" : "bg-gray-400 text-gray-600"}`}
-                        >
-                          <p className="truncate leading-tight font-semibold">
-                            {r.customer_name}
-                          </p>
-                          <p className="hidden leading-tight font-semibold opacity-80 md:block">
-                            {r.start_time.slice(0, 5)} -{" "}
-                            {r.end_time.slice(0, 5)}
-                          </p>
-                        </div>
-                      ))}
+                      {slotReservations.map((r) => {
+                        const isPending = r.status === "pending";
+                        return (
+                          <div
+                            key={r.id}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedSlot({ day, hour, reservation: r });
+                            }}
+                            className={`relative mb-0.5 h-full rounded-lg px-1.5 py-1 text-[10px] md:text-xs ${
+                              isPending
+                                ? "bg-amber-400 text-white"
+                                : r.is_paid
+                                  ? "bg-[#12B76A] text-white"
+                                  : "bg-gray-400 text-gray-600"
+                            }`}
+                          >
+                            {isPending && (
+                              <span className="absolute top-0.5 right-0.5 h-2 w-2 rounded-full bg-red-500 ring-1 ring-white" />
+                            )}
+                            <p className="truncate leading-tight font-semibold">
+                              {r.customer_name}
+                            </p>
+                            <p className="hidden leading-tight font-semibold opacity-80 md:block">
+                              {r.start_time.slice(0, 5)} -{" "}
+                              {r.end_time.slice(0, 5)}
+                            </p>
+                          </div>
+                        );
+                      })}
                     </div>
                   );
                 })}
@@ -259,13 +283,25 @@ export function WeeklyCalendar() {
                   : createReservation
               }
               isLoading={isLoading || isUpdating}
-              error={error ?? updateError ?? deleteError}
+              error={error ?? updateError ?? deleteError ?? statusError}
               onDelete={
                 selectedSlot.reservation
                   ? () => deleteReservation(selectedSlot.reservation!.id)
                   : undefined
               }
               isDeleting={isDeleting}
+              onApprove={
+                selectedSlot.reservation
+                  ? () => approveReservation(selectedSlot.reservation!.id)
+                  : undefined
+              }
+              onReject={
+                selectedSlot.reservation
+                  ? () => rejectReservation(selectedSlot.reservation!.id)
+                  : undefined
+              }
+              isApproving={isApprovingId === selectedSlot.reservation?.id}
+              isRejecting={isRejectingId === selectedSlot.reservation?.id}
               defaultPrice={selectedField?.default_price}
             />
           </div>
