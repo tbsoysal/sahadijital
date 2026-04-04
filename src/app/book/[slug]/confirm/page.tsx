@@ -58,8 +58,9 @@ export default function ConfirmPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="flex flex-col gap-6 px-4 py-6">
+    <div className="min-h-screen bg-gray-100 md:flex md:items-start md:justify-center md:py-10">
+      <div className="w-full md:max-w-lg md:overflow-hidden md:rounded-2xl md:bg-white md:shadow-lg">
+      <div className="flex flex-col gap-6 px-4 py-6 md:px-6 md:py-8">
         {/* Header */}
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
@@ -147,7 +148,6 @@ export default function ConfirmPage() {
           </button>
         </form>
       </div>
-
       <NotificationModal
         open={submitted}
         variant="success"
@@ -156,6 +156,7 @@ export default function ConfirmPage() {
         actionText="Tamam"
         onAction={() => router.push(`/book/${slug}`)}
       />
+      </div>
     </div>
   );
 }

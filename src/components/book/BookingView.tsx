@@ -39,6 +39,8 @@ export default function BookingView({ businessName, fields }: Props) {
   const isSlotPast = (hour: number) => {
     const now = new Date();
     const slotDate = new Date(selectedDay);
+    // Hours 0 and 1 are past-midnight slots belonging to the next day
+    if (hour === 0 || hour === 1) slotDate.setDate(slotDate.getDate() + 1);
     slotDate.setHours(hour, 0, 0, 0);
     return slotDate < now;
   };
@@ -51,9 +53,10 @@ export default function BookingView({ businessName, fields }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 md:flex md:items-start md:justify-center md:py-10">
+      <div className="w-full md:max-w-2xl md:overflow-hidden md:rounded-2xl md:shadow-lg">
       {/* Green Header */}
-      <div className="bg-[#12B76A] px-4 py-4">
+      <div className="bg-[#12B76A] px-4 py-4 md:px-6 md:py-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-2xl">
@@ -70,7 +73,7 @@ export default function BookingView({ businessName, fields }: Props) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-6 px-4 py-5">
+      <div className="flex flex-col gap-6 bg-gray-100 px-4 py-5 md:px-6 md:py-6">
         {/* SAHA SEÇ */}
         {fields.length > 1 && (
           <div>
@@ -148,7 +151,7 @@ export default function BookingView({ businessName, fields }: Props) {
           </div>
 
           {isFetching ? (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
@@ -157,7 +160,7 @@ export default function BookingView({ businessName, fields }: Props) {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {hours.map((hour) => {
                 const booked = isSlotBooked(hour);
                 const past = isSlotPast(hour);
@@ -197,6 +200,7 @@ export default function BookingView({ businessName, fields }: Props) {
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

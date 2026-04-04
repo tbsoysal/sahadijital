@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, ExternalLink } from "lucide-react";
 import SettingsCard from "./SettingsCard";
 
 export default function ReservationSection({ slug }: { slug: string }) {
@@ -18,6 +18,15 @@ export default function ReservationSection({ slug }: { slug: string }) {
     <SettingsCard title="Rezervasyon Linki">
       <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
         <p className="flex-1 truncate text-sm text-gray-600">{url}</p>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 cursor-pointer rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
+          title="Aç"
+        >
+          <ExternalLink size={16} />
+        </a>
         <button
           onClick={handleCopy}
           className="shrink-0 cursor-pointer rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
