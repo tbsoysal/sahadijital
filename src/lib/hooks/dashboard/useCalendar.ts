@@ -61,6 +61,7 @@ export function useCalendar() {
 
   return {
     setReferenceDay,
+    selectedField,
     weekDays,
     hours,
     selectedSlot,

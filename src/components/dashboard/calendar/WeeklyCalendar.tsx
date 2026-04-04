@@ -9,6 +9,7 @@ const DAY_LABELS = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
 
 export function WeeklyCalendar() {
   const {
+    selectedField,
     weekDays,
     hours,
     selectedSlot,
@@ -233,6 +234,7 @@ export function WeeklyCalendar() {
                   : undefined
               }
               isDeleting={isDeleting}
+              defaultPrice={selectedField?.default_price}
             />
           </div>
         </div>

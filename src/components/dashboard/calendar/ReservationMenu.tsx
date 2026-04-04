@@ -17,6 +17,7 @@ import {
   Phone,
   User,
 } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface ReservationMenuProps {
@@ -27,6 +28,7 @@ interface ReservationMenuProps {
   error?: string | null;
   onDelete?: () => void;
   isDeleting?: boolean;
+  defaultPrice?: number;
 }
 
 const formatHour = (hour: number) => `${String(hour).padStart(2, "0")}:00`;
@@ -39,6 +41,7 @@ export function ReservationMenu({
   error,
   onDelete,
   isDeleting,
+  defaultPrice,
 }: ReservationMenuProps) {
   const {
     register,
@@ -60,7 +63,7 @@ export function ReservationMenu({
         ? parseInt(slot.reservation.end_time)
         : slot.hour,
       description: slot.reservation?.description ?? "",
-      price: slot.reservation?.price?.toString() ?? "",
+      price: slot.reservation?.price?.toString() ?? defaultPrice?.toString() ?? "",
       isPaid: slot.reservation?.is_paid ?? false,
     },
   });
@@ -69,9 +72,11 @@ export function ReservationMenu({
   const endTime = watch("endTime");
   const isPaid = watch("isPaid");
 
+  const [selectedDate, setSelectedDate] = useState<Date>(slot.day);
+
   // Only hour 0 is past midnight (the working schedule ends at 01:00)
   const resolveDate = (hour: number) =>
-    hour === 0 ? addDays(slot.day, 1) : slot.day;
+    hour === 0 ? addDays(selectedDate, 1) : selectedDate;
 
   const formattedDate = format(resolveDate(startTime), "d MMMM, EEEE", {
     locale: tr,
@@ -168,9 +173,20 @@ export function ReservationMenu({
         {/* Date */}
         <div className="flex items-center gap-3 border-b border-gray-100 py-3">
           <CalendarDays className="h-5 w-5 shrink-0 text-gray-400" />
-          <span className="text-sm font-medium text-gray-800">
-            {formattedDate}
-          </span>
+          {slot.reservation ? (
+            <span className="text-sm font-medium text-gray-800">
+              {formattedDate}
+            </span>
+          ) : (
+            <input
+              type="date"
+              value={format(selectedDate, "yyyy-MM-dd")}
+              onChange={(e) => {
+                if (e.target.value) setSelectedDate(new Date(e.target.value + "T12:00:00"));
+              }}
+              className="text-sm font-medium text-gray-800 outline-none"
+            />
+          )}
         </div>
 
         {/* Time */}
