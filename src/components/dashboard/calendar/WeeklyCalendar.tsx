@@ -1,10 +1,11 @@
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
-import { addDays, format, isSameDay, isToday } from "date-fns";
+import { addDays, format, isSameDay } from "date-fns";
 import { tr } from "date-fns/locale";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ReservationMenu } from "./ReservationMenu";
+import Button from "@/components/Button";
 
-const DAY_LABELS = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
+const DAY_LABELS = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
 
 export function WeeklyCalendar() {
   const {
@@ -27,6 +28,10 @@ export function WeeklyCalendar() {
     deleteError,
     closeMenu,
   } = useCalendar();
+
+  const [today, setToday] = useState<Date | null>(null);
+  useEffect(() => { setToday(new Date()); }, []);
+  const checkIsToday = (day: Date) => today !== null && isSameDay(day, today);
 
   useEffect(() => {
     document.body.style.overflow = selectedSlot ? "hidden" : "";
@@ -55,12 +60,11 @@ export function WeeklyCalendar() {
   return (
     <div className="relative flex h-full flex-col overflow-hidden border-t border-r border-l border-gray-200 bg-white md:rounded-xl">
       <div className="col-span-1 flex items-center justify-between px-3 py-2 md:justify-center md:gap-5">
-        <button
-          onClick={prevWeek}
-          className="cursor-pointer p-2 text-2xl leading-none font-medium text-gray-700 hover:text-gray-600 md:text-4xl"
-        >
-          ‹
-        </button>
+        <Button variant="secondary" onClick={prevWeek} className="px-2.5 py-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </Button>
         <div className="flex flex-col items-center">
           <p className="font-medium md:text-lg">
             {format(weekDays[0], "d MMMM", { locale: tr })} -{" "}
@@ -70,12 +74,11 @@ export function WeeklyCalendar() {
             {reservations.length} rezervasyon
           </p>
         </div>
-        <button
-          onClick={nextWeek}
-          className="cursor-pointer p-2 text-2xl leading-none font-medium text-gray-700 hover:text-gray-600 md:text-4xl"
-        >
-          ›
-        </button>
+        <Button variant="secondary" onClick={nextWeek} className="px-2.5 py-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </Button>
       </div>
       {/* Color legend */}
       <div className="flex items-center justify-center gap-4 border-b border-gray-100 px-3 py-1.5 md:border-gray-300">
@@ -103,7 +106,7 @@ export function WeeklyCalendar() {
               </span>
               <span
                 className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold ${
-                  isToday(day) ? "bg-[#12B76A] text-white" : "text-gray-800"
+                  checkIsToday(day) ? "bg-[#12B76A] text-white" : "text-gray-800"
                 }`}
               >
                 {day.getDate()}
@@ -112,12 +115,12 @@ export function WeeklyCalendar() {
             {/* Tablet/Desktop: inline pill */}
             <span
               className={`hidden items-center gap-1 rounded-full px-2 py-1 text-base md:flex ${
-                isToday(day) ? "bg-[#12B76A] text-white" : "text-gray-700"
+                checkIsToday(day) ? "bg-[#12B76A] text-white" : "text-gray-700"
               }`}
             >
               <span className="mr-1 text-lg font-bold">{day.getDate()}</span>
               <span
-                className={`text-lg font-normal ${isToday(day) ? "text-white" : "text-gray-500"}`}
+                className={`text-lg font-normal ${checkIsToday(day) ? "text-white" : "text-gray-500"}`}
               >
                 {DAY_LABELS[i]}
               </span>
