@@ -48,8 +48,8 @@ export default function Benefits() {
             Faydalar
           </h2>
           <p className="text-secondary-color tablet:text-2xl text-lg font-medium">
-            Lorem ipsum dolor sit amet consectetur. Leo aliquam elit adipiscing
-            mi massa nibh sit. Diam praesent elit a lorem.
+            Rezervasyon takibinden gelir analizine kadar işletmenizi büyütmenize
+            yardımcı olan özellikleri keşfedin.
           </p>
         </div>
 

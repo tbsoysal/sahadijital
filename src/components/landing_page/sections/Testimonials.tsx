@@ -36,8 +36,7 @@ export default function Testimonials() {
             Kullanıcı Yorumları
           </h2>
           <p className="text-secondary-color tablet:text-2xl desktop:text-[28px] tablet:leading-[34px] desktop:leading-10 text-lg leading-[26px] font-medium">
-            Lorem ipsum dolor sit amet consectetur. Leo aliquam elit adipiscing
-            mi massa nibh sit. Diam praesent elit a lorem.
+            Saha Dijital kullanan işletme sahipleri ve müşteriler ne düşünüyor?
           </p>
         </div>
 

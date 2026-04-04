@@ -13,28 +13,28 @@ const features = [
     image: "/images/featuresimage-2.png",
     heading: "Mobil ve web uyumlu panel",
     paragraph:
-      "Lorem ipsum dolor sit amet consectetur. Leo aliquam elit adipiscing mi massa nibh sit. Diam praesent elit a lorem.",
+      "Yönetim panelinize istediğiniz cihazdan erişin. Telefon, tablet veya bilgisayardan rezervasyonlarınızı kolayca takip edin.",
     color: "bg-[#CEEAB0]",
   },
   {
     image: "/images/featuresimage-3.png",
     heading: "Hızlı Rezervasyon",
     paragraph:
-      "Lorem ipsum dolor sit amet consectetur. Leo aliquam elit adipiscing mi massa nibh sit. Diam praesent elit a lorem.",
+      "Müşterileriniz size özel bağlantı üzerinden saniyeler içinde uygun saati seçip rezervasyon oluşturabilir.",
     color: "bg-[#F5F5F5]",
   },
   {
     image: "/images/featuresimage-4.png",
     heading: "Paylaşılabilir Link",
     paragraph:
-      "Lorem ipsum dolor sit amet consectetur. Leo aliquam elit adipiscing mi massa nibh sit. Diam praesent elit a lorem.",
+      "İşletmenize özel rezervasyon bağlantınızı sosyal medyada veya WhatsApp'ta paylaşın; müşteriler direkt sizi arayıp beklemeden rezervasyon yapsın.",
     color: "bg-[#12B76A]",
   },
   {
     image: "/images/featuresimage-5.png",
     heading: "Gelir İstatistikleri",
     paragraph:
-      "Lorem ipsum dolor sit amet consectetur. Leo aliquam elit adipiscing mi massa nibh sit. Diam praesent elit a lorem.",
+      "Aylık gelirinizi, tamamlanan rezervasyon sayısını ve ödeme durumlarını tek ekrandan takip edin.",
     color: "bg-[#F5F5F5]",
   },
 ];
@@ -51,8 +51,8 @@ export default function Features() {
             Öne Çıkan Özellikler
           </h2>
           <p className="text-secondary-color tablet:text-2xl text-lg leading-7 font-medium">
-            Lorem ipsum dolor sit amet consectetur. Leo aliquam elit adipiscing
-            mi massa nibh sit. Diam praesent elit a lorem.
+            Halı sahanızı yönetmek için ihtiyacınız olan her şey tek bir
+            platformda. Rezervasyondan gelir takibine kadar her şey otomatik.
           </p>
         </div>
         {/* Grid Cards */}
