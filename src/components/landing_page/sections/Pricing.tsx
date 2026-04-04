@@ -17,8 +17,8 @@ export default function Pricing() {
             Fiyatlandırma
           </h2>
           <p className="text-secondary-color tablet:text-2xl desktop:text-[28px] tablet:leading-[34px] desktop:leading-10 text-lg leading-[26px] font-medium">
-            Lorem ipsum dolor sit amet consectetur. Leo aliquam elit adipiscing
-            mi massa nibh sit. Diam praesent elit a lorem.
+            Karmaşık paketler yok. İhtiyacınız olan her şeyi içeren tek bir
+            plan, sabit fiyatla.
           </p>
         </div>
 
@@ -45,7 +45,7 @@ export default function Pricing() {
             </span>
             <Link href="/signup">
               <Button className="tablet:w-auto mb-10 max-w-[284px] py-3">
-                14 Gün Ücretsiz Deneyin
+                1 Ay Ücretsiz Deneyin
                 <Image
                   src="/images/linkarrow.svg"
                   alt="link icon"
