@@ -28,12 +28,12 @@ export default function StaticsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-5">
+    <div className="flex flex-col gap-6 p-5 md:p-8">
       <div>
         <div className="flex items-center gap-2">
-          <h1 className="text-lg font-bold text-gray-800">İstatistikler</h1>
-          <span className="text-lg font-bold text-gray-400">·</span>
-          <span className="text-lg font-bold text-gray-400">
+          <h1 className="text-lg font-bold text-gray-800 md:text-2xl">İstatistikler</h1>
+          <span className="text-lg font-bold text-gray-400 md:text-2xl">·</span>
+          <span className="text-lg font-bold text-gray-400 md:text-2xl">
             {selectedField.name}
           </span>
         </div>
@@ -42,7 +42,7 @@ export default function StaticsPage() {
 
       {error && <p className="text-sm text-red-500">{error}</p>}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <StatCard
           label="Toplam Rezervasyon"
           value={total}
@@ -83,12 +83,12 @@ function StatCard({
   color?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1 rounded-2xl bg-white p-5 shadow-sm">
-      <span className="text-xs font-medium text-gray-400">{label}</span>
+    <div className="flex flex-col gap-1 rounded-2xl bg-white p-5 shadow-sm md:p-6">
+      <span className="text-xs font-medium text-gray-400 md:text-sm">{label}</span>
       {isLoading ? (
         <div className="h-8 w-16 animate-pulse rounded-md bg-gray-100" />
       ) : (
-        <span className={`text-2xl font-bold ${color}`}>{value}</span>
+        <span className={`text-2xl font-bold md:text-3xl ${color}`}>{value}</span>
       )}
     </div>
   );
