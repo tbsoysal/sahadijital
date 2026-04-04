@@ -17,7 +17,7 @@ import {
   Phone,
   User,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface ReservationMenuProps {
@@ -73,6 +73,7 @@ export function ReservationMenu({
   const isPaid = watch("isPaid");
 
   const [selectedDate, setSelectedDate] = useState<Date>(slot.day);
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
   // Only hour 0 is past midnight (the working schedule ends at 01:00)
   const resolveDate = (hour: number) =>
@@ -178,14 +179,25 @@ export function ReservationMenu({
               {formattedDate}
             </span>
           ) : (
+            <>
+            <button
+              type="button"
+              onClick={() => dateInputRef.current?.showPicker()}
+              className="cursor-pointer text-sm font-medium text-gray-800"
+            >
+              {formattedDate}
+            </button>
             <input
+              ref={dateInputRef}
               type="date"
               value={format(selectedDate, "yyyy-MM-dd")}
               onChange={(e) => {
-                if (e.target.value) setSelectedDate(new Date(e.target.value + "T12:00:00"));
+                if (e.target.value)
+                  setSelectedDate(new Date(e.target.value + "T12:00:00"));
               }}
-              className="text-sm font-medium text-gray-800 outline-none"
+              className="sr-only"
             />
+            </>
           )}
         </div>
 
