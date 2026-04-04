@@ -1,8 +1,9 @@
-import { WORKING_HOURS } from "@/lib/constants";
+import { RESERVATION_START_HOURS } from "@/lib/constants";
 import { bookingService } from "@/lib/services/bookingService";
+import { supabase } from "@/lib/supabase/client";
 import { Reservation } from "@/types";
 import { addDays } from "date-fns";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useBookingCalendar(fieldId: string) {
   const [today] = useState(() => {
@@ -38,9 +39,54 @@ export function useBookingCalendar(fieldId: string) {
     fetchReservations();
   }, [selectedDay, fieldId]);
 
+  const reservationsRef = useRef(reservations);
+  reservationsRef.current = reservations;
+
+  useEffect(() => {
+    if (!fieldId) return;
+
+    const channel = supabase
+      .channel(`booking:reservations:${fieldId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "reservations",
+          filter: `field_id=eq.${fieldId}`,
+        },
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            const incoming = payload.new as Reservation;
+            const alreadyExists = reservationsRef.current?.some(
+              (r) => r.id === incoming.id,
+            );
+            if (!alreadyExists) {
+              setReservations((prev) => [...(prev ?? []), incoming]);
+            }
+          } else if (payload.eventType === "UPDATE") {
+            setReservations((prev) =>
+              (prev ?? []).map((r) =>
+                r.id === payload.new.id ? (payload.new as Reservation) : r,
+              ),
+            );
+          } else if (payload.eventType === "DELETE") {
+            setReservations((prev) =>
+              (prev ?? []).filter((r) => r.id !== payload.old.id),
+            );
+          }
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fieldId]);
+
   return {
     days,
-    hours: WORKING_HOURS,
+    hours: RESERVATION_START_HOURS,
     selectedDay,
     setSelectedDay,
     reservations,
