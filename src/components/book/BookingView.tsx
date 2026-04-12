@@ -11,6 +11,8 @@ interface Field {
   id: string;
   name: string;
   default_price: number;
+  start_hour: number;
+  end_hour: number;
 }
 
 interface Props {
@@ -25,7 +27,7 @@ export default function BookingView({ businessName, fields }: Props) {
 
   const [selectedField, setSelectedField] = useState<Field>(fields[0]);
   const { days, hours, selectedDay, setSelectedDay, reservations, isFetching, isHourClosed } =
-    useBookingCalendar(selectedField.id);
+    useBookingCalendar(selectedField.id, selectedField.start_hour, selectedField.end_hour);
 
   const isSlotBooked = (hour: number) => {
     return (reservations ?? []).some((r) => {

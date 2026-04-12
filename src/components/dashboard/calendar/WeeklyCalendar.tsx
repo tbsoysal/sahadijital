@@ -319,6 +319,8 @@ export function WeeklyCalendar() {
               isApproving={isApprovingId === selectedSlot.reservation?.id}
               isRejecting={isRejectingId === selectedSlot.reservation?.id}
               defaultPrice={selectedField?.default_price}
+              fieldStartHour={selectedField?.start_hour}
+              fieldEndHour={selectedField?.end_hour}
             />
           </div>
         </div>

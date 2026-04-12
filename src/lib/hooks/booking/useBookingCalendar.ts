@@ -1,4 +1,4 @@
-import { RESERVATION_START_HOURS } from "@/lib/constants";
+import { generateFieldHours } from "@/lib/constants";
 import { bookingService } from "@/lib/services/bookingService";
 import { calendarService } from "@/lib/services/calendarService";
 import { supabase } from "@/lib/supabase/client";
@@ -6,7 +6,11 @@ import { ClosedHour, Reservation } from "@/types";
 import { addDays, format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 
-export function useBookingCalendar(fieldId: string) {
+export function useBookingCalendar(
+  fieldId: string,
+  startHour: number = 11,
+  endHour: number = 0,
+) {
   const [today] = useState(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -129,7 +133,7 @@ export function useBookingCalendar(fieldId: string) {
 
   return {
     days,
-    hours: RESERVATION_START_HOURS,
+    hours: generateFieldHours(startHour, endHour).reservationStartHours,
     selectedDay,
     setSelectedDay,
     reservations,

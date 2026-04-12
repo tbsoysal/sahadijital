@@ -1,7 +1,7 @@
 "use client";
 
 import { useDashboardContext } from "@/context/DashboardContext";
-import { RESERVATION_START_HOURS } from "@/lib/constants";
+import { generateFieldHours } from "@/lib/constants";
 import { calendarService } from "@/lib/services/calendarService";
 import { bookingService } from "@/lib/services/bookingService";
 import { ClosedHour, Reservation } from "@/types";
@@ -20,6 +20,12 @@ function hourOccupied(reservations: Reservation[], hour: number): Reservation | 
 
 export function useClosedHours() {
   const { selectedField, fields } = useDashboardContext();
+
+  // Derive working hours from whichever field is selected in this section
+  const getFieldHours = (fieldId: string) => {
+    const field = fields?.find((f) => f.id === fieldId) ?? selectedField;
+    return generateFieldHours(field?.start_hour ?? 11, field?.end_hour ?? 0);
+  };
 
   const today = format(new Date(), "yyyy-MM-dd");
   const [selectedFieldId, setSelectedFieldId] = useState<string>(
@@ -131,7 +137,7 @@ export function useClosedHours() {
     selectedDate,
     setSelectedDate,
     today,
-    workingHours: RESERVATION_START_HOURS,
+    workingHours: getFieldHours(selectedFieldId).reservationStartHours,
     isFetching,
     isHourClosed,
     handleToggle,

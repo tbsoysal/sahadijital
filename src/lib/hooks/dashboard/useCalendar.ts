@@ -1,5 +1,5 @@
 import { useDashboardContext } from "@/context/DashboardContext";
-import { WORKING_HOURS } from "@/lib/constants";
+import { generateFieldHours } from "@/lib/constants";
 import { calendarService } from "@/lib/services/calendarService";
 import { supabase } from "@/lib/supabase/client";
 import { ClosedHour, Reservation, Slot } from "@/types";
@@ -83,7 +83,9 @@ export function useCalendar() {
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     return addDays(startDayOfWeek, i);
   });
-  const hours = WORKING_HOURS;
+  const { workingHours, reservationStartHours, workingEndHours } =
+    generateFieldHours(selectedField?.start_hour ?? 11, selectedField?.end_hour ?? 0);
+  const hours = workingHours;
 
   useEffect(() => {
     if (!selectedField) return;
@@ -164,6 +166,8 @@ export function useCalendar() {
     selectedField,
     weekDays,
     hours,
+    reservationStartHours,
+    workingEndHours,
     selectedSlot,
     setSelectedSlot,
     closeMenu,

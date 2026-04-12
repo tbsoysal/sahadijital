@@ -6,6 +6,8 @@ export type Field = {
   name: string;
   created_at: Date;
   default_price: number;
+  start_hour: number;
+  end_hour: number;
 };
 
 export type View = {

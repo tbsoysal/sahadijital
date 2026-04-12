@@ -1,6 +1,6 @@
 "use client";
 
-import { RESERVATION_START_HOURS, WORKING_END_HOURS } from "@/lib/constants";
+import { generateFieldHours } from "@/lib/constants";
 import {
   reservationSchema,
   ReservationFormData,
@@ -33,6 +33,8 @@ interface ReservationMenuProps {
   isApproving?: boolean;
   isRejecting?: boolean;
   defaultPrice?: number;
+  fieldStartHour?: number;
+  fieldEndHour?: number;
 }
 
 const formatHour = (hour: number) => `${String(hour).padStart(2, "0")}:00`;
@@ -50,7 +52,13 @@ export function ReservationMenu({
   isApproving,
   isRejecting,
   defaultPrice,
+  fieldStartHour = 11,
+  fieldEndHour = 0,
 }: ReservationMenuProps) {
+  const { reservationStartHours, workingEndHours } = generateFieldHours(
+    fieldStartHour,
+    fieldEndHour,
+  );
   const isPending = slot.reservation?.status === "pending";
   const {
     register,
@@ -245,7 +253,7 @@ export function ReservationMenu({
               }
               className="text-sm font-medium text-gray-800 outline-none"
             >
-              {RESERVATION_START_HOURS.map((h) => (
+              {reservationStartHours.map((h) => (
                 <option key={h} value={h}>
                   {formatHour(h)}
                 </option>
@@ -261,7 +269,7 @@ export function ReservationMenu({
               }
               className="text-sm font-medium text-gray-800 outline-none"
             >
-              {WORKING_END_HOURS.map((h) => (
+              {workingEndHours.map((h) => (
                 <option key={h} value={h}>
                   {formatHour(h)}
                 </option>

@@ -1,20 +1,32 @@
 import { View } from "@/types";
 
-// 14 working hours: 12:00 – 01:00
-export const WORKING_HOURS: number[] = Array.from(
-  { length: 14 },
-  (_, i) => (12 + i) % 24,
-);
-// Start-time options: one hour earlier than working hours (11:00 – 00:00)
-export const RESERVATION_START_HOURS: number[] = Array.from(
-  { length: 14 },
-  (_, i) => (11 + i) % 24,
-);
+/**
+ * Generates slot hour arrays from a field's operating hours.
+ * Supports midnight-crossing ranges (e.g. start=11, end=0 → 13 slots: 11–23).
+ *
+ * @returns reservationStartHours — start time of each 1-hour slot
+ *          workingHours          — end time of each slot (used as calendar row labels)
+ *          workingEndHours       — alias for workingHours (used in end-time pickers)
+ */
+export function generateFieldHours(startHour: number, endHour: number) {
+  const slots: number[] = [];
+  let h = startHour;
+  while (h !== endHour) {
+    slots.push(h);
+    h = (h + 1) % 24;
+  }
+  const reservationStartHours = slots;
+  const workingHours = slots.map((s) => (s + 1) % 24);
+  const workingEndHours = workingHours;
+  return { reservationStartHours, workingHours, workingEndHours };
+}
 
-// Valid end times: one step ahead of each working hour
-export const WORKING_END_HOURS: number[] = RESERVATION_START_HOURS.map(
-  (h) => (h + 1) % 24,
-);
+// Default field hours (start: 11:00, end: 00:00 → 13 slots)
+const DEFAULT_HOURS = generateFieldHours(11, 0);
+
+export const WORKING_HOURS = DEFAULT_HOURS.workingHours;
+export const RESERVATION_START_HOURS = DEFAULT_HOURS.reservationStartHours;
+export const WORKING_END_HOURS = DEFAULT_HOURS.workingEndHours;
 
 export const VIEWS: View[] = [
   {

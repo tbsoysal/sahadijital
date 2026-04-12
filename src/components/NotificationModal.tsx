@@ -13,6 +13,8 @@ type NotificationModalProps = {
   variant?: Variant;
   actionText?: string;
   onAction?: () => void;
+  cancelText?: string;
+  onCancel?: () => void;
 };
 
 const icons = {
@@ -34,6 +36,8 @@ export function NotificationModal({
   variant = "success",
   actionText = "Tamam",
   onAction,
+  cancelText = "İptal",
+  onCancel,
 }: NotificationModalProps) {
   if (!open) return null;
 
@@ -54,14 +58,21 @@ export function NotificationModal({
           {message}
         </p>
 
-        <Button
-          onClick={() => {
-            onAction?.();
-          }}
-          className="mt-6 w-full"
-        >
-          {actionText}
-        </Button>
+        <div className={clsx("mt-6 flex gap-3", onCancel ? "flex-row" : "flex-col")}>
+          {onCancel && (
+            <Button variant="secondary" onClick={onCancel} className="flex-1">
+              {cancelText}
+            </Button>
+          )}
+          <Button
+            onClick={() => {
+              onAction?.();
+            }}
+            className={onCancel ? "flex-1" : "w-full"}
+          >
+            {actionText}
+          </Button>
+        </div>
       </div>
     </div>
   );

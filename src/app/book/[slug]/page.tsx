@@ -19,7 +19,7 @@ export default async function BookingPage({
 
   const { data: fields } = await supabase
     .from("fields")
-    .select("id, name, default_price")
+    .select("id, name, default_price, start_hour, end_hour")
     .eq("user_id", profile.id);
 
   if (!fields || fields.length === 0) notFound();

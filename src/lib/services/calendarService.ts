@@ -205,4 +205,48 @@ export const calendarService = {
 
     if (error) throw error;
   },
+
+  updateFieldHours: async (
+    fieldId: string,
+    startHour: number,
+    endHour: number,
+  ): Promise<void> => {
+    // Build the set of valid start-hour values for the new range
+    const validHours = new Set<number>();
+    let h = startHour;
+    while (h !== endHour) {
+      validHours.add(h);
+      h = (h + 1) % 24;
+    }
+
+    // Fetch all closed hours for this field
+    const { data: allClosed, error: fetchError } = await supabase
+      .from("closed_hours")
+      .select("id, hour")
+      .eq("field_id", fieldId);
+
+    if (fetchError) throw fetchError;
+
+    // Delete rows whose hour falls outside the new range
+    const idsToDelete = (allClosed ?? [])
+      .filter((row) => !validHours.has(row.hour))
+      .map((row) => row.id);
+
+    if (idsToDelete.length > 0) {
+      const { error: deleteError } = await supabase
+        .from("closed_hours")
+        .delete()
+        .in("id", idsToDelete);
+
+      if (deleteError) throw deleteError;
+    }
+
+    // Update the field's operating hours
+    const { error: updateError } = await supabase
+      .from("fields")
+      .update({ start_hour: startHour, end_hour: endHour })
+      .eq("id", fieldId);
+
+    if (updateError) throw updateError;
+  },
 };
