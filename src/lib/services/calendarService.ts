@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
+import { ClosedHour } from "@/types";
 import { format } from "date-fns";
 
 export const calendarService = {
@@ -143,6 +144,64 @@ export const calendarService = {
 
   deleteField: async (fieldId: string) => {
     const { error } = await supabase.from("fields").delete().eq("id", fieldId);
+
+    if (error) throw error;
+  },
+
+  fetchClosedHoursForWeek: async (
+    fieldId: string,
+    start: Date,
+    end: Date,
+  ): Promise<ClosedHour[]> => {
+    const { data, error } = await supabase
+      .from("closed_hours")
+      .select("*")
+      .eq("field_id", fieldId)
+      .gte("closed_date", format(start, "yyyy-MM-dd"))
+      .lte("closed_date", format(end, "yyyy-MM-dd"));
+
+    if (error) throw error;
+    return data;
+  },
+
+  fetchClosedHoursForDay: async (
+    fieldId: string,
+    date: Date,
+  ): Promise<ClosedHour[]> => {
+    const { data, error } = await supabase
+      .from("closed_hours")
+      .select("*")
+      .eq("field_id", fieldId)
+      .eq("closed_date", format(date, "yyyy-MM-dd"));
+
+    if (error) throw error;
+    return data;
+  },
+
+  closeHour: async (
+    fieldId: string,
+    date: Date,
+    hour: number,
+  ): Promise<ClosedHour> => {
+    const { data, error } = await supabase
+      .from("closed_hours")
+      .insert({
+        field_id: fieldId,
+        closed_date: format(date, "yyyy-MM-dd"),
+        hour,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  openHour: async (id: string): Promise<void> => {
+    const { error } = await supabase
+      .from("closed_hours")
+      .delete()
+      .eq("id", id);
 
     if (error) throw error;
   },

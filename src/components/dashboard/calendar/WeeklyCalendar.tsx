@@ -4,7 +4,7 @@ import { tr } from "date-fns/locale";
 import { useEffect, useState } from "react";
 import { ReservationMenu } from "./ReservationMenu";
 import Button from "@/components/Button";
-import { Plus } from "lucide-react";
+import { Lock, Plus } from "lucide-react";
 
 const DAY_LABELS = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
 
@@ -19,6 +19,7 @@ export function WeeklyCalendar() {
     prevWeek,
     reservations,
     isFetching,
+    isHourClosed,
     createReservation,
     isLoading,
     error,
@@ -210,10 +211,25 @@ export function WeeklyCalendar() {
                 {/* Day cells */}
                 {weekDays.map((day, di) => {
                   const slotReservations = getSlotReservations(day, hour);
+                  const closed = isHourClosed(day, hour);
                   const isSelected =
                     selectedSlot &&
                     isSameDay(selectedSlot.day, day) &&
                     selectedSlot.hour === hour;
+
+                  if (closed) {
+                    return (
+                      <div
+                        key={di}
+                        className="flex items-center justify-center overflow-hidden border-b border-l border-gray-100 bg-gray-100 p-0.5 md:border-gray-300"
+                      >
+                        <div className="flex items-center gap-1 text-[10px] font-medium text-gray-400 md:text-xs">
+                          <Lock className="h-3 w-3" />
+                          <span className="hidden md:inline">Kapalı</span>
+                        </div>
+                      </div>
+                    );
+                  }
 
                   return (
                     <div

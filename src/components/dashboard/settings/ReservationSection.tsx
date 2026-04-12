@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Copy, Check, ExternalLink } from "lucide-react";
 import SettingsCard from "./SettingsCard";
 
 export default function ReservationSection({ slug }: { slug: string }) {
   const [copied, setCopied] = useState(false);
-  const url = `${typeof window !== "undefined" ? window.location.origin : ""}/book/${slug}`;
+  const [url, setUrl] = useState(`/book/${slug}`);
+
+  useEffect(() => {
+    setUrl(`${window.location.origin}/book/${slug}`);
+  }, [slug]);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(url);

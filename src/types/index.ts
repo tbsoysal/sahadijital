@@ -34,3 +34,11 @@ export type Slot = {
   hour: number;
   reservation?: Reservation;
 };
+
+export type ClosedHour = {
+  id: string;
+  field_id: string;
+  closed_date: string;
+  hour: number;
+  created_at: string;
+};

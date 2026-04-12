@@ -2,8 +2,8 @@ import { useDashboardContext } from "@/context/DashboardContext";
 import { WORKING_HOURS } from "@/lib/constants";
 import { calendarService } from "@/lib/services/calendarService";
 import { supabase } from "@/lib/supabase/client";
-import { Reservation, Slot } from "@/types";
-import { addDays, addWeeks, startOfWeek, subWeeks } from "date-fns";
+import { ClosedHour, Reservation, Slot } from "@/types";
+import { addDays, addWeeks, format, startOfWeek, subWeeks } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import { useCreateReservation } from "./useCreateReservation";
 import { useDeleteReservation } from "./useDeleteReservation";
@@ -14,6 +14,7 @@ export function useCalendar() {
   const [referenceDay, setReferenceDay] = useState<Date>(new Date());
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [closedHours, setClosedHours] = useState<ClosedHour[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   const { createReservation, isLoading, error, clearError } =
     useCreateReservation((newReservation) => {
@@ -89,9 +90,14 @@ export function useCalendar() {
     const start = startOfWeek(referenceDay, { weekStartsOn: 1 });
     const end = addDays(start, 6);
     setIsFetching(true);
-    calendarService
-      .fetchReservationsForWeek(selectedField.id, start, end)
-      .then(setReservations)
+    Promise.all([
+      calendarService.fetchReservationsForWeek(selectedField.id, start, end),
+      calendarService.fetchClosedHoursForWeek(selectedField.id, start, end),
+    ])
+      .then(([res, closed]) => {
+        setReservations(res);
+        setClosedHours(closed);
+      })
       .finally(() => setIsFetching(false));
   }, [referenceDay, selectedField]);
 
@@ -140,6 +146,16 @@ export function useCalendar() {
     };
   }, [selectedField]);
 
+  // Closed hours store start times, but calendar rows are labeled by end time
+  // (row X shows bookings ending at X, i.e. starting at X-1).
+  // So a closed start hour maps to the calendar row at (start + 1) % 24.
+  const isHourClosed = (day: Date, hour: number) =>
+    closedHours.some(
+      (c) =>
+        (c.hour + 1) % 24 === hour &&
+        c.closed_date === format(day, "yyyy-MM-dd"),
+    );
+
   const nextWeek = () => setReferenceDay((prev) => addWeeks(prev, 1));
   const prevWeek = () => setReferenceDay((prev) => subWeeks(prev, 1));
 
@@ -169,5 +185,6 @@ export function useCalendar() {
     isRejectingId,
     statusError,
     isFetching,
+    isHourClosed,
   };
 }

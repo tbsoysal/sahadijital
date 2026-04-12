@@ -24,7 +24,7 @@ export default function BookingView({ businessName, fields }: Props) {
   const slug = params.slug as string;
 
   const [selectedField, setSelectedField] = useState<Field>(fields[0]);
-  const { days, hours, selectedDay, setSelectedDay, reservations, isFetching } =
+  const { days, hours, selectedDay, setSelectedDay, reservations, isFetching, isHourClosed } =
     useBookingCalendar(selectedField.id);
 
   const isSlotBooked = (hour: number) => {
@@ -151,6 +151,10 @@ export default function BookingView({ businessName, fields }: Props) {
                 <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
                 <span className="text-sm text-gray-600">Dolu</span>
               </div>
+              <div className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-red-200" />
+                <span className="text-sm text-gray-600">Kapalı</span>
+              </div>
             </div>
 
             {isFetching ? (
@@ -167,7 +171,8 @@ export default function BookingView({ businessName, fields }: Props) {
                 {hours.map((hour) => {
                   const booked = isSlotBooked(hour);
                   const past = isSlotPast(hour);
-                  const disabled = booked || past;
+                  const closed = isHourClosed(hour);
+                  const disabled = booked || past || closed;
 
                   return (
                     <button
@@ -175,20 +180,34 @@ export default function BookingView({ businessName, fields }: Props) {
                       disabled={disabled}
                       onClick={() => !disabled && handleSlotClick(hour)}
                       className={`rounded-xl p-4 text-left transition-colors ${
-                        disabled ? "bg-gray-100" : "bg-white shadow-sm"
+                        closed
+                          ? "bg-red-50"
+                          : disabled
+                            ? "bg-gray-100"
+                            : "bg-white shadow-sm"
                       }`}
                     >
                       <p
-                        className={`text-2xl font-bold ${disabled ? "text-gray-400" : "text-gray-800"}`}
+                        className={`text-2xl font-bold ${
+                          closed
+                            ? "text-red-300"
+                            : disabled
+                              ? "text-gray-400"
+                              : "text-gray-800"
+                        }`}
                       >
                         {String(hour).padStart(2, "0")}:00
                       </p>
                       <p
-                        className={`text-sm ${disabled ? "text-gray-400" : "text-gray-500"}`}
+                        className={`text-sm ${closed ? "text-red-300" : disabled ? "text-gray-400" : "text-gray-500"}`}
                       >
                         1 saat
                       </p>
-                      {booked ? (
+                      {closed ? (
+                        <p className="text-sm font-medium text-red-400">
+                          Kapalı
+                        </p>
+                      ) : booked ? (
                         <p className="text-sm text-gray-400">Dolu</p>
                       ) : past ? (
                         <p className="text-sm text-gray-400">Geçmiş</p>
