@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import createServiceClient from "@/lib/supabase/service";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -40,15 +41,43 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
 
   const user = data?.claims;
+  const pathname = request.nextUrl.pathname;
 
-  if (
-    !user &&
-    request.nextUrl.pathname.startsWith("/dashboard")
-  ) {
+  // Protect /admin — only the admin email can access it
+  if (pathname.startsWith("/admin")) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      return NextResponse.redirect(url);
+    }
+    if (user.email !== process.env.ADMIN_EMAIL) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard";
+      return NextResponse.redirect(url);
+    }
+  }
+
+  if (!user && pathname.startsWith("/dashboard")) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
+  }
+
+  // Check if a logged-in dashboard user has been blocked
+  if (user && pathname.startsWith("/dashboard")) {
+    const serviceClient = createServiceClient();
+    const { data: profile } = await serviceClient
+      .from("profiles")
+      .select("is_blocked")
+      .eq("id", user.sub)
+      .single();
+
+    if (profile?.is_blocked) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/blocked";
+      return NextResponse.redirect(url);
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
