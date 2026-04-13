@@ -87,6 +87,8 @@ export function useCalendar() {
     generateFieldHours(selectedField?.start_hour ?? 11, selectedField?.end_hour ?? 0);
   const hours = workingHours;
 
+  const [refetchKey, setRefetchKey] = useState(0);
+
   useEffect(() => {
     if (!selectedField) return;
     const start = startOfWeek(referenceDay, { weekStartsOn: 1 });
@@ -101,7 +103,7 @@ export function useCalendar() {
         setClosedHours(closed);
       })
       .finally(() => setIsFetching(false));
-  }, [referenceDay, selectedField]);
+  }, [referenceDay, selectedField, refetchKey]);
 
   const reservationsRef = useRef(reservations);
   reservationsRef.current = reservations;
@@ -190,5 +192,6 @@ export function useCalendar() {
     statusError,
     isFetching,
     isHourClosed,
+    refetch: () => setRefetchKey((k) => k + 1),
   };
 }

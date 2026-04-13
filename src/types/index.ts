@@ -29,6 +29,22 @@ export type Reservation = {
   is_paid: boolean;
   description?: string;
   status: "confirmed" | "pending" | "rejected";
+  subscription_id?: string;
+};
+
+export type Subscription = {
+  id: string;
+  field_id: string;
+  customer_name: string;
+  customer_phone: string;
+  day_of_week: number; // 0 = Pazar, 1 = Pazartesi, ..., 6 = Cumartesi
+  start_time: string; // HH:MM:SS
+  end_time: string; // HH:MM:SS
+  price_per_session: number;
+  description?: string;
+  status: "active" | "cancelled";
+  end_date: string; // yyyy-MM-dd
+  created_at: string;
 };
 
 export type Slot = {
