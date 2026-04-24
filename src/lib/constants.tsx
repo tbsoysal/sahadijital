@@ -21,6 +21,35 @@ export function generateFieldHours(startHour: number, endHour: number) {
   return { reservationStartHours, workingHours, workingEndHours };
 }
 
+export function generateTimeSlots(startHour: number, endHour: number) {
+  const slots: number[] = [];
+  let m = startHour * 60;
+  const end = endHour * 60;
+  while (m !== end) {
+    slots.push(m);
+    m = (m + 30) % 1440;
+  }
+  return {
+    startSlots: slots,
+    endSlots: slots.map((s) => (s + 30) % 1440),
+  };
+}
+
+export function minutesToTimeString(m: number): string {
+  const h = Math.floor(m / 60) % 24;
+  const min = m % 60;
+  return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+}
+
+export function minutesToDbTime(m: number): string {
+  return minutesToTimeString(m) + ":00";
+}
+
+export function dbTimeToMinutes(t: string): number {
+  const [h, min] = t.split(":").map(Number);
+  return h * 60 + (min || 0);
+}
+
 // Default field hours (start: 11:00, end: 00:00 → 13 slots)
 const DEFAULT_HOURS = generateFieldHours(11, 0);
 

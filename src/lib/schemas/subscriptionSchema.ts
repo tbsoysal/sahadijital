@@ -15,9 +15,9 @@ export const subscriptionSchema = z
 
     dayOfWeek: z.number().int().min(0).max(6),
 
-    startTime: z.number().int().min(0).max(23),
+    startTime: z.number().int().min(0).max(1410).refine((v) => v % 30 === 0),
 
-    endTime: z.number().int().min(0).max(23),
+    endTime: z.number().int().min(0).max(1410).refine((v) => v % 30 === 0),
 
     price: z
       .string()

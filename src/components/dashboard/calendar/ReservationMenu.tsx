@@ -1,6 +1,6 @@
 "use client";
 
-import { generateFieldHours } from "@/lib/constants";
+import { dbTimeToMinutes, generateTimeSlots, minutesToTimeString } from "@/lib/constants";
 import {
   reservationSchema,
   ReservationFormData,
@@ -56,8 +56,6 @@ interface ReservationMenuProps {
   subscriptionError?: string | null;
 }
 
-const formatHour = (hour: number) => `${String(hour).padStart(2, "0")}:00`;
-
 export function ReservationMenu({
   slot,
   onClose,
@@ -77,10 +75,7 @@ export function ReservationMenu({
   isCreatingSubscription,
   subscriptionError,
 }: ReservationMenuProps) {
-  const { reservationStartHours, workingEndHours } = generateFieldHours(
-    fieldStartHour,
-    fieldEndHour,
-  );
+  const { startSlots, endSlots } = generateTimeSlots(fieldStartHour, fieldEndHour);
 
   const isPending = slot.reservation?.status === "pending";
 
@@ -100,13 +95,13 @@ export function ReservationMenu({
       customerName: slot.reservation?.customer_name ?? "",
       phone: slot.reservation?.customer_phone ?? "",
       startTime: slot.reservation
-        ? parseInt(slot.reservation.start_time)
+        ? dbTimeToMinutes(slot.reservation.start_time)
         : slot.hour === 0
-          ? 23
-          : slot.hour - 1,
+          ? 1380
+          : (slot.hour - 1) * 60,
       endTime: slot.reservation
-        ? parseInt(slot.reservation.end_time)
-        : slot.hour,
+        ? dbTimeToMinutes(slot.reservation.end_time)
+        : slot.hour * 60,
       description: slot.reservation?.description ?? "",
       price:
         slot.reservation?.price?.toString() ??
@@ -145,8 +140,8 @@ export function ReservationMenu({
       customerName: "",
       phone: "",
       dayOfWeek: slot.day.getDay(),
-      startTime: slot.hour === 0 ? 23 : slot.hour - 1,
-      endTime: slot.hour,
+      startTime: slot.hour === 0 ? 1380 : (slot.hour - 1) * 60,
+      endTime: slot.hour * 60,
       price: defaultPrice?.toString() ?? "",
       description: "",
     },
@@ -361,9 +356,9 @@ export function ReservationMenu({
             }
             className="text-sm font-medium text-gray-800 outline-none"
           >
-            {reservationStartHours.map((h) => (
-              <option key={h} value={h}>
-                {formatHour(h)}
+            {startSlots.map((m) => (
+              <option key={m} value={m}>
+                {minutesToTimeString(m)}
               </option>
             ))}
           </select>
@@ -377,9 +372,9 @@ export function ReservationMenu({
             }
             className="text-sm font-medium text-gray-800 outline-none"
           >
-            {workingEndHours.map((h) => (
-              <option key={h} value={h}>
-                {formatHour(h)}
+            {endSlots.map((m) => (
+              <option key={m} value={m}>
+                {minutesToTimeString(m)}
               </option>
             ))}
           </select>
@@ -515,9 +510,9 @@ export function ReservationMenu({
             }
             className="text-sm font-medium text-gray-800 outline-none"
           >
-            {reservationStartHours.map((h) => (
-              <option key={h} value={h}>
-                {formatHour(h)}
+            {startSlots.map((m) => (
+              <option key={m} value={m}>
+                {minutesToTimeString(m)}
               </option>
             ))}
           </select>
@@ -531,9 +526,9 @@ export function ReservationMenu({
             }
             className="text-sm font-medium text-gray-800 outline-none"
           >
-            {workingEndHours.map((h) => (
-              <option key={h} value={h}>
-                {formatHour(h)}
+            {endSlots.map((m) => (
+              <option key={m} value={m}>
+                {minutesToTimeString(m)}
               </option>
             ))}
           </select>

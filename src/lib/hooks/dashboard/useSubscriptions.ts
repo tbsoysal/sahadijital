@@ -1,6 +1,7 @@
 "use client";
 
 import { useDashboardContext } from "@/context/DashboardContext";
+import { minutesToDbTime } from "@/lib/constants";
 import { SubscriptionFormData } from "@/lib/schemas/subscriptionSchema";
 import { subscriptionService } from "@/lib/services/subscriptionService";
 import { Subscription } from "@/types";
@@ -34,8 +35,8 @@ export function useSubscriptions() {
     setError(null);
 
     try {
-      const startTimeStr = `${String(data.startTime).padStart(2, "0")}:00:00`;
-      const endTimeStr = `${String(data.endTime).padStart(2, "0")}:00:00`;
+      const startTimeStr = minutesToDbTime(data.startTime);
+      const endTimeStr = minutesToDbTime(data.endTime);
 
       const result =
         await subscriptionService.createSubscriptionWithReservations({

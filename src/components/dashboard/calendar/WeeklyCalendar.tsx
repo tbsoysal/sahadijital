@@ -1,5 +1,7 @@
+import { dbTimeToMinutes } from "@/lib/constants";
 import { useCalendar } from "@/lib/hooks/dashboard/useCalendar";
 import { useSubscriptions } from "@/lib/hooks/dashboard/useSubscriptions";
+import { Reservation } from "@/types";
 import { format, isSameDay } from "date-fns";
 import { tr } from "date-fns/locale";
 import { useEffect, useState } from "react";
@@ -66,15 +68,32 @@ export function WeeklyCalendar() {
     };
   }, [selectedSlot, showSubscriptionPanel]);
 
+  const rowBounds = (hour: number) => ({
+    rowStart: hour === 0 ? 23 * 60 : (hour - 1) * 60,
+    rowEnd: hour === 0 ? 24 * 60 : hour * 60,
+  });
+
   const getSlotReservations = (day: Date, hour: number) => {
     const dayStr = format(day, "yyyy-MM-dd");
+    const { rowStart, rowEnd } = rowBounds(hour);
     return reservations.filter((r) => {
       if (r.reservation_date !== dayStr) return false;
-      const start = parseInt(r.start_time);
-      const end = parseInt(r.end_time);
-      if (hour === 0) return end === 0;
-      return start < hour && end >= hour;
+      const startMin = dbTimeToMinutes(r.start_time);
+      const endMin = r.end_time.startsWith("00:00") ? 1440 : dbTimeToMinutes(r.end_time);
+      return startMin < rowEnd && endMin > rowStart;
     });
+  };
+
+  const getPillPosition = (r: Reservation, hour: number) => {
+    const { rowStart, rowEnd } = rowBounds(hour);
+    const startMin = dbTimeToMinutes(r.start_time);
+    const endMin = r.end_time.startsWith("00:00") ? 1440 : dbTimeToMinutes(r.end_time);
+    const pillStart = Math.max(startMin, rowStart);
+    const pillEnd = Math.min(endMin, rowEnd);
+    return {
+      top: ((pillStart - rowStart) / 60) * 100,
+      height: ((pillEnd - pillStart) / 60) * 100,
+    };
   };
 
   const handleCloseMenu = () => {
@@ -288,7 +307,7 @@ export function WeeklyCalendar() {
                     <div
                       key={di}
                       onClick={() => setSelectedSlot({ day, hour })}
-                      className={`cursor-pointer overflow-hidden border-b border-l border-gray-100 p-0.5 transition-colors md:border-gray-300 ${
+                      className={`relative cursor-pointer overflow-hidden border-b border-l border-gray-100 transition-colors md:border-gray-300 ${
                         isSelected
                           ? "ring-2 ring-[#12B76A] ring-inset"
                           : "hover:bg-gray-50"
@@ -297,6 +316,7 @@ export function WeeklyCalendar() {
                       {slotReservations.map((r) => {
                         const isPending = r.status === "pending";
                         const isSubscription = !!r.subscription_id;
+                        const { top, height } = getPillPosition(r, hour);
                         return (
                           <div
                             key={r.id}
@@ -304,7 +324,8 @@ export function WeeklyCalendar() {
                               e.stopPropagation();
                               setSelectedSlot({ day, hour, reservation: r });
                             }}
-                            className={`relative mb-0.5 h-full rounded-lg px-1.5 py-1 text-[10px] md:text-xs ${
+                            style={{ top: `${top}%`, height: `${height}%` }}
+                            className={`absolute left-0.5 right-0.5 rounded-lg px-1.5 py-1 text-[10px] md:text-xs ${
                               isPending
                                 ? "bg-amber-400 text-white"
                                 : r.is_paid

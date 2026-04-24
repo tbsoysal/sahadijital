@@ -1,3 +1,4 @@
+import { minutesToDbTime } from "@/lib/constants";
 import { calendarService } from "@/lib/services/calendarService";
 import { ReservationFormData } from "@/lib/schemas/reservationSchema";
 import { Reservation } from "@/types";
@@ -18,8 +19,8 @@ export function useUpdateReservation(onSuccess: (updated: Reservation) => void) 
     try {
       const updated = await calendarService.updateReservation(id, {
         reservation_date: format(data.date, "yyyy-MM-dd"),
-        start_time: `${String(data.startTime).padStart(2, "0")}:00:00`,
-        end_time: `${String(data.endTime).padStart(2, "0")}:00:00`,
+        start_time: minutesToDbTime(data.startTime),
+        end_time: minutesToDbTime(data.endTime),
         customer_name: data.customerName,
         customer_phone: data.phone,
         price: parseFloat(data.price),
