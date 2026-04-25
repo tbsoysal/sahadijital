@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { dbTimeToMinutes } from "@/lib/constants";
 import { useBookingCalendar } from "@/lib/hooks/booking/useBookingCalendar";
 
 const DAY_LABELS = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
@@ -30,13 +31,12 @@ export default function BookingView({ businessName, fields }: Props) {
     useBookingCalendar(selectedField.id, selectedField.start_hour, selectedField.end_hour);
 
   const isSlotBooked = (hour: number) => {
+    const slotStart = hour * 60;
+    const slotEnd = slotStart + 60;
     return (reservations ?? []).some((r) => {
-      const start = parseInt(r.start_time);
-      const end = parseInt(r.end_time);
-      // end===0 means the reservation ends at midnight (e.g. 21:00–00:00).
-      // It blocks every hour from start up to (but not including) 00:00.
-      if (end === 0) return start <= hour;
-      return start <= hour && end > hour;
+      const rStart = dbTimeToMinutes(r.start_time);
+      const rEnd = r.end_time.startsWith("00:00") ? 1440 : dbTimeToMinutes(r.end_time);
+      return rStart < slotEnd && rEnd > slotStart;
     });
   };
 

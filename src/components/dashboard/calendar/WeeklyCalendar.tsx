@@ -68,31 +68,15 @@ export function WeeklyCalendar() {
     };
   }, [selectedSlot, showSubscriptionPanel]);
 
-  const rowBounds = (hour: number) => ({
-    rowStart: hour === 0 ? 23 * 60 : (hour - 1) * 60,
-    rowEnd: hour === 0 ? 24 * 60 : hour * 60,
-  });
+  const gridStartMin = (hours[0] === 0 ? 23 : hours[0] - 1) * 60;
+  const totalGridMinutes = hours.length * 60;
 
-  const getSlotReservations = (day: Date, hour: number) => {
-    const dayStr = format(day, "yyyy-MM-dd");
-    const { rowStart, rowEnd } = rowBounds(hour);
-    return reservations.filter((r) => {
-      if (r.reservation_date !== dayStr) return false;
-      const startMin = dbTimeToMinutes(r.start_time);
-      const endMin = r.end_time.startsWith("00:00") ? 1440 : dbTimeToMinutes(r.end_time);
-      return startMin < rowEnd && endMin > rowStart;
-    });
-  };
-
-  const getPillPosition = (r: Reservation, hour: number) => {
-    const { rowStart, rowEnd } = rowBounds(hour);
+  const getPillStyle = (r: Reservation) => {
     const startMin = dbTimeToMinutes(r.start_time);
     const endMin = r.end_time.startsWith("00:00") ? 1440 : dbTimeToMinutes(r.end_time);
-    const pillStart = Math.max(startMin, rowStart);
-    const pillEnd = Math.min(endMin, rowEnd);
     return {
-      top: ((pillStart - rowStart) / 60) * 100,
-      height: ((pillEnd - pillStart) / 60) * 100,
+      top: `${((startMin - gridStartMin) / totalGridMinutes) * 100}%`,
+      height: `${((endMin - startMin) / totalGridMinutes) * 100}%`,
     };
   };
 
@@ -272,60 +256,75 @@ export function WeeklyCalendar() {
                 ))}
               </div>
             ))
-          : hours.map((hour) => (
-              <div
-                key={hour}
-                className="grid h-12 grid-cols-[56px_repeat(7,1fr)] md:h-16 md:grid-cols-[74px_repeat(7,1fr)]"
-              >
-                <div className="relative -bottom-2 flex items-end justify-end pt-1 pr-2 text-sm font-medium text-[#717680] md:justify-center md:text-base">
-                  {String(hour).padStart(2, "0")}:00
-                </div>
+          : (
+            <div className="relative">
+              {hours.map((hour) => (
+                <div
+                  key={hour}
+                  className="grid h-12 grid-cols-[56px_repeat(7,1fr)] md:h-16 md:grid-cols-[74px_repeat(7,1fr)]"
+                >
+                  <div className="relative -bottom-2 flex items-end justify-end pt-1 pr-2 text-sm font-medium text-[#717680] md:justify-center md:text-base">
+                    {String(hour).padStart(2, "0")}:00
+                  </div>
 
-                {weekDays.map((day, di) => {
-                  const slotReservations = getSlotReservations(day, hour);
-                  const closed = isHourClosed(day, hour);
-                  const isSelected =
-                    selectedSlot &&
-                    isSameDay(selectedSlot.day, day) &&
-                    selectedSlot.hour === hour;
+                  {weekDays.map((day, di) => {
+                    const closed = isHourClosed(day, hour);
+                    const isSelected =
+                      selectedSlot &&
+                      isSameDay(selectedSlot.day, day) &&
+                      selectedSlot.hour === hour;
 
-                  if (closed) {
+                    if (closed) {
+                      return (
+                        <div
+                          key={di}
+                          className="flex items-center justify-center border-b border-l border-gray-100 bg-gray-100 p-0.5 md:border-gray-300"
+                        >
+                          <div className="flex items-center gap-1 text-[10px] font-medium text-gray-400 md:text-xs">
+                            <Lock className="h-3 w-3" />
+                            <span className="hidden md:inline">Kapalı</span>
+                          </div>
+                        </div>
+                      );
+                    }
+
                     return (
                       <div
                         key={di}
-                        className="flex items-center justify-center overflow-hidden border-b border-l border-gray-100 bg-gray-100 p-0.5 md:border-gray-300"
-                      >
-                        <div className="flex items-center gap-1 text-[10px] font-medium text-gray-400 md:text-xs">
-                          <Lock className="h-3 w-3" />
-                          <span className="hidden md:inline">Kapalı</span>
-                        </div>
-                      </div>
+                        onClick={() => setSelectedSlot({ day, hour })}
+                        className={`cursor-pointer border-b border-l border-gray-100 transition-colors md:border-gray-300 ${
+                          isSelected
+                            ? "ring-2 ring-[#12B76A] ring-inset"
+                            : "hover:bg-gray-50"
+                        }`}
+                      />
                     );
-                  }
+                  })}
+                </div>
+              ))}
 
-                  return (
-                    <div
-                      key={di}
-                      onClick={() => setSelectedSlot({ day, hour })}
-                      className={`relative cursor-pointer overflow-hidden border-b border-l border-gray-100 transition-colors md:border-gray-300 ${
-                        isSelected
-                          ? "ring-2 ring-[#12B76A] ring-inset"
-                          : "hover:bg-gray-50"
-                      }`}
-                    >
-                      {slotReservations.map((r) => {
+              {/* Pill overlay — renders all reservation pills as a single layer so
+                  half-hour reservations appear as one continuous block */}
+              <div className="pointer-events-none absolute inset-0 grid grid-cols-[56px_repeat(7,1fr)] md:grid-cols-[74px_repeat(7,1fr)]">
+                <div />
+                {weekDays.map((day, di) => (
+                  <div key={di} className="relative">
+                    {reservations
+                      .filter((r) => r.reservation_date === format(day, "yyyy-MM-dd"))
+                      .map((r) => {
                         const isPending = r.status === "pending";
                         const isSubscription = !!r.subscription_id;
-                        const { top, height } = getPillPosition(r, hour);
+                        const startHour =
+                          (Math.floor(dbTimeToMinutes(r.start_time) / 60) + 1) % 24;
                         return (
                           <div
                             key={r.id}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelectedSlot({ day, hour, reservation: r });
+                              setSelectedSlot({ day, hour: startHour, reservation: r });
                             }}
-                            style={{ top: `${top}%`, height: `${height}%` }}
-                            className={`absolute left-0.5 right-0.5 rounded-lg px-1.5 py-1 text-[10px] md:text-xs ${
+                            style={getPillStyle(r)}
+                            className={`pointer-events-auto absolute left-0.5 right-0.5 overflow-hidden rounded-lg px-1.5 py-1 text-[10px] md:text-xs ${
                               isPending
                                 ? "bg-amber-400 text-white"
                                 : r.is_paid
@@ -349,11 +348,11 @@ export function WeeklyCalendar() {
                           </div>
                         );
                       })}
-                    </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+          )}
       </div>
 
       {/* Mobile add button */}
