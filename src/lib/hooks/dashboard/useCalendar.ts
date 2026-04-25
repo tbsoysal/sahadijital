@@ -150,6 +150,24 @@ export function useCalendar() {
     };
   }, [selectedField]);
 
+  useEffect(() => {
+    if (!selectedField) return;
+
+    const channel = supabase
+      .channel(`bookings:${selectedField.id}`)
+      .on("broadcast", { event: "new" }, ({ payload }) => {
+        const incoming = payload as Reservation;
+        if (!reservationsRef.current.some((r) => r.id === incoming.id)) {
+          setReservations((prev) => [...prev, incoming]);
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [selectedField]);
+
   // Closed hours store start times, but calendar rows are labeled by end time
   // (row X shows bookings ending at X, i.e. starting at X-1).
   // So a closed start hour maps to the calendar row at (start + 1) % 24.

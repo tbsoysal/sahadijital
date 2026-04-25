@@ -1,4 +1,5 @@
 import { bookingService } from "@/lib/services/bookingService";
+import { supabase } from "@/lib/supabase/client";
 import { Reservation } from "@/types";
 import { useState } from "react";
 
@@ -22,6 +23,13 @@ export function useSubmitRequest(
     setError(null);
     try {
       const newReservation = await bookingService.submitRequest(payload);
+      const ch = supabase.channel(`bookings:${payload.field_id}`);
+      ch.subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          ch.send({ type: "broadcast", event: "new", payload: newReservation })
+            .finally(() => supabase.removeChannel(ch));
+        }
+      });
       onSuccess(newReservation);
     } catch (err: unknown) {
       const e = err as { code?: string };
