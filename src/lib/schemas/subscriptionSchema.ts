@@ -26,7 +26,7 @@ export const subscriptionSchema = z
 
     description: z.string().max(500, "Açıklama çok uzun").optional(),
   })
-  .refine((data) => data.endTime > data.startTime, {
+  .refine((data) => data.endTime !== data.startTime, {
     message: "Bitiş saati başlangıç saatinden sonra olmalı",
     path: ["endTime"],
   });

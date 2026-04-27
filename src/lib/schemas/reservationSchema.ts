@@ -26,14 +26,9 @@ export const reservationSchema = z
 
     isPaid: z.boolean(),
   })
-  .refine(
-    (data) =>
-      data.endTime > data.startTime ||
-      (data.startTime >= 1380 && data.endTime === 0),
-    {
-      message: "Bitiş saati başlangıç saatinden sonra olmalı",
-      path: ["endTime"],
-    },
-  );
+  .refine((data) => data.endTime !== data.startTime, {
+    message: "Bitiş saati başlangıç saatinden sonra olmalı",
+    path: ["endTime"],
+  });
 
 export type ReservationFormData = z.infer<typeof reservationSchema>;

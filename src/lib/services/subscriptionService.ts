@@ -1,3 +1,4 @@
+import { dbTimeToMinutes } from "@/lib/constants";
 import { supabase } from "@/lib/supabase/client";
 import { Subscription } from "@/types";
 import { format } from "date-fns";
@@ -47,21 +48,35 @@ export const subscriptionService = {
 
     const dateStrings = dates.map((d) => format(d, "yyyy-MM-dd"));
 
-    // Two reservations overlap when: existing.start < new.end AND existing.end > new.start
     const { data, error } = await supabase
       .from("reservations")
-      .select("reservation_date")
+      .select("reservation_date, start_time, end_time")
       .eq("field_id", fieldId)
       .in("reservation_date", dateStrings)
-      .neq("status", "rejected")
-      .lt("start_time", endTimeStr)
-      .gt("end_time", startTimeStr);
+      .neq("status", "rejected");
 
     if (error) throw error;
 
-    return [
-      ...new Set((data ?? []).map((r) => r.reservation_date as string)),
-    ];
+    // Minute-based overlap — three-way check covers all cross-midnight combinations:
+    // 1. both on the same linear segment
+    // 2. new booking is post-midnight relative to the existing one (+1440 to new)
+    // 3. existing reservation is post-midnight relative to the new one (+1440 to existing)
+    const newStart = dbTimeToMinutes(startTimeStr);
+    const rawNewEnd = dbTimeToMinutes(endTimeStr);
+    const newEnd = rawNewEnd <= newStart ? rawNewEnd + 1440 : rawNewEnd;
+
+    const conflictingDates = (data ?? [])
+      .filter((r) => {
+        const rStart = dbTimeToMinutes(r.start_time);
+        const rawREnd = dbTimeToMinutes(r.end_time);
+        const rEnd = rawREnd <= rStart ? rawREnd + 1440 : rawREnd;
+        return (rStart < newEnd          && rEnd          > newStart) ||
+               (rStart < newEnd + 1440   && rEnd          > newStart + 1440) ||
+               (rStart + 1440 < newEnd   && rEnd + 1440   > newStart);
+      })
+      .map((r) => r.reservation_date as string);
+
+    return [...new Set(conflictingDates)];
   },
 
   createSubscriptionWithReservations: async (payload: {

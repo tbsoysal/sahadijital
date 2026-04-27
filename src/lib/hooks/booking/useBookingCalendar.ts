@@ -66,6 +66,7 @@ export function useBookingCalendar(
         (payload) => {
           if (payload.eventType === "INSERT") {
             const incoming = payload.new as Reservation;
+            if (incoming.reservation_date !== selectedDayStrRef.current) return;
             const alreadyExists = reservationsRef.current?.some(
               (r) => r.id === incoming.id,
             );
@@ -73,11 +74,14 @@ export function useBookingCalendar(
               setReservations((prev) => [...(prev ?? []), incoming]);
             }
           } else if (payload.eventType === "UPDATE") {
-            setReservations((prev) =>
-              (prev ?? []).map((r) =>
-                r.id === payload.new.id ? (payload.new as Reservation) : r,
-              ),
-            );
+            const updated = payload.new as Reservation;
+            if (updated.reservation_date !== selectedDayStrRef.current) {
+              setReservations((prev) => (prev ?? []).filter((r) => r.id !== updated.id));
+            } else {
+              setReservations((prev) =>
+                (prev ?? []).map((r) => (r.id === updated.id ? updated : r)),
+              );
+            }
           } else if (payload.eventType === "DELETE") {
             setReservations((prev) =>
               (prev ?? []).filter((r) => r.id !== payload.old.id),

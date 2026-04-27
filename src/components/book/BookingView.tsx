@@ -27,24 +27,45 @@ export default function BookingView({ businessName, fields }: Props) {
   const slug = params.slug as string;
 
   const [selectedField, setSelectedField] = useState<Field>(fields[0]);
-  const { days, hours, selectedDay, setSelectedDay, reservations, isFetching, isHourClosed } =
-    useBookingCalendar(selectedField.id, selectedField.start_hour, selectedField.end_hour);
+  const {
+    days,
+    hours,
+    selectedDay,
+    setSelectedDay,
+    reservations,
+    isFetching,
+    isHourClosed,
+  } = useBookingCalendar(
+    selectedField.id,
+    selectedField.start_hour,
+    selectedField.end_hour,
+  );
 
   const isSlotBooked = (hour: number) => {
-    const slotStart = hour * 60;
+    const startHour = selectedField.start_hour;
+    // Post-midnight slots (hour < start_hour) live beyond the 1440-minute boundary
+    const offset = hour < startHour ? 1440 : 0;
+    const slotStart = hour * 60 + offset;
     const slotEnd = slotStart + 60;
+
     return (reservations ?? []).some((r) => {
       const rStart = dbTimeToMinutes(r.start_time);
-      const rEnd = r.end_time.startsWith("00:00") ? 1440 : dbTimeToMinutes(r.end_time);
-      return rStart < slotEnd && rEnd > slotStart;
+      const rawEnd = dbTimeToMinutes(r.end_time);
+      const rEnd = rawEnd <= rStart ? rawEnd + 1440 : rawEnd;
+      // Normalize reservation into the same timeline as the slot
+      const normRStart = rStart < startHour * 60 ? rStart + 1440 : rStart;
+      const normREnd = rEnd < startHour * 60 ? rEnd + 1440 : rEnd;
+      return normRStart < slotEnd && normREnd > slotStart;
     });
   };
 
   const isSlotPast = (hour: number) => {
     const now = new Date();
     const slotDate = new Date(selectedDay);
-    // Hours 0 and 1 are past-midnight slots belonging to the next day
-    if (hour === 0 || hour === 1) slotDate.setDate(slotDate.getDate() + 1);
+    console.log(selectedDay);
+    // Any hour below start_hour is a post-midnight slot belonging to the next calendar day
+    if (hour < selectedField.start_hour)
+      slotDate.setDate(slotDate.getDate() + 1);
     slotDate.setHours(hour, 0, 0, 0);
     return slotDate < now;
   };
@@ -212,7 +233,7 @@ export default function BookingView({ businessName, fields }: Props) {
                       ) : booked ? (
                         <p className="text-sm text-gray-400">Dolu</p>
                       ) : past ? (
-                        <p className="text-sm text-gray-400">Geçmiş</p>
+                        <p className="text-sm text-gray-400">Geçti</p>
                       ) : (
                         <p className="text-sm font-semibold text-[#12B76A]">
                           ₺{selectedField.default_price}
