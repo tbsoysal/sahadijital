@@ -1,4 +1,10 @@
 const nextConfig = {
+  async rewrites() {
+    return [
+      { source: "/:slug", destination: "/book/:slug" },
+      { source: "/:slug/confirm", destination: "/book/:slug/confirm" },
+    ];
+  },
   async headers() {
     return [
       {

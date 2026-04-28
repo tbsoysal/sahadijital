@@ -6,10 +6,10 @@ import SettingsCard from "./SettingsCard";
 
 export default function ReservationSection({ slug }: { slug: string }) {
   const [copied, setCopied] = useState(false);
-  const [url, setUrl] = useState(`/book/${slug}`);
+  const [url, setUrl] = useState(`/${slug}`);
 
   useEffect(() => {
-    setUrl(`${window.location.origin}/book/${slug}`);
+    setUrl(`${window.location.origin}/${slug}`);
   }, [slug]);
 
   const handleCopy = async () => {
