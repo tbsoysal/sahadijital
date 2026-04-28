@@ -7,9 +7,13 @@ import { ViewMenu } from "./ViewMenu";
 import MenuItem from "./MenuItem";
 import LogoutButton from "./LogoutButton";
 import { useDashboardContext } from "@/context/DashboardContext";
+import { usePushNotifications } from "@/lib/hooks/dashboard/usePushNotifications";
+import { Bell, BellOff, BellRing } from "lucide-react";
 
 export default function Sidebar() {
   const { isSidebarOpen } = useDashboardContext();
+  const { isSupported, isSubscribed, isLoading, permission, subscribe } =
+    usePushNotifications();
   return (
     <aside
       className={cn(
@@ -52,8 +56,35 @@ export default function Sidebar() {
               destination="/dashboard/settings"
               icon="/images/settingsMenuIcon.svg"
             />
+            {isSupported && (
+              <li>
+                {isSubscribed ? (
+                  <div className="flex items-center gap-3 rounded-md px-3 py-2 text-green-600">
+                    <BellRing className="h-5 w-5 shrink-0" />
+                    <span className="text-base font-medium">Bildirimler Aktif</span>
+                  </div>
+                ) : permission === "denied" ? (
+                  <div className="flex items-center gap-3 rounded-md px-3 py-2 text-gray-400">
+                    <BellOff className="h-5 w-5 shrink-0" />
+                    <span className="text-base font-medium">Bildirimler Engellendi</span>
+                  </div>
+                ) : (
+                  <button
+                    onClick={subscribe}
+                    disabled={isLoading}
+                    className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-gray-700 hover:bg-gray-200 disabled:opacity-50"
+                  >
+                    <Bell className="h-5 w-5 shrink-0" />
+                    <span className="text-base font-medium">
+                      {isLoading ? "Etkinleştiriliyor..." : "Bildirimleri Etkinleştir"}
+                    </span>
+                  </button>
+                )}
+              </li>
+            )}
           </ul>
         </div>
+
         {/* Logout Button */}
         <LogoutButton />
       </div>

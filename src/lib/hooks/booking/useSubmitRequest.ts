@@ -30,6 +30,16 @@ export function useSubmitRequest(
             .finally(() => supabase.removeChannel(ch));
         }
       });
+      fetch("/api/push/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          field_id: payload.field_id,
+          customer_name: payload.customer_name,
+          reservation_date: payload.reservation_date,
+          start_time: payload.start_time,
+        }),
+      }).catch(() => {});
       onSuccess(newReservation);
     } catch (err: unknown) {
       const e = err as { code?: string };

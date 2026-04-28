@@ -8,6 +8,13 @@ const nextConfig = {
   async headers() {
     return [
       {
+        source: "/sw.js",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "Service-Worker-Allowed", value: "/" },
+        ],
+      },
+      {
         // Apply CSP to all routes
         source: "/(.*)",
         headers: [
@@ -19,7 +26,8 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://api.fontshare.com",
               "img-src 'self' data: https:",
               "font-src 'self' https://api.fontshare.com https://cdn.fontshare.com",
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co;",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+              "worker-src 'self'",
               "frame-src 'none'",
               "object-src 'none'",
               "base-uri 'self'",
