@@ -151,8 +151,8 @@ export default function ConfirmPage() {
       <NotificationModal
         open={submitted}
         variant="success"
-        title="Talebiniz Alındı!"
-        message="Rezervasyonunuz onaylandıktan sonra SMS ile bildirim alacaksınız."
+        title="Rezervasyonunuz Oluşturuldu!"
+        message="Rezervasyon iptal ve değiştirme işlemleriniz için telefon üzerinden iletişime geçiniz!"
         actionText="Tamam"
         onAction={() => router.push(`/book/${slug}`)}
       />
