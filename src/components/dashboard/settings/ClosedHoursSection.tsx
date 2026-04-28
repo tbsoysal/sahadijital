@@ -98,7 +98,7 @@ export default function ClosedHoursSection() {
         )}
 
         <p className="mt-3 text-xs text-gray-400">
-          Kapalı saatler müşterilere "Kapalı" olarak görünür ve rezervasyon
+          Kapalı saatler müşterilere &quot;Kapalı&quot; olarak görünür ve rezervasyon
           yapılamaz.
         </p>
       </SettingsCard>

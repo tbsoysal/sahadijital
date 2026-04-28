@@ -118,13 +118,12 @@ export function ReservationMenu({
   const [selectedDate, setSelectedDate] = useState<Date>(slot.day);
   const dateInputRef = useRef<HTMLInputElement>(null);
 
-  const resolveDate = (_hour: number) => selectedDate;
-  const formattedDate = format(resolveDate(startTime), "d MMMM, EEEE", {
+  const formattedDate = format(selectedDate, "d MMMM, EEEE", {
     locale: tr,
   });
 
   const onSubmit = (data: ReservationFormData) => {
-    onSave({ ...data, date: resolveDate(data.startTime) });
+    onSave({ ...data, date: selectedDate });
   };
 
   // ── Subscription form ────────────────────────────────────────────────────
