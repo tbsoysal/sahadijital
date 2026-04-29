@@ -9,9 +9,10 @@ export const subscriptionSchema = z
 
     phone: z
       .string()
-      .min(10, "Telefon numarası geçersiz")
       .max(15, "Telefon numarası geçersiz")
-      .regex(/^[0-9\s-]+$/, "Geçerli bir telefon numarası girin"),
+      .regex(/^[0-9\s-]*$/, "Geçerli bir telefon numarası girin")
+      .optional()
+      .or(z.literal("")),
 
     dayOfWeek: z.number().int().min(0).max(6),
 

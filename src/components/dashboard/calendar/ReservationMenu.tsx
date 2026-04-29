@@ -54,6 +54,10 @@ interface ReservationMenuProps {
   onSaveSubscription?: (data: SubscriptionFormData) => void;
   isCreatingSubscription?: boolean;
   subscriptionError?: string | null;
+  // Pre-fill data carried over from QuickCreateSheet
+  prefillData?: { customerName: string; phone?: string; price: string };
+  onCancelSubscription?: () => void;
+  isCancellingSubscription?: boolean;
 }
 
 export function ReservationMenu({
@@ -74,6 +78,9 @@ export function ReservationMenu({
   onSaveSubscription,
   isCreatingSubscription,
   subscriptionError,
+  prefillData,
+  onCancelSubscription,
+  isCancellingSubscription,
 }: ReservationMenuProps) {
   const { startSlots, endSlots } = generateTimeSlots(fieldStartHour, fieldEndHour);
 
@@ -81,6 +88,7 @@ export function ReservationMenu({
 
   // Mode toggle — only relevant when creating (no existing reservation)
   const [mode, setMode] = useState<"single" | "subscription">("single");
+  const [confirmCancel, setConfirmCancel] = useState(false);
 
   // ── Single-reservation form ──────────────────────────────────────────────
   const {
@@ -92,8 +100,8 @@ export function ReservationMenu({
   } = useForm<ReservationFormData>({
     resolver: zodResolver(reservationSchema),
     defaultValues: {
-      customerName: slot.reservation?.customer_name ?? "",
-      phone: slot.reservation?.customer_phone ?? "",
+      customerName: slot.reservation?.customer_name ?? prefillData?.customerName ?? "",
+      phone: slot.reservation?.customer_phone ?? prefillData?.phone ?? "",
       startTime: slot.reservation
         ? dbTimeToMinutes(slot.reservation.start_time)
         : slot.hour === 0
@@ -105,6 +113,7 @@ export function ReservationMenu({
       description: slot.reservation?.description ?? "",
       price:
         slot.reservation?.price?.toString() ??
+        prefillData?.price ??
         defaultPrice?.toString() ??
         "",
       isPaid: slot.reservation?.is_paid ?? false,
@@ -589,6 +598,42 @@ export function ReservationMenu({
         {subscriptionBadge}
         {error && <p className="px-4 pt-2 text-xs text-red-500">{error}</p>}
         {singleFormBody}
+        {slot.reservation.subscription_id && onCancelSubscription && (
+          <div className="shrink-0 border-t border-gray-100 px-4 py-3">
+            {confirmCancel ? (
+              <div className="flex flex-col gap-2">
+                <p className="text-xs text-gray-500">
+                  Bugünden itibaren tüm gelecekteki seanslar silinecek. Emin misiniz?
+                </p>
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setConfirmCancel(false)}
+                    className="cursor-pointer text-sm font-medium text-gray-500"
+                  >
+                    Hayır
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onCancelSubscription}
+                    disabled={isCancellingSubscription}
+                    className="cursor-pointer text-sm font-semibold text-red-500 disabled:opacity-50"
+                  >
+                    {isCancellingSubscription ? "Sonlandırılıyor..." : "Evet, Sonlandır"}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmCancel(true)}
+                className="cursor-pointer text-sm font-medium text-red-400"
+              >
+                Aboneliği Sonlandır
+              </button>
+            )}
+          </div>
+        )}
       </form>
     );
   }

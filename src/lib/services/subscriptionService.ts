@@ -89,7 +89,6 @@ export const subscriptionService = {
     price_per_session: number;
     description?: string;
   }): Promise<{ subscription: Subscription; conflicts: string[] }> => {
-    // Default end date: 1 year from today
     const oneYearFromNow = new Date();
     oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
     const end_date = format(oneYearFromNow, "yyyy-MM-dd");
@@ -159,15 +158,13 @@ export const subscriptionService = {
     return { subscription, conflicts: [] };
   },
 
-  cancelSubscription: async (id: string): Promise<void> => {
-    const today = format(new Date(), "yyyy-MM-dd");
-
-    // Delete all future (unpast) reservations linked to this subscription
+  cancelSubscription: async (id: string, cutoffDate: string): Promise<void> => {
+    // Delete all reservations after the cutoff date (exclusive — keeps the cutoff week)
     const { error: deleteError } = await supabase
       .from("reservations")
       .delete()
       .eq("subscription_id", id)
-      .gte("reservation_date", today);
+      .gt("reservation_date", cutoffDate);
 
     if (deleteError) throw deleteError;
 

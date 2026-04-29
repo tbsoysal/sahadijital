@@ -42,7 +42,7 @@ export function useSubscriptions() {
         await subscriptionService.createSubscriptionWithReservations({
           field_id: selectedField.id,
           customer_name: data.customerName,
-          customer_phone: data.phone,
+          customer_phone: data.phone ?? "",
           day_of_week: data.dayOfWeek,
           start_time: startTimeStr,
           end_time: endTimeStr,
@@ -70,10 +70,10 @@ export function useSubscriptions() {
     }
   };
 
-  const cancelSubscription = async (id: string): Promise<void> => {
+  const cancelSubscription = async (id: string, cutoffDate: Date): Promise<void> => {
     setIsCancelling(id);
     try {
-      await subscriptionService.cancelSubscription(id);
+      await subscriptionService.cancelSubscription(id, format(cutoffDate, "yyyy-MM-dd"));
       setSubscriptions((prev) => prev.filter((s) => s.id !== id));
     } catch {
       setError("Abonelik iptal edilemedi.");

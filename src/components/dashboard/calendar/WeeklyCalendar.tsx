@@ -5,6 +5,7 @@ import { Reservation } from "@/types";
 import { format, isSameDay } from "date-fns";
 import { tr } from "date-fns/locale";
 import { useEffect, useState } from "react";
+import { QuickCreateSheet, QuickPrefill } from "./QuickCreateSheet";
 import { ReservationMenu } from "./ReservationMenu";
 import { SubscriptionPanel } from "./SubscriptionPanel";
 import Button from "@/components/Button";
@@ -54,6 +55,8 @@ export function WeeklyCalendar() {
 
   const [today, setToday] = useState<Date | null>(null);
   const [showSubscriptionPanel, setShowSubscriptionPanel] = useState(false);
+  const [showFullForm, setShowFullForm] = useState(false);
+  const [quickPrefill, setQuickPrefill] = useState<QuickPrefill | null>(null);
 
   useEffect(() => {
     setToday(new Date());
@@ -79,14 +82,29 @@ export function WeeklyCalendar() {
     let normEnd = rawEnd <= startMin ? rawEnd + 1440 : rawEnd;
     if (normEnd < normStart) normEnd += 1440;
     return {
-      top: `${((normStart - gridStartMin) / totalGridMinutes) * 100}%`,
-      height: `${((normEnd - normStart) / totalGridMinutes) * 100}%`,
+      top: `calc(${((normStart - gridStartMin) / totalGridMinutes) * 100}% + 2px)`,
+      height: `calc(${((normEnd - normStart) / totalGridMinutes) * 100}% - 4px)`,
     };
   };
 
   const handleCloseMenu = () => {
     closeMenu();
+    setShowFullForm(false);
+    setQuickPrefill(null);
     clearSubscriptionError();
+  };
+
+  const handleExpand = (partial: QuickPrefill) => {
+    setQuickPrefill(partial);
+    setShowFullForm(true);
+  };
+
+  const handleCancelSubscription = async () => {
+    const subId = selectedSlot?.reservation?.subscription_id;
+    if (!subId) return;
+    await cancelSubscription(subId, weekDays[6]);
+    handleCloseMenu();
+    refetch();
   };
 
   const handleSaveSubscription = async (
@@ -237,7 +255,7 @@ export function WeeklyCalendar() {
             className="flex items-center justify-center py-2 md:py-3"
           >
             <div className="flex flex-col items-center gap-0.5 md:hidden">
-              <span className="text-[11px] font-medium text-gray-400">
+              <span className="text-xs font-medium text-gray-600">
                 {DAY_LABELS[i]}
               </span>
               <span
@@ -272,16 +290,18 @@ export function WeeklyCalendar() {
           Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="grid h-12 grid-cols-[56px_repeat(7,1fr)] md:h-16 md:grid-cols-[74px_repeat(7,1fr)]"
+              className="grid h-16 grid-cols-[56px_repeat(7,1fr)] md:h-20 md:grid-cols-[74px_repeat(7,1fr)]"
             >
               <div className="flex items-center justify-end pr-2">
                 <div className="h-3 w-8 animate-pulse rounded bg-gray-100" />
               </div>
               {Array.from({ length: 7 }).map((_, j) => (
-                <div key={j} className="border-b border-l border-gray-100 p-1">
-                  {i % 3 === 0 && j % 2 === 0 && (
-                    <div className="h-full w-full animate-pulse rounded-lg bg-gray-100" />
-                  )}
+                <div key={j} className="p-0.5">
+                  <div className="h-full w-full rounded-lg">
+                    {i % 3 === 0 && j % 2 === 0 && (
+                      <div className="h-full w-full animate-pulse rounded-lg bg-gray-100" />
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -291,7 +311,7 @@ export function WeeklyCalendar() {
             {hours.map((hour) => (
               <div
                 key={hour}
-                className="grid h-12 grid-cols-[56px_repeat(7,1fr)] md:h-16 md:grid-cols-[74px_repeat(7,1fr)]"
+                className="grid h-16 grid-cols-[56px_repeat(7,1fr)] md:h-20 md:grid-cols-[74px_repeat(7,1fr)]"
               >
                 <div className="relative -bottom-2 flex items-end justify-end pt-1 pr-2 text-sm font-medium text-[#717680] md:justify-center md:text-base">
                   {String(hour).padStart(2, "0")}:00
@@ -306,13 +326,12 @@ export function WeeklyCalendar() {
 
                   if (closed) {
                     return (
-                      <div
-                        key={di}
-                        className="flex items-center justify-center border-b border-l border-gray-100 bg-gray-100 p-0.5 md:border-gray-300"
-                      >
-                        <div className="flex items-center gap-1 text-[10px] font-medium text-gray-400 md:text-xs">
-                          <Lock className="h-3 w-3" />
-                          <span className="hidden md:inline">Kapalı</span>
+                      <div key={di} className="p-0.5">
+                        <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-100">
+                          <div className="flex items-center gap-1 text-[10px] font-medium text-gray-400 md:text-xs">
+                            <Lock className="h-3 w-3" />
+                            <span className="hidden md:inline">Kapalı</span>
+                          </div>
                         </div>
                       </div>
                     );
@@ -322,12 +341,16 @@ export function WeeklyCalendar() {
                     <div
                       key={di}
                       onClick={() => setSelectedSlot({ day, hour })}
-                      className={`cursor-pointer border-b border-l border-gray-100 transition-colors md:border-gray-300 ${
-                        isSelected
-                          ? "ring-2 ring-[#12B76A] ring-inset"
-                          : "hover:bg-gray-50"
-                      }`}
-                    />
+                      className="cursor-pointer p-0.5"
+                    >
+                      <div
+                        className={`h-full w-full rounded-lg transition-colors ${
+                          isSelected
+                            ? "bg-gray-100 ring-2 ring-[#12B76A] ring-inset"
+                            : "bg-gray-100 hover:bg-gray-200"
+                        }`}
+                      />
+                    </div>
                   );
                 })}
               </div>
@@ -373,9 +396,9 @@ export function WeeklyCalendar() {
                             <span className="absolute top-0.5 right-0.5 h-2 w-2 rounded-full bg-red-500 ring-1 ring-white" />
                           )}
                           {isSubscription && !isPending && (
-                            <Repeat className="absolute right-0.5 bottom-0.5 h-2.5 w-2.5 opacity-60" />
+                            <span className="absolute right-1 bottom-0.5 text-[9px] md:text-[11px] font-semibold opacity-60 leading-none">abone</span>
                           )}
-                          <p className="truncate leading-tight font-semibold">
+                          <p className="overflow-hidden leading-tight font-semibold">
                             {r.customer_name}
                           </p>
                           <p className="hidden leading-tight font-semibold opacity-80 md:block">
@@ -392,16 +415,31 @@ export function WeeklyCalendar() {
         )}
       </div>
 
-      {/* Mobile add button */}
-      <button
-        onClick={() => setSelectedSlot({ day: new Date(), hour: hours[0] })}
-        className="fixed right-6 bottom-6 z-40 flex h-9 w-9 items-center justify-center rounded-xl bg-[#12B76A] text-xl text-white shadow-md transition-colors hover:bg-[#12B76A] md:hidden"
-      >
-        +
-      </button>
 
-      {/* Reservation menu overlay */}
-      {selectedSlot && (
+
+      {/* Quick create sheet — empty cell, not yet expanded */}
+      {selectedSlot && !selectedSlot.reservation && !showFullForm && (
+        <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
+          <div className="absolute inset-0 bg-black/30" onClick={handleCloseMenu} />
+          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-[transform,opacity] md:max-w-lg md:rounded-2xl">
+            <QuickCreateSheet
+              slot={selectedSlot}
+              onClose={handleCloseMenu}
+              onSave={createReservation}
+              onSaveSubscription={handleSaveSubscription}
+              onExpand={handleExpand}
+              isLoading={isLoading}
+              isCreatingSubscription={subscriptionLoading}
+              error={error}
+              subscriptionError={subscriptionError}
+              defaultPrice={selectedField?.default_price}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Full reservation form — editing an existing reservation, or expanded from quick create */}
+      {selectedSlot && (selectedSlot.reservation || showFullForm) && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
           <div
             className="absolute inset-0 bg-black/30"
@@ -443,6 +481,9 @@ export function WeeklyCalendar() {
               onSaveSubscription={handleSaveSubscription}
               isCreatingSubscription={subscriptionLoading}
               subscriptionError={subscriptionError}
+              prefillData={quickPrefill ?? undefined}
+              onCancelSubscription={selectedSlot?.reservation?.subscription_id ? handleCancelSubscription : undefined}
+              isCancellingSubscription={isCancelling === selectedSlot?.reservation?.subscription_id}
             />
           </div>
         </div>
@@ -455,12 +496,12 @@ export function WeeklyCalendar() {
             className="absolute inset-0 bg-black/30"
             onClick={() => setShowSubscriptionPanel(false)}
           />
-          <div className="animate-slide-up relative w-full rounded-t-2xl bg-white shadow-xl will-change-[transform,opacity] md:max-h-[90vh] md:max-w-lg md:overflow-hidden md:rounded-2xl">
+          <div className="animate-slide-up relative flex w-full flex-col max-h-[85vh] overflow-hidden rounded-t-2xl bg-white shadow-xl will-change-[transform,opacity] md:max-h-[90vh] md:max-w-lg md:rounded-2xl">
             <SubscriptionPanel
               subscriptions={subscriptions}
               isLoading={subscriptionLoading}
               onCancel={async (id) => {
-                await cancelSubscription(id);
+                await cancelSubscription(id, new Date());
                 refetch();
               }}
               isCancelling={isCancelling}

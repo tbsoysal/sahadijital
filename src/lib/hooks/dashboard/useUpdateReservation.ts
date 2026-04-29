@@ -22,7 +22,7 @@ export function useUpdateReservation(onSuccess: (updated: Reservation) => void) 
         start_time: minutesToDbTime(data.startTime),
         end_time: minutesToDbTime(data.endTime),
         customer_name: data.customerName,
-        customer_phone: data.phone,
+        customer_phone: data.phone ?? "",
         price: parseFloat(data.price),
         is_paid: data.isPaid,
         description: data.description,

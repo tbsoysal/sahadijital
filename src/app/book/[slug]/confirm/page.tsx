@@ -131,8 +131,7 @@ export default function ConfirmPage() {
           <div className="flex items-start gap-3 rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-3">
             <span className="text-lg">💡</span>
             <p className="text-sm text-yellow-800">
-              Ödeme sahada nakit olarak yapılacaktır. Rezervasyonunuz
-              onaylandıktan sonra SMS ile bildirim alacaksınız.
+              Ödeme sahada nakit veya IBAN olarak yapılacaktır.
             </p>
           </div>
 

@@ -108,6 +108,11 @@ export function useCalendar() {
   const reservationsRef = useRef(reservations);
   reservationsRef.current = reservations;
 
+  const weekRangeRef = useRef({ start: startDayOfWeek, end: addDays(startDayOfWeek, 6) });
+  useEffect(() => {
+    weekRangeRef.current = { start: startDayOfWeek, end: addDays(startDayOfWeek, 6) };
+  }, [startDayOfWeek]);
+
   useEffect(() => {
     if (!selectedField) return;
 
@@ -124,6 +129,9 @@ export function useCalendar() {
         (payload) => {
           if (payload.eventType === "INSERT") {
             const incoming = payload.new as Reservation;
+            const { start, end } = weekRangeRef.current;
+            const resDate = incoming.reservation_date;
+            if (resDate < format(start, "yyyy-MM-dd") || resDate > format(end, "yyyy-MM-dd")) return;
             const alreadyExists = reservationsRef.current.some(
               (r) => r.id === incoming.id,
             );

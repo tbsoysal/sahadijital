@@ -9,9 +9,10 @@ export const reservationSchema = z
 
     phone: z
       .string()
-      .min(10, "Telefon numarası geçersiz")
       .max(15, "Telefon numarası geçersiz")
-      .regex(/^[0-9\s-]+$/, "Geçerli bir telefon numarası girin"),
+      .regex(/^[0-9\s-]*$/, "Geçerli bir telefon numarası girin")
+      .optional()
+      .or(z.literal("")),
 
     startTime: z.number().int().min(0).max(1410).refine((v) => v % 30 === 0),
 
